@@ -1,3 +1,5 @@
+using ECommerceStoreInvoice.API.Configuration;
+using ECommerceStoreInvoice.API.Configuration.Extensions;
 
 namespace ECommerceStoreUsers.API
 {
@@ -7,42 +9,33 @@ namespace ECommerceStoreUsers.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddAuthorization();
+            builder.Services.AddEndpointsApiExplorer();
 
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+            builder.Services.AddOpenApiDocument(options =>
+            {
+                options.PostProcess = document =>
+                {
+                    foreach (var schema in document.Components.Schemas.Values)
+                    {
+                        schema.FixGuidFormats();
+                    }
+                };
+            });
+
+            builder.Services.AddHealthChecks();
+
+            builder.Services.AddExceptionHandler<ExceptionHandler>();
+            builder.Services.AddProblemDetails();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
+            app.UseExceptionHandler();
 
+            app.UseOpenApi();
+            app.UseSwaggerUi();
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
-
-            var summaries = new[]
-            {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
-
-            app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                    new WeatherForecast
-                    {
-                        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                        TemperatureC = Random.Shared.Next(-20, 55),
-                        Summary = summaries[Random.Shared.Next(summaries.Length)]
-                    })
-                    .ToArray();
-                return forecast;
-            })
-            .WithName("GetWeatherForecast");
+            app.MapHealthChecks("/health");
 
             app.Run();
         }

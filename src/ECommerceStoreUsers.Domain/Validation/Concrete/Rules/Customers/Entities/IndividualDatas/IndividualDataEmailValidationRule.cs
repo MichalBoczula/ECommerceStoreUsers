@@ -3,7 +3,7 @@ using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
-namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualData
+namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualDatas
 {
     internal sealed class IndividualDataEmailValidationRule : IValidationRule<IndividualData>
     {

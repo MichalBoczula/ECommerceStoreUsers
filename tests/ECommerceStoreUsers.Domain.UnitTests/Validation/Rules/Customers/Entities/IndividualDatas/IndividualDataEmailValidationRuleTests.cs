@@ -1,10 +1,10 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.Validation.Common;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualData;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualDatas;
 using Shouldly;
 
-namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entities.IndividualData
+namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entities.IndividualDatas
 {
     public class IndividualDataEmailValidationRuleTests
     {

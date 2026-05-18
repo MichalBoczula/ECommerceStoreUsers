@@ -1,9 +1,9 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualData;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualDatas;
 
-namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers.Entities.IndividualData
+namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers.Entities.IndividualDatas
 {
     internal sealed class IndividualDataValidationPolicy : IValidationPolicy<IndividualData>, IValidationPolicyDescriptorProvider
     {

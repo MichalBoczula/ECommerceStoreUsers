@@ -2,10 +2,31 @@
 
 namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities
 {
-    public sealed record CompanyData(
-    Guid InternalId,
-    string CompanyName,
-    string TaxId,
-    Address BillingAddress,
-    Address ShippingAddress);
+    public sealed record CompanyData
+    {
+        public string TaxId { get; private set; }
+        public string CompanyName { get; private set; }
+        public Address BillingAddress { get; private set; }
+        public Address ShippingAddress { get; private set; }
+
+        public CompanyData(
+            string taxId,
+            string companyName,
+            Address billingAddress,
+            Address shippingAddress)
+        {
+            TaxId = taxId;
+            CompanyName = companyName;
+            BillingAddress = billingAddress;
+            ShippingAddress = shippingAddress;
+        }
+
+        public void UpdateCompanyDetails(string taxId, string companyName, Address billingAddress, Address shippingAddress)
+        {
+            TaxId = taxId;
+            CompanyName = companyName;
+            BillingAddress = billingAddress;
+            ShippingAddress = shippingAddress;
+        }
+    }
 }

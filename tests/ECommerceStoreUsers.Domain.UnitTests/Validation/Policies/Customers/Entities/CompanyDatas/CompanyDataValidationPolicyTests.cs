@@ -12,7 +12,7 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Policies.Customers.Ent
         {
             // Arrange
             var policy = new CompanyDataValidationPolicy();
-            var companyData = new CompanyData(Guid.NewGuid(), "", "123456789A", CreateAddress(), CreateAddress());
+            var companyData = new CompanyData("123456789A", "",  CreateAddress(), CreateAddress());
 
             // Act
             var result = await policy.Validate(companyData);
@@ -29,7 +29,7 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Policies.Customers.Ent
         {
             // Arrange
             var policy = new CompanyDataValidationPolicy();
-            var companyData = new CompanyData(Guid.NewGuid(), "Acme Sp. z o.o.", "1234567890", CreateAddress(), CreateAddress());
+            var companyData = new CompanyData("1234567890", "Acme Sp. z o.o.", CreateAddress(), CreateAddress());
 
             // Act
             var result = await policy.Validate(companyData);

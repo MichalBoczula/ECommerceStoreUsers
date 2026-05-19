@@ -50,7 +50,7 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entiti
         }
 
         private static CompanyData CreateCompanyData(string taxId = "1234567890") =>
-            new(Guid.NewGuid(), "Acme Sp. z o.o.", taxId, CreateAddress(), CreateAddress());
+            new(taxId, "Acme Sp. z o.o.", CreateAddress(), CreateAddress());
 
         private static Address CreateAddress() => new("00-001", "Warsaw", "Main St", "10", "5");
     }

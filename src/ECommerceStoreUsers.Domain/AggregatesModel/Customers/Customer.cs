@@ -7,12 +7,9 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers
     {
         public Guid Id { get; init; }
         public string ExternalId { get; init; } 
-
         public IndividualData Individual { get; private set; }
-
         private readonly List<CompanyData> _companies = new();
         public IReadOnlyCollection<CompanyData> Companies => _companies.AsReadOnly();
-
         public DateTime UpdatedAt { get; private set; }
 
         public Customer(string externalId, IndividualData individual)
@@ -34,7 +31,7 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers
             if (_companies.Any(x => x.TaxId == taxId))
                 throw new InvalidOperationException("Firma o tym NIP jest już zarejestrowana.");
 
-            _companies.Add(new CompanyData(Guid.NewGuid(), name, taxId, billing, shipping));
+            _companies.Add(new CompanyData(taxId, name, billing, shipping));
             UpdatedAt = DateTime.UtcNow;
         }
 

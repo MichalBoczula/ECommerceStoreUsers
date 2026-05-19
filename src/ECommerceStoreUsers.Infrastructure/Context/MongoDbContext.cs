@@ -1,4 +1,5 @@
 ﻿using ECommerceStoreUsers.Infrastructure.Configuration;
+using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -28,8 +29,8 @@ namespace ECommerceStoreUsers.Infrastructure.Context
             var client = new MongoClient(_settings.ConnectionString);
             _database = client.GetDatabase(_settings.DatabaseName);
         }
-        //public IMongoCollection<CustomerCollectionName> ShoppingCarts =>
-        //    _database.GetCollection<ShoppingCartDocument>(_settings.ShoppingCartsCollectionName);
 
+        public IMongoCollection<CustomerDocument> Customers =>
+            _database.GetCollection<CustomerDocument>(_settings.CustomerCollectionName);
     }
 }

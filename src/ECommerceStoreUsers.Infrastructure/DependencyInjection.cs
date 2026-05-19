@@ -1,5 +1,7 @@
-﻿using ECommerceStoreUsers.Infrastructure.Configuration;
+﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
+using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +18,8 @@ namespace ECommerceStoreUsers.Infrastructure
 
             services.AddSingleton<MongoDbContext>();
             services.AddScoped<MongoInitializer>();
+
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
 
             return services;
         }

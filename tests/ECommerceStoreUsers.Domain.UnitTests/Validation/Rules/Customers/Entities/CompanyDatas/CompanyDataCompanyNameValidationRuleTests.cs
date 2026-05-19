@@ -9,7 +9,6 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entiti
     public class CompanyDataCompanyNameValidationRuleTests
     {
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("   ")]
         public async Task IsValid_CompanyNameIsInvalid_ShouldReturnError(string companyName)

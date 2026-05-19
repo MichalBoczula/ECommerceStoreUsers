@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ECommerceStoreUsers.Application.Services.Customers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerceStoreUsers.Application
 {
@@ -7,6 +8,7 @@ namespace ECommerceStoreUsers.Application
         public static IServiceCollection AddApplication(
             this IServiceCollection services)
         {
+            services.AddScoped<ICustomerService, CustomerService>();
             return services;
         }
     }

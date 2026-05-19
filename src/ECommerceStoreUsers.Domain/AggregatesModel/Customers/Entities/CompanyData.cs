@@ -4,6 +4,7 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities
 {
     public sealed record CompanyData
     {
+        public Guid Id { get; private set; }
         public string TaxId { get; private set; }
         public string CompanyName { get; private set; }
         public Address BillingAddress { get; private set; }
@@ -15,6 +16,7 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities
             Address billingAddress,
             Address shippingAddress)
         {
+            Id = Guid.NewGuid();
             TaxId = taxId;
             CompanyName = companyName;
             BillingAddress = billingAddress;

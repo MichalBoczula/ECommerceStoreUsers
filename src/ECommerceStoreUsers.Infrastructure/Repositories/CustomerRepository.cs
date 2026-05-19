@@ -4,8 +4,6 @@ using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
 using MongoDB.Driver;
 
-namespace ECommerceStoreUsers.Infrastructure.Repositories;
-
 internal sealed class CustomerRepository : ICustomerRepository
 {
     private readonly MongoDbContext _context;
@@ -19,10 +17,7 @@ internal sealed class CustomerRepository : ICustomerRepository
     {
         var customerDocument = await _context.Customers
             .Find(x => x.Id == id)
-            .FirstOrDefaultAsync();
-
-        if (customerDocument is null)
-            return null;
+            .FirstOrDefaultAsync(cancellationToken);
 
         return CustomerMapping.MapToDomain(customerDocument);
     }
@@ -31,10 +26,7 @@ internal sealed class CustomerRepository : ICustomerRepository
     {
         var customerDocument = await _context.Customers
             .Find(x => x.ExternalId == externalId)
-            .FirstOrDefaultAsync();
-
-        if (customerDocument is null)
-            return null;
+            .FirstOrDefaultAsync(cancellationToken);
 
         return CustomerMapping.MapToDomain(customerDocument);
     }
@@ -43,7 +35,7 @@ internal sealed class CustomerRepository : ICustomerRepository
     {
         var customerDocument = CustomerMapping.MapToDocument(customer);
 
-        await _context.Customers.InsertOneAsync(customerDocument);
+        await _context.Customers.InsertOneAsync(customerDocument, cancellationToken: cancellationToken);
 
         return customer;
     }
@@ -54,10 +46,8 @@ internal sealed class CustomerRepository : ICustomerRepository
 
         var result = await _context.Customers.ReplaceOneAsync(
             x => x.Id == customerDocument.Id,
-            customerDocument);
-
-        if (result.MatchedCount == 0)
-            throw new InvalidOperationException($"Customer with id '{customer.Id}' was not found.");
+            customerDocument,
+            cancellationToken: cancellationToken);
 
         return customer;
     }

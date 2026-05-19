@@ -1,5 +1,7 @@
 using ECommerceStoreInvoice.API.Configuration;
 using ECommerceStoreInvoice.API.Configuration.Extensions;
+using ECommerceStoreUsers.Domain;
+using ECommerceStoreUsers.Infrastructure;
 
 namespace ECommerceStoreUsers.API
 {
@@ -26,6 +28,8 @@ namespace ECommerceStoreUsers.API
 
             builder.Services.AddExceptionHandler<ExceptionHandler>();
             builder.Services.AddProblemDetails();
+            builder.Services.AddDomain();
+            builder.Services.AddInfrastructure(builder.Configuration);
 
             var app = builder.Build();
 

@@ -1,5 +1,7 @@
 using ECommerceStoreInvoice.API.Configuration;
 using ECommerceStoreInvoice.API.Configuration.Extensions;
+using ECommerceStoreUsers.API.Endpoints;
+using ECommerceStoreUsers.Application;
 using ECommerceStoreUsers.Domain;
 using ECommerceStoreUsers.Infrastructure;
 
@@ -12,7 +14,6 @@ namespace ECommerceStoreUsers.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddEndpointsApiExplorer();
-
             builder.Services.AddOpenApiDocument(options =>
             {
                 options.PostProcess = document =>
@@ -25,20 +26,19 @@ namespace ECommerceStoreUsers.API
             });
 
             builder.Services.AddHealthChecks();
-
             builder.Services.AddExceptionHandler<ExceptionHandler>();
             builder.Services.AddProblemDetails();
             builder.Services.AddDomain();
             builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplication();
 
             var app = builder.Build();
 
             app.UseExceptionHandler();
-
             app.UseOpenApi();
             app.UseSwaggerUi();
             app.UseHttpsRedirection();
-
+            app.MapDocumentationEndpoints();
             app.MapHealthChecks("/health");
 
             app.Run();

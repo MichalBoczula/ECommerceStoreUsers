@@ -20,8 +20,13 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Address
 
         public async Task IsValid(Address entity, ValidationResult validationResults)
         {
-            if (string.IsNullOrWhiteSpace(entity.ApartmentNumber))
+            if (entity.ApartmentNumber is null)
+                return;
+
+            if (entity.ApartmentNumber.Length == 0 || entity.ApartmentNumber.Trim().Length == 0)
+            {
                 validationResults.AddValidationError(_invalidApartmentNumber);
+            }
         }
 
         public List<ValidationError> Describe() => [_invalidApartmentNumber];

@@ -1,12 +1,14 @@
-﻿namespace ECommerceStoreUsers.Application.Common.RequestsDto.Customers
+﻿using System.Text.Json.Serialization;
+
+namespace ECommerceStoreUsers.Application.Common.RequestsDto.Customers
 {
     public sealed record IndividualDataRequestDto
     {
-        public required string FirstName { get; init; }
-        public required string LastName { get; init; }
-        public required string Email { get; init; }
-        public required string Phone { get; init; }
-        public required AddressRequestDto BillingAddress { get; init; }
-        public required AddressRequestDto ShippingAddress { get; init; }
+        [property: JsonRequired] public required string FirstName { get; init; }
+        [property: JsonRequired] public required string LastName { get; init; }
+        [property: JsonRequired] public required string Email { get; init; }
+        [property: JsonRequired] public required string Phone { get; init; }
+        [property: JsonRequired] public required AddressRequestDto BillingAddress { get; init; }
+        [property: JsonRequired] public required AddressRequestDto ShippingAddress { get; init; }
     }
 }

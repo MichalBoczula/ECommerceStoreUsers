@@ -8,7 +8,6 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Addres
     public class AddressApartmentNumberValidationRuleTests
     {
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
         public async Task IsValid_ApartmentNumberIsNullOrWhiteSpace_ShouldReturnError(string? invalidApartmentNumber)

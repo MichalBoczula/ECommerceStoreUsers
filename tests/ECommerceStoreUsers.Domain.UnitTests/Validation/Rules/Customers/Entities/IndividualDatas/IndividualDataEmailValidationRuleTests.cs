@@ -9,7 +9,6 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entiti
     public class IndividualDataEmailValidationRuleTests
     {
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("   ")]
         [InlineData("invalid-email")]

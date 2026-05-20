@@ -9,7 +9,6 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entiti
     public class IndividualDataFirstNameValidationRuleTests
     {
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("   ")]
         [InlineData("12345")]

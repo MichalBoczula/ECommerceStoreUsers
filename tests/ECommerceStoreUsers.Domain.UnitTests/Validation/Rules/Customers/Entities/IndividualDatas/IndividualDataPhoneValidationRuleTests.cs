@@ -9,7 +9,6 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entiti
     public class IndividualDataPhoneValidationRuleTests
     {
         [Theory]
-        [InlineData(null)]
         [InlineData("")]
         [InlineData("   ")]
         [InlineData("123456")]

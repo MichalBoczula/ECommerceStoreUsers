@@ -14,32 +14,33 @@ namespace ECommerceStoreUsers.Application.Services.Customers
      ILogger<CustomerService> logger)
      : ICustomerService
     {
-        //public async Task<CustomerResponseDto> CreateCustomer(CreateCustomerRequestDto request, CancellationToken cancellationToken)
-        //{
-        //    logger.LogInformation("Initiating customer creation flow for ExternalId: {ExternalId}", request.ExternalId);
+        public async Task<CustomerResponseDto> CreateCustomer(CreateCustomerRequestDto request, CancellationToken cancellationToken)
+        {
+            logger.LogInformation("Initiating customer creation flow for ExternalId: {ExternalId}", request.ExternalId);
 
-        //    var customer = MappingConfig.MapToDomain(request);
+            var customer = MappingConfig.MapToDomain(request);
 
-        //    var validationResult1 = await _customerValidationPolicy.Validate(customer);
+            var validationResult1 = await _customerValidationPolicy.Validate(customer);
 
-        //    //var validationResult = await descriptor.ValidateExternalId(request.ExternalId, _stringValidationPolicy);
-        //    //descriptor.ThrowValidationExceptionIfExternalIdInvalid(validationResult);
+            //var validationResult = await descriptor.ValidateExternalId(request.ExternalId, _stringValidationPolicy);
+            //descriptor.ThrowValidationExceptionIfExternalIdInvalid(validationResult);
 
-        //    //var existingCustomer = await descriptor.LoadCustomer(request.ExternalId, customerRepository);
-        //    //descriptor.ThrowAlreadyExistsExceptionIfCustomerExists(request.ExternalId, existingCustomer);
+            //var existingCustomer = await descriptor.LoadCustomer(request.ExternalId, customerRepository);
+            //descriptor.ThrowAlreadyExistsExceptionIfCustomerExists(request.ExternalId, existingCustomer);
 
-        //    //var individualData = descriptor.MapRequestToIndividualData(request);
-        //    //validationResult = await descriptor.ValidateIndividualData(individualData, _individualDataValidationPolicy);
-        //    //descriptor.ThrowValidationExceptionIfIndividualDataInvalid(validationResult);
+            //var individualData = descriptor.MapRequestToIndividualData(request);
+            //validationResult = await descriptor.ValidateIndividualData(individualData, _individualDataValidationPolicy);
+            //descriptor.ThrowValidationExceptionIfIndividualDataInvalid(validationResult);
 
-        //    //var customer = descriptor.Create(request.ExternalId, individualData);
-        //    //var createdCustomer = await descriptor.SaveCustomer(customer, customerRepository);
+            //var customer = descriptor.Create(request.ExternalId, individualData);
+            //var createdCustomer = await descriptor.SaveCustomer(customer, customerRepository);
 
-        //    //var response = descriptor.MapToResponse(createdCustomer);
-        //    logger.LogInformation("Successfully created customer profile. CustomerId: {CustomerId} for ExternalId: {ExternalId}", response.Id, request.ExternalId);
+            //var response = descriptor.MapToResponse(createdCustomer);
+            logger.LogInformation("Successfully created customer profile. CustomerId: {CustomerId} for ExternalId: {ExternalId}", response.Id, request.ExternalId);
 
-        //    return response;
-        //}
+            return response;
+        }
+
         //public async Task<CustomerResponseDto> GetCustomerByExternalId(string externalId)
         //{
         //    logger.LogInformation("Processing customer read request for ExternalId: {ExternalId}", externalId, CancellationToken cancellationToken);

@@ -1,7 +1,7 @@
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers.Customers;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Policies.Customers.Customers

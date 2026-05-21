@@ -10,14 +10,14 @@ using Microsoft.Extensions.Logging;
 namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 {
     internal sealed class CustomerService(
-     ICustomerRepository customerRepository,
+     ICustomerRepository _customerRepository,
      IValidationPolicy<Customer> _customerValidationPolicy,
-     ILogger<CustomerService> logger)
+     ILogger<CustomerService> _logger)
      : ICustomerService
     {
         public async Task<CustomerResponseDto> CreateCustomer(CreateCustomerRequestDto request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Initiating customer creation flow for ExternalId: {ExternalId}", request.ExternalId);
+            _logger.LogInformation("Initiating customer creation flow for ExternalId: {ExternalId}", request.ExternalId);
 
             var descriptor = new CreateCustomerDescriptor();
 
@@ -26,41 +26,41 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var validationResult = await descriptor.ValidateCustomer(customer, _customerValidationPolicy);
             descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
 
-            var existingCustomer = await descriptor.LoadCustomer(customer.ExternalId, customerRepository, cancellationToken);
+            var existingCustomer = await descriptor.LoadCustomer(customer.ExternalId, _customerRepository, cancellationToken);
             descriptor.ThrowAlreadyExistsExceptionIfCustomerExists(customer.ExternalId, existingCustomer);
 
-            var createdCustomer = await descriptor.Save(customer, customerRepository, cancellationToken);
+            var createdCustomer = await descriptor.Save(customer, _customerRepository, cancellationToken);
 
             var response = descriptor.MapToResponse(createdCustomer);
 
-            logger.LogInformation("Successfully created customer profile. CustomerId: {CustomerId} for ExternalId: {ExternalId}", response.Id, request.ExternalId);
+            _logger.LogInformation("Successfully created customer profile. CustomerId: {CustomerId} for ExternalId: {ExternalId}", response.Id, request.ExternalId);
 
             return response;
         }
 
         public async Task<CustomerResponseDto> GetCustomerByExternalId(string externalId, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Initiating get customer by ExternalId flow for ExternalId: {ExternalId}", externalId);
+            _logger.LogInformation("Initiating get customer by ExternalId flow for ExternalId: {ExternalId}", externalId);
 
             var descriptor = new GetCustomerByExternalIdDescriptor();
 
-            var customer = await descriptor.LoadCustomer(externalId, customerRepository, cancellationToken);
+            var customer = await descriptor.LoadCustomer(externalId, _customerRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfCustomerMissing(externalId, customer);
 
             var response = descriptor.MapToResponse(customer!);
 
-            logger.LogInformation("Successfully loaded customer profile. CustomerId: {CustomerId} for ExternalId: {ExternalId}", response.Id, externalId);
+            _logger.LogInformation("Successfully loaded customer profile. CustomerId: {CustomerId} for ExternalId: {ExternalId}", response.Id, externalId);
 
             return response;
         }
 
         public async Task<CustomerResponseDto> UpdateIndividualData(Guid clientId, UpdateIndividualDataRequestDto request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Initiating update individual data flow for CustomerId: {CustomerId}", clientId);
+            _logger.LogInformation("Initiating update individual data flow for CustomerId: {CustomerId}", clientId);
 
             var descriptor = new UpdateIndividualDataDescriptor();
 
-            var customer = await descriptor.LoadCustomer(clientId, customerRepository, cancellationToken);
+            var customer = await descriptor.LoadCustomer(clientId, _customerRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);
 
             var individualData = descriptor.MapRequestToIndividualData(request);
@@ -69,21 +69,21 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var validationResult = await descriptor.ValidateCustomer(customer!, _customerValidationPolicy);
             descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
 
-            var updatedCustomer = await descriptor.Save(customer!, customerRepository, cancellationToken);
+            var updatedCustomer = await descriptor.Save(customer!, _customerRepository, cancellationToken);
 
             var response = descriptor.MapToResponse(updatedCustomer);
 
-            logger.LogInformation("Successfully updated individual data. CustomerId: {CustomerId}", clientId);
+            _logger.LogInformation("Successfully updated individual data. CustomerId: {CustomerId}", clientId);
 
             return response;
         }
 
-        public Task<CustomerResponseDto> AddCompany(Guid clientId, AddCompanyRequestDto request, CancellationToken cancellationToken)
+        public async Task<CustomerResponseDto> AddCompany(Guid clientId, AddCompanyRequestDto request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CustomerResponseDto> UpdateCompany(Guid clientId, Guid companyId, UpdateCompanyRequestDto request, CancellationToken cancellationToken)
+        public async Task<CustomerResponseDto> UpdateCompany(Guid clientId, Guid companyId, UpdateCompanyRequestDto request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

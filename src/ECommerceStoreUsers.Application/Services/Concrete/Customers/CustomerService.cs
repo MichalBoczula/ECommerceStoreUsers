@@ -38,9 +38,20 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             return response;
         }
 
-        public Task<CustomerResponseDto> GetCustomerByExternalId(string externalId, CancellationToken cancellationToken)
+        public async Task<CustomerResponseDto> GetCustomerByExternalId(string externalId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            logger.LogInformation("Initiating get customer by ExternalId flow for ExternalId: {ExternalId}", externalId);
+
+            var descriptor = new GetCustomerByExternalIdDescriptor();
+
+            var customer = await descriptor.LoadCustomer(externalId, customerRepository, cancellationToken);
+            descriptor.ThrowNotFoundExceptionIfCustomerMissing(externalId, customer);
+
+            var response = descriptor.MapToResponse(customer!);
+
+            logger.LogInformation("Successfully loaded customer profile. CustomerId: {CustomerId} for ExternalId: {ExternalId}", response.Id, externalId);
+
+            return response;
         }
 
         public Task<CustomerResponseDto> UpdateIndividualData(Guid id, UpdateIndividualDataRequestDto request, CancellationToken cancellationToken)

@@ -12,11 +12,11 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             return descriptor.Describe();
         }
 
-        //public FlowDescriptor GetCustomerByExternalIdDescriptor()
-        //{
-        //    var descriptor = new GetCustomerByExternalIdDescriptor();
-        //    return descriptor.Describe();
-        //}
+        public FlowDescriptor GetCustomerByExternalIdDescriptor()
+        {
+            var descriptor = new GetCustomerByExternalIdDescriptor();
+            return descriptor.Describe();
+        }
 
         //public FlowDescriptor GetUpdateIndividualDataDescriptor()
         //{

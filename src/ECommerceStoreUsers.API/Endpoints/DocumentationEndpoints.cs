@@ -32,7 +32,8 @@ namespace ECommerceStoreUsers.API.Endpoints
                             [nameof(customerDescriptorService.GetCreateCustomerDescriptor)] = customerDescriptorService.GetCreateCustomerDescriptor(),
                             [nameof(customerDescriptorService.GetCustomerByExternalIdDescriptor)] = customerDescriptorService.GetCustomerByExternalIdDescriptor(),
                             [nameof(customerDescriptorService.GetUpdateIndividualDataDescriptor)] = customerDescriptorService.GetUpdateIndividualDataDescriptor(),
-                            [nameof(customerDescriptorService.GetAddCompanyDescriptor)] = customerDescriptorService.GetAddCompanyDescriptor()
+                            [nameof(customerDescriptorService.GetAddCompanyDescriptor)] = customerDescriptorService.GetAddCompanyDescriptor(),
+                            [nameof(customerDescriptorService.GetUpdateCompanyDescriptor)] = customerDescriptorService.GetUpdateCompanyDescriptor()
                         },
                     ]
                 };
@@ -40,7 +41,7 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(response);
             })
             .WithSummary("Get flow documentation.")
-            .WithDescription("Returns flow descriptors mapped by descriptor name.")
+            .WithDescription("Returns flow descriptors mapped by descriptor name, including create, read, and company update flows.")
             .WithName("GetFlowDocumentation")
             .Produces<FlowDescriptorsResponseDto>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);

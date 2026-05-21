@@ -1,4 +1,6 @@
-﻿using ECommerceStoreUsers.Application.Common.ResponsesDto;
+﻿using ECommerceStoreUsers.Application.Common.FlowDescriptors;
+using ECommerceStoreUsers.Application.Common.ResponsesDto;
+using ECommerceStoreUsers.Application.Services.Abstract.Customers;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +21,27 @@ namespace ECommerceStoreUsers.API.Endpoints
 
         private static void MapFlowDocumentation(IEndpointRouteBuilder group)
         {
-            group.MapGet("/flows", () =>
+            group.MapGet("/flows", (ICustomerDescriptorService customerDescriptorService) =>
             {
-                return Results.Ok();
+                var flowDescriptor = customerDescriptorService.GetCreateCustomerDescriptor();
+
+                var response = new FlowDescriptorsResponseDto
+                {
+                    Flows =
+                   [
+                       new Dictionary<string, FlowDescriptor>
+                        {
+                            [nameof(customerDescriptorService.GetCreateCustomerDescriptor)] = customerDescriptorService.GetCreateCustomerDescriptor()
+                        },
+                    ]
+                };
+
+                return Results.Ok(response);
             })
             .WithSummary("Get flow documentation.")
             .WithDescription("Returns flow descriptors mapped by descriptor name.")
             .WithName("GetFlowDocumentation")
-            .Produces(StatusCodes.Status200OK)
+            .Produces<FlowDescriptorsResponseDto>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
         }
 

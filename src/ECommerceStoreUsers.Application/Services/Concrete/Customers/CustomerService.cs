@@ -1,12 +1,13 @@
 ﻿using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Application.Descriptors.Customers;
+using ECommerceStoreUsers.Application.Services.Abstract.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using Microsoft.Extensions.Logging;
 
-namespace ECommerceStoreUsers.Application.Services.Customers
+namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 {
     internal sealed class CustomerService(
      ICustomerRepository customerRepository,
@@ -47,12 +48,12 @@ namespace ECommerceStoreUsers.Application.Services.Customers
             throw new NotImplementedException();
         }
 
-        public Task<CustomerResponseDto> AddCompany(string externalId, AddCompanyRequestDto request, CancellationToken cancellationToken)
+        public Task<CustomerResponseDto> AddCompany(Guid externalId, AddCompanyRequestDto request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CustomerResponseDto> UpdateCompany(string externalId, Guid companyId, UpdateCompanyRequestDto request, CancellationToken cancellationToken)
+        public Task<CustomerResponseDto> UpdateCompany(Guid externalId, Guid companyId, UpdateCompanyRequestDto request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

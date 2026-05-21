@@ -1,6 +1,9 @@
-﻿namespace ECommerceStoreUsers.Application.Services.Abstract.Customers
+﻿using ECommerceStoreUsers.Application.Common.FlowDescriptors;
+
+namespace ECommerceStoreUsers.Application.Services.Abstract.Customers
 {
-    internal interface ICustomerDescriptorService
+    public interface ICustomerDescriptorService
     {
+        FlowDescriptor GetCreateCustomerDescriptor();
     }
 }

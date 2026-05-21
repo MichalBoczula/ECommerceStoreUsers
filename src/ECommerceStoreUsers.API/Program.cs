@@ -39,6 +39,7 @@ namespace ECommerceStoreUsers.API
             app.UseSwaggerUi();
             app.UseHttpsRedirection();
             app.MapDocumentationEndpoints();
+            app.MapCustomersEndpoints();
             app.MapHealthChecks("/health");
 
             app.Run();

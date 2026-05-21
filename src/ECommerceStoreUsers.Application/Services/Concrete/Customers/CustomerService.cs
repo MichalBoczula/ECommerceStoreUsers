@@ -54,7 +54,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             return response;
         }
 
-        public async Task<CustomerResponseDto> UpdateIndividualData(Guid id, UpdateIndividualDataRequestDto request, CancellationToken cancellationToken)
+        public Task<CustomerResponseDto> UpdateIndividualData(Guid clientId, UpdateIndividualDataRequestDto request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Initiating update individual data flow for CustomerId: {CustomerId}", id);
 
@@ -78,12 +78,12 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             return response;
         }
 
-        public Task<CustomerResponseDto> AddCompany(Guid externalId, AddCompanyRequestDto request, CancellationToken cancellationToken)
+        public Task<CustomerResponseDto> AddCompany(Guid clientId, AddCompanyRequestDto request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<CustomerResponseDto> UpdateCompany(Guid externalId, Guid companyId, UpdateCompanyRequestDto request, CancellationToken cancellationToken)
+        public Task<CustomerResponseDto> UpdateCompany(Guid clientId, Guid companyId, UpdateCompanyRequestDto request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

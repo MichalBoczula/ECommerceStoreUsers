@@ -5,6 +5,7 @@ using ECommerceStoreUsers.Application.Services.Abstract.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
+using ECommerceStoreUsers.Domain.Validation.Common;
 using Microsoft.Extensions.Logging;
 
 namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
@@ -105,7 +106,34 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 
         public async Task<CustomerResponseDto> UpdateCompany(Guid clientId, Guid companyId, UpdateCompanyRequestDto request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation("Initiating update company flow for CustomerId: {CustomerId}, CompanyId: {CompanyId}", clientId, companyId);
+
+            if (companyId == Guid.Empty)
+            {
+                throw new ValidationException("companyId", "CompanyId cannot be empty.");
+            }
+
+            var descriptor = new UpdateCompanyDescriptor();
+
+            var customer = await descriptor.LoadCustomer(clientId, _customerRepository, cancellationToken);
+            descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);
+
+            var billingAddress = descriptor.MapAddress(request.BillingAddress);
+            var shippingAddress = descriptor.MapAddress(request.ShippingAddress);
+            var company = descriptor.LoadCompany(customer!, companyId);
+            descriptor.ThrowNotFoundExceptionIfCompanyMissing(companyId, company);
+            descriptor.UpdateCompanyInsideAggregate(company!, request, billingAddress, shippingAddress);
+
+            var validationResult = await descriptor.ValidateCustomer(customer!, _customerValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
+
+            var updatedCustomer = await descriptor.Save(customer!, _customerRepository, cancellationToken);
+
+            var response = descriptor.MapToResponse(updatedCustomer);
+
+            _logger.LogInformation("Successfully updated company data. CustomerId: {CustomerId}, CompanyId: {CompanyId}", clientId, companyId);
+
+            return response;
         }
     }
 }

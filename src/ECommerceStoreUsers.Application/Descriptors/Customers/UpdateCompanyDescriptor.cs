@@ -1,80 +1,87 @@
-﻿//using ECommerceStoreUsers.Application.Common.FlowDescriptors;
-//using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
-//using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
-//using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
-//using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
-//using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
-//using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
-//using ECommerceStoreUsers.Domain.Validation.Abstract;
-//using ECommerceStoreUsers.Domain.Validation.Common;
+﻿using ECommerceStoreUsers.Application.Common.FlowDescriptors;
+using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
+using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
+using ECommerceStoreUsers.Application.Mapping;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
+using ECommerceStoreUsers.Domain.Validation.Abstract;
+using ECommerceStoreUsers.Domain.Validation.Common;
 
-//namespace ECommerceStoreUsers.Application.Descriptors.Customers
-//{
-//    internal sealed record UpdateCompany;
+namespace ECommerceStoreUsers.Application.Descriptors.Customers
+{
+    internal sealed record UpdateCompany;
 
-//    internal sealed class UpdateCompanyDescriptor : FlowDescriberBase<UpdateCompany>
-//    {
-//        [FlowStep(order: 1, bpmnId: "ValidateCustomerId")]
-//        public async Task<ValidationResult> ValidateCustomerId(Guid id, IValidationPolicy<Guid> guidValidationPolicy)
-//        {
-//            return await guidValidationPolicy.Validate(id);
-//        }
+    internal sealed class UpdateCompanyDescriptor : FlowDescriberBase<UpdateCompany>
+    {
+        [FlowStep(order: 1, bpmnId: "LoadCustomerProfile")]
+        public async Task<Customer?> LoadCustomer(Guid customerId, ICustomerRepository customerRepository, CancellationToken cancellationToken)
+        {
+            return await customerRepository.GetByIdAsync(customerId, cancellationToken);
+        }
 
-//        [FlowStep(order: 2, bpmnId: "ValidateCompanyId")]
-//        public async Task<ValidationResult> ValidateCompanyId(Guid id, IValidationPolicy<Guid> guidValidationPolicy)
-//        {
-//            return await guidValidationPolicy.Validate(id);
-//        }
+        [FlowStep(order: 2, bpmnId: "VerifyCustomerExists")]
+        public void ThrowNotFoundExceptionIfCustomerMissing(Guid customerId, Customer? customer)
+        {
+            if (customer is null)
+            {
+                throw new ResourceNotFoundException(nameof(UpdateCompany), customerId.ToString(), nameof(Customer));
+            }
+        }
 
-//        [FlowStep(order: 3, bpmnId: "AreIdentifiersValid")]
-//        public void ThrowValidationExceptionIfIdentifiersInvalid(ValidationResult companyResult)
-//        {
-//            if (!companyResult.IsValid) throw new ValidationException(companyResult);
-//        }
+        [FlowStep(order: 3, bpmnId: "MapAddress")]
+        public Address MapAddress(AddressRequestDto address)
+        {
+            return MappingConfig.MapAddress(address);
+        }
 
-//        [FlowStep(order: 4, bpmnId: "LoadCustomerProfile")]
-//        public async Task<Customer?> LoadCustomer(string externalId, ICustomerRepository customerRepository, CancellationToken cancellationToken)
-//        {
-//            return await customerRepository.GetByExternalIdAsync(externalId, cancellationToken);
-//        }
+        [FlowStep(order: 4, bpmnId: "LoadCompanyFromAggregate")]
+        public CompanyData? LoadCompany(Customer customer, Guid companyId)
+        {
+            return customer.Companies.FirstOrDefault(x => x.Id == companyId);
+        }
 
-//        [FlowStep(order: 5, bpmnId: "VerifyCustomerExists")]
-//        public void ThrowNotFoundExceptionIfCustomerMissing(string externalId, Customer? customer)
-//        {
-//            if (customer is null)
-//            {
-//                throw new ResourceNotFoundException(nameof(LoadCustomer), externalId, nameof(Customer));
-//            }
-//        }
+        [FlowStep(order: 5, bpmnId: "VerifyCompanyExists")]
+        public void ThrowNotFoundExceptionIfCompanyMissing(Guid companyId, CompanyData? company)
+        {
+            if (company is null)
+            {
+                throw new ResourceNotFoundException(nameof(LoadCompany), companyId.ToString(), nameof(CompanyData));
+            }
+        }
 
-//        [FlowStep(order: 6, bpmnId: "MapAddress")]
-//        public Address MapAddress(AddressRequestDto addressDto)
-//        {
-//            return CustomerMappingDto.MapAddress(addressDto);
-//        }
+        [FlowStep(order: 6, bpmnId: "UpdateCompanyInsideAggregate")]
+        public void UpdateCompanyInsideAggregate(CompanyData company, UpdateCompanyRequestDto request, Address billing, Address shipping)
+        {
+            company.UpdateCompanyDetails(request.TaxId, request.CompanyName, billing, shipping);
+        }
 
-//        [FlowStep(order: 7, bpmnId: "UpdateCompanyInsideAggregate")]
-//        public void UpdateCompanyInsideAggregate(Customer customer, Guid companyId, string taxId, string companyName, Address billing, Address shipping)
-//        {
-//            var company = customer.Companies.FirstOrDefault(x => x.Id == companyId);
-//            if (company is null)
-//            {
-//                throw new ResourceNotFoundException(nameof(UpdateCompanyInsideAggregate), companyId, nameof(CompanyData));
-//            }
+        [FlowStep(order: 7, bpmnId: "ValidateCustomerAggregate")]
+        public async Task<ValidationResult> ValidateCustomer(Customer customer, IValidationPolicy<Customer> customerValidationPolicy)
+        {
+            return await customerValidationPolicy.Validate(customer);
+        }
 
-//            company.UpdateCompanyDetails(taxId, companyName, billing, shipping);
-//        }
+        [FlowStep(order: 8, bpmnId: "IsCustomerAggregateValid")]
+        public void ThrowValidationExceptionIfCustomerInvalid(ValidationResult validationResult)
+        {
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult);
+            }
+        }
 
-//        [FlowStep(order: 8, bpmnId: "SaveCustomer")]
-//        public async Task<Customer> SaveCustomer(Customer customer, ICustomerRepository customerRepository)
-//        {
-//            return await customerRepository.UpdateCustomer(customer);
-//        }
+        [FlowStep(order: 9, bpmnId: "SaveCustomer")]
+        public async Task<Customer> Save(Customer customer, ICustomerRepository customerRepository, CancellationToken cancellationToken)
+        {
+            return await customerRepository.UpdateCustomer(customer, cancellationToken);
+        }
 
-//        [FlowStep(order: 9, bpmnId: "MapCustomerResponse")]
-//        public CustomerResponseDto MapToResponse(Customer customer)
-//        {
-//            return CustomerMappingDto.MapToResponse(customer);
-//        }
-//    }
-//}
+        [FlowStep(order: 10, bpmnId: "MapCustomerResponse")]
+        public CustomerResponseDto MapToResponse(Customer customer)
+        {
+            return MappingConfig.MapToResponse(customer);
+        }
+    }
+}

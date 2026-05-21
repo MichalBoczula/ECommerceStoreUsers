@@ -29,5 +29,10 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var descriptor = new UpdateIndividualDataDescriptor();
             return descriptor.Describe();
         }
+        public FlowDescriptor GetUpdateCompanyDescriptor()
+        {
+            var descriptor = new UpdateCompanyDescriptor();
+            return descriptor.Describe();
+        }
     }
 }

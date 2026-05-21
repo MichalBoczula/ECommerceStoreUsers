@@ -6,6 +6,12 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 {
     internal class CustomerDescriptorService : ICustomerDescriptorService
     {
+        public FlowDescriptor GetAddCompanyDescriptor()
+        {
+            var descriptor = new AddCompanyDescriptor();
+            return descriptor.Describe();
+        }
+
         public FlowDescriptor GetCreateCustomerDescriptor()
         {
             var descriptor = new CreateCustomerDescriptor();

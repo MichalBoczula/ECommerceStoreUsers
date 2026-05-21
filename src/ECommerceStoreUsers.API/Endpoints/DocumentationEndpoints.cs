@@ -31,7 +31,8 @@ namespace ECommerceStoreUsers.API.Endpoints
                         {
                             [nameof(customerDescriptorService.GetCreateCustomerDescriptor)] = customerDescriptorService.GetCreateCustomerDescriptor(),
                             [nameof(customerDescriptorService.GetCustomerByExternalIdDescriptor)] = customerDescriptorService.GetCustomerByExternalIdDescriptor(),
-                            [nameof(customerDescriptorService.GetUpdateIndividualDataDescriptor)] = customerDescriptorService.GetUpdateIndividualDataDescriptor()
+                            [nameof(customerDescriptorService.GetUpdateIndividualDataDescriptor)] = customerDescriptorService.GetUpdateIndividualDataDescriptor(),
+                            [nameof(customerDescriptorService.GetAddCompanyDescriptor)] = customerDescriptorService.GetAddCompanyDescriptor()
                         },
                     ]
                 };

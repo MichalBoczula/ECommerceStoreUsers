@@ -80,7 +80,27 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 
         public async Task<CustomerResponseDto> AddCompany(Guid clientId, AddCompanyRequestDto request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation("Initiating add company flow for CustomerId: {CustomerId}", clientId);
+
+            var descriptor = new AddCompanyDescriptor();
+
+            var customer = await descriptor.LoadCustomer(clientId, _customerRepository, cancellationToken);
+            descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);
+
+            var billingAddress = descriptor.MapAddress(request.BillingAddress);
+            var shippingAddress = descriptor.MapAddress(request.ShippingAddress);
+            descriptor.AddCompanyToCustomer(customer!, request, billingAddress, shippingAddress);
+
+            var validationResult = await descriptor.ValidateCustomer(customer!, _customerValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
+
+            var updatedCustomer = await descriptor.Save(customer!, _customerRepository, cancellationToken);
+
+            var response = descriptor.MapToResponse(updatedCustomer);
+
+            _logger.LogInformation("Successfully added company data. CustomerId: {CustomerId}", clientId);
+
+            return response;
         }
 
         public async Task<CustomerResponseDto> UpdateCompany(Guid clientId, Guid companyId, UpdateCompanyRequestDto request, CancellationToken cancellationToken)

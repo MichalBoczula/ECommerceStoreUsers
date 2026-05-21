@@ -30,7 +30,8 @@ namespace ECommerceStoreUsers.API.Endpoints
                        new Dictionary<string, FlowDescriptor>
                         {
                             [nameof(customerDescriptorService.GetCreateCustomerDescriptor)] = customerDescriptorService.GetCreateCustomerDescriptor(),
-                            [nameof(customerDescriptorService.GetCustomerByExternalIdDescriptor)] = customerDescriptorService.GetCustomerByExternalIdDescriptor()
+                            [nameof(customerDescriptorService.GetCustomerByExternalIdDescriptor)] = customerDescriptorService.GetCustomerByExternalIdDescriptor(),
+                            [nameof(customerDescriptorService.GetUpdateIndividualDataDescriptor)] = customerDescriptorService.GetUpdateIndividualDataDescriptor()
                         },
                     ]
                 };

@@ -23,15 +23,14 @@ namespace ECommerceStoreUsers.API.Endpoints
         {
             group.MapGet("/flows", (ICustomerDescriptorService customerDescriptorService) =>
             {
-                var flowDescriptor = customerDescriptorService.GetCreateCustomerDescriptor();
-
                 var response = new FlowDescriptorsResponseDto
                 {
                     Flows =
                    [
                        new Dictionary<string, FlowDescriptor>
                         {
-                            [nameof(customerDescriptorService.GetCreateCustomerDescriptor)] = customerDescriptorService.GetCreateCustomerDescriptor()
+                            [nameof(customerDescriptorService.GetCreateCustomerDescriptor)] = customerDescriptorService.GetCreateCustomerDescriptor(),
+                            [nameof(customerDescriptorService.GetCustomerByExternalIdDescriptor)] = customerDescriptorService.GetCustomerByExternalIdDescriptor()
                         },
                     ]
                 };

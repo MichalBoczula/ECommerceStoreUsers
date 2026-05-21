@@ -5,5 +5,6 @@ namespace ECommerceStoreUsers.Application.Services.Abstract.Customers
     public interface ICustomerDescriptorService
     {
         FlowDescriptor GetCreateCustomerDescriptor();
+        FlowDescriptor GetCustomerByExternalIdDescriptor();
     }
 }

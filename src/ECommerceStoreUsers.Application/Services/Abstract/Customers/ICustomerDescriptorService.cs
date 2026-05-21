@@ -7,5 +7,6 @@ namespace ECommerceStoreUsers.Application.Services.Abstract.Customers
         FlowDescriptor GetCreateCustomerDescriptor();
         FlowDescriptor GetCustomerByExternalIdDescriptor();
         FlowDescriptor GetUpdateIndividualDataDescriptor();
+        FlowDescriptor GetAddCompanyDescriptor();
     }
 }

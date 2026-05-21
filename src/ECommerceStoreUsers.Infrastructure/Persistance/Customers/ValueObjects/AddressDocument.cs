@@ -6,6 +6,6 @@
         public required string City { get; init; }
         public required string Street { get; init; }
         public required string BuildingNumber { get; init; }
-        public required string ApartmentNumber { get; init; }
+        public required string? ApartmentNumber { get; init; }
     }
 }

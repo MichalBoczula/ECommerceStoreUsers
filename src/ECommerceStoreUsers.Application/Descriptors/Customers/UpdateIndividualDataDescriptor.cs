@@ -27,7 +27,7 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
             {
                 throw new ResourceNotFoundException(
                     nameof(UpdateIndividualData),
-                    customerId,
+                    customerId.ToString(),
                     nameof(Customer));
             }
         }

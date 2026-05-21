@@ -54,14 +54,14 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             return response;
         }
 
-        public Task<CustomerResponseDto> UpdateIndividualData(Guid clientId, UpdateIndividualDataRequestDto request, CancellationToken cancellationToken)
+        public async Task<CustomerResponseDto> UpdateIndividualData(Guid clientId, UpdateIndividualDataRequestDto request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Initiating update individual data flow for CustomerId: {CustomerId}", id);
+            logger.LogInformation("Initiating update individual data flow for CustomerId: {CustomerId}", clientId);
 
             var descriptor = new UpdateIndividualDataDescriptor();
 
-            var customer = await descriptor.LoadCustomer(id, customerRepository, cancellationToken);
-            descriptor.ThrowNotFoundExceptionIfCustomerMissing(id, customer);
+            var customer = await descriptor.LoadCustomer(clientId, customerRepository, cancellationToken);
+            descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);
 
             var individualData = descriptor.MapRequestToIndividualData(request);
             descriptor.UpdateCustomerIndividual(customer!, individualData);
@@ -73,7 +73,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 
             var response = descriptor.MapToResponse(updatedCustomer);
 
-            logger.LogInformation("Successfully updated individual data. CustomerId: {CustomerId}", id);
+            logger.LogInformation("Successfully updated individual data. CustomerId: {CustomerId}", clientId);
 
             return response;
         }

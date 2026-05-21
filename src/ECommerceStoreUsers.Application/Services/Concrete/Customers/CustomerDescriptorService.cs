@@ -18,10 +18,10 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             return descriptor.Describe();
         }
 
-        //public FlowDescriptor GetUpdateIndividualDataDescriptor()
-        //{
-        //    var descriptor = new UpdateIndividualDataDescriptor();
-        //    return descriptor.Describe();
-        //}
+        public FlowDescriptor GetUpdateIndividualDataDescriptor()
+        {
+            var descriptor = new UpdateIndividualDataDescriptor();
+            return descriptor.Describe();
+        }
     }
 }

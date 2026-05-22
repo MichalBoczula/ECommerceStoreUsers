@@ -13,6 +13,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
     internal sealed class CustomerService(
      ICustomerRepository _customerRepository,
      IValidationPolicy<Customer> _customerValidationPolicy,
+     IValidationPolicy<Guid> _emptyGuidValidationPolicy,
      ILogger<CustomerService> _logger)
      : ICustomerService
     {
@@ -61,6 +62,9 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 
             var descriptor = new UpdateIndividualDataDescriptor();
 
+            var customerIdValidationResult = await descriptor.ValidateCustomerId(clientId, _emptyGuidValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCustomerIdInvalid(customerIdValidationResult);
+
             var customer = await descriptor.LoadCustomer(clientId, _customerRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);
 
@@ -85,6 +89,9 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 
             var descriptor = new AddCompanyDescriptor();
 
+            var customerIdValidationResult = await descriptor.ValidateCustomerId(clientId, _emptyGuidValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCustomerIdInvalid(customerIdValidationResult);
+
             var customer = await descriptor.LoadCustomer(clientId, _customerRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);
 
@@ -108,20 +115,13 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
         {
             _logger.LogInformation("Initiating update company flow for CustomerId: {CustomerId}, CompanyId: {CompanyId}", clientId, companyId);
 
-            if (companyId == Guid.Empty)
-            {
-                var validationResult = new ValidationResult();
-                validationResult.AddValidationError(new ValidationError
-                {
-                    Name = "companyId",
-                    Message = "CompanyId cannot be empty.",
-                    Entity = "Company"
-                });
-
-                throw new ValidationException(validationResult);
-            }
-
             var descriptor = new UpdateCompanyDescriptor();
+
+            var customerIdValidationResult = await descriptor.ValidateCustomerId(clientId, _emptyGuidValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCustomerIdInvalid(customerIdValidationResult);
+
+            var companyIdValidationResult = await descriptor.ValidateCompanyId(companyId, _emptyGuidValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCompanyIdInvalid(companyIdValidationResult);
 
             var customer = await descriptor.LoadCustomer(clientId, _customerRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);

@@ -1,6 +1,7 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Common;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Employees.Admins;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,8 @@ namespace ECommerceStoreUsers.Domain
             services.AddScoped<IValidationPolicyDescriptorProvider, CustomerValidationPolicy>();
             services.AddScoped<IValidationPolicy<Admin>, AdminValidationPolicy>();
             services.AddScoped<IValidationPolicyDescriptorProvider, AdminValidationPolicy>();
+            services.AddScoped<IValidationPolicy<Guid>, EmptyGuidValidationPolicy>();
+            services.AddScoped<IValidationPolicyDescriptorProvider, EmptyGuidValidationPolicy>();
 
             return services;
         }

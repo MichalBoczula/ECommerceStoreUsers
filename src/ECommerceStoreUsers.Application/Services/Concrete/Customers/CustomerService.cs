@@ -110,7 +110,15 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 
             if (companyId == Guid.Empty)
             {
-                throw new ValidationException("companyId", "CompanyId cannot be empty.");
+                var validationResult = new ValidationResult();
+                validationResult.AddValidationError(new ValidationError
+                {
+                    Name = "companyId",
+                    Message = "CompanyId cannot be empty.",
+                    Entity = "Company"
+                });
+
+                throw new ValidationException(validationResult);
             }
 
             var descriptor = new UpdateCompanyDescriptor();

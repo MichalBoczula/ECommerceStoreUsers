@@ -25,6 +25,38 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Policies.Customers.Cus
         }
 
         [Fact]
+        public async Task Validate_CustomerWithEmptyGuidExternalId_ShouldReturnError()
+        {
+            // Arrange
+            var policy = new CustomerValidationPolicy();
+            var customer = CreateCustomer(Guid.Empty.ToString());
+
+            // Act
+            var result = await policy.Validate(customer);
+
+            // Assert
+            result.IsValid.ShouldBeFalse();
+            result.GetValidationErrors().Count.ShouldBe(1);
+            result.GetValidationErrors().ShouldContain(e => e.Name == "CustomerEmptyGuidValidationRule");
+        }
+
+        [Fact]
+        public async Task Validate_CustomerWithEmptyGuidClientId_ShouldReturnError()
+        {
+            // Arrange
+            var policy = new CustomerValidationPolicy();
+            var customer = CreateRehydratedCustomer(Guid.Empty, "EXT-123");
+
+            // Act
+            var result = await policy.Validate(customer);
+
+            // Assert
+            result.IsValid.ShouldBeFalse();
+            result.GetValidationErrors().Count.ShouldBe(1);
+            result.GetValidationErrors().ShouldContain(e => e.Name == "CustomerEmptyGuidValidationRule");
+        }
+
+        [Fact]
         public async Task Validate_CustomerIsValid_ShouldReturnNoErrors()
         {
             // Arrange
@@ -37,6 +69,7 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Policies.Customers.Cus
             // Assert
             result.IsValid.ShouldBeTrue();
             result.GetValidationErrors().Count.ShouldBe(0);
+            result.GetValidationErrors().ShouldBeEmpty();
         }
 
         private static Customer CreateCustomer(string externalId)
@@ -44,6 +77,13 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Policies.Customers.Cus
             var address = new Address("00-001", "Warsaw", "Main", "10", "2");
             var individualData = new IndividualData("John", "Doe", "john@example.com", "123456789", address, address);
             return new Customer(externalId, individualData);
+        }
+
+        private static Customer CreateRehydratedCustomer(Guid id, string externalId)
+        {
+            var address = new Address("00-001", "Warsaw", "Main", "10", "2");
+            var individualData = new IndividualData("John", "Doe", "john@example.com", "123456789", address, address);
+            return Customer.Rehydrate(id, externalId, individualData, new List<CompanyData>());
         }
     }
 }

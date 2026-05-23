@@ -3,6 +3,7 @@ using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Application.Descriptors.Customers;
 using ECommerceStoreUsers.Application.Services.Abstract.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
@@ -13,6 +14,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
     internal sealed class CustomerService(
      ICustomerRepository _customerRepository,
      IValidationPolicy<Customer> _customerValidationPolicy,
+     IValidationPolicy<IndividualData> _individualDataValidationPolicy,
      IValidationPolicy<Guid> _emptyGuidValidationPolicy,
      ILogger<CustomerService> _logger)
      : ICustomerService
@@ -71,8 +73,8 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var individualData = descriptor.MapRequestToIndividualData(request);
             descriptor.UpdateCustomerIndividual(customer!, individualData);
 
-            var validationResult = await descriptor.ValidateCustomer(customer!, _customerValidationPolicy);
-            descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
+            var validationResult = await descriptor.ValidateIndividualData(individualData, _individualDataValidationPolicy);
+            descriptor.ThrowValidationExceptionIfIndividualDataInvalid(validationResult);
 
             var updatedCustomer = await descriptor.Save(customer!, _customerRepository, cancellationToken);
 

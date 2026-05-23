@@ -1,4 +1,5 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Common;
@@ -15,6 +16,8 @@ namespace ECommerceStoreUsers.Domain
         {
             services.AddScoped<IValidationPolicy<Customer>, CustomerValidationPolicy>();
             services.AddScoped<IValidationPolicyDescriptorProvider, CustomerValidationPolicy>();
+            services.AddScoped<IValidationPolicy<IndividualData>, IndividualDataValidationPolicy>();
+            services.AddScoped<IValidationPolicyDescriptorProvider, IndividualDataValidationPolicy>();
             services.AddScoped<IValidationPolicy<Admin>, AdminValidationPolicy>();
             services.AddScoped<IValidationPolicyDescriptorProvider, AdminValidationPolicy>();
             services.AddScoped<IValidationPolicy<Guid>, EmptyGuidValidationPolicy>();

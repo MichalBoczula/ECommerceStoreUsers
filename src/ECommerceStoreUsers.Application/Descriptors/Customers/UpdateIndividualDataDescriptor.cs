@@ -59,14 +59,14 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
             customer.UpdateIndividualData(individualData);
         }
 
-        [FlowStep(order: 7, bpmnId: "ValidateCustomerAggregate")]
-        public async Task<ValidationResult> ValidateCustomer(Customer customer, IValidationPolicy<Customer> customerValidationPolicy)
+        [FlowStep(order: 7, bpmnId: "ValidateIndividualData")]
+        public async Task<ValidationResult> ValidateIndividualData(IndividualData individualData, IValidationPolicy<IndividualData> individualDataValidationPolicy)
         {
-            return await customerValidationPolicy.Validate(customer);
+            return await individualDataValidationPolicy.Validate(individualData);
         }
 
-        [FlowStep(order: 8, bpmnId: "IsCustomerAggregateValid")]
-        public void ThrowValidationExceptionIfCustomerInvalid(ValidationResult validationResult)
+        [FlowStep(order: 8, bpmnId: "IsIndividualDataValid")]
+        public void ThrowValidationExceptionIfIndividualDataInvalid(ValidationResult validationResult)
         {
             if (!validationResult.IsValid)
             {

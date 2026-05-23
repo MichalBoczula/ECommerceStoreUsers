@@ -4,7 +4,7 @@ using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualDatas;
 using Shouldly;
 
-namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entities.IndividualDatas
+namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Common.IndividualDatas
 {
     public class IndividualDataPhoneValidationRuleTests
     {

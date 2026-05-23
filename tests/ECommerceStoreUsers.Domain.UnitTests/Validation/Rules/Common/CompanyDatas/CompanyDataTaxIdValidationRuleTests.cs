@@ -4,7 +4,7 @@ using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.CompanyDatas;
 using Shouldly;
 
-namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Entities.CompanyDatas
+namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Common.CompanyDatas
 {
     public class CompanyDataTaxIdValidationRuleTests
     {

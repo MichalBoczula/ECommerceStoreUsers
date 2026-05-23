@@ -15,6 +15,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
      ICustomerRepository _customerRepository,
      IValidationPolicy<Customer> _customerValidationPolicy,
      IValidationPolicy<IndividualData> _individualDataValidationPolicy,
+     IValidationPolicy<CompanyData> _companyValidationPolicy,
      IValidationPolicy<Guid> _emptyGuidValidationPolicy,
      ILogger<CustomerService> _logger)
      : ICustomerService
@@ -101,8 +102,10 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var shippingAddress = descriptor.MapAddress(request.ShippingAddress);
             descriptor.AddCompanyToCustomer(customer!, request, billingAddress, shippingAddress);
 
-            var validationResult = await descriptor.ValidateCustomer(customer!, _customerValidationPolicy);
-            descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
+            var company = customer!.Companies.Last();
+
+            var validationResult = await descriptor.ValidateCompany(company, _companyValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCompanyInvalid(validationResult);
 
             var updatedCustomer = await descriptor.Save(customer!, _customerRepository, cancellationToken);
 
@@ -134,8 +137,8 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             descriptor.ThrowNotFoundExceptionIfCompanyMissing(companyId, company);
             descriptor.UpdateCompanyInsideAggregate(company!, request, billingAddress, shippingAddress);
 
-            var validationResult = await descriptor.ValidateCustomer(customer!, _customerValidationPolicy);
-            descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
+            var validationResult = await descriptor.ValidateCompany(company!, _companyValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCompanyInvalid(validationResult);
 
             var updatedCustomer = await descriptor.Save(customer!, _customerRepository, cancellationToken);
 

@@ -18,6 +18,8 @@ namespace ECommerceStoreUsers.Domain
             services.AddScoped<IValidationPolicyDescriptorProvider, CustomerValidationPolicy>();
             services.AddScoped<IValidationPolicy<IndividualData>, IndividualDataValidationPolicy>();
             services.AddScoped<IValidationPolicyDescriptorProvider, IndividualDataValidationPolicy>();
+            services.AddScoped<IValidationPolicy<CompanyData>, CompanyValidationPolicy>();
+            services.AddScoped<IValidationPolicyDescriptorProvider, CompanyValidationPolicy>();
             services.AddScoped<IValidationPolicy<Admin>, AdminValidationPolicy>();
             services.AddScoped<IValidationPolicyDescriptorProvider, AdminValidationPolicy>();
             services.AddScoped<IValidationPolicy<Guid>, EmptyGuidValidationPolicy>();

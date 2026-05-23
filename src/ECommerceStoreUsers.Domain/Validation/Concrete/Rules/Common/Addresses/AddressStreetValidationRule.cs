@@ -2,7 +2,7 @@
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
-namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Addresses
+namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Addresses
 {
     internal sealed class AddressStreetValidationRule : IValidationRule<Address>
     {

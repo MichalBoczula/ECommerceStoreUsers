@@ -3,7 +3,7 @@ using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
-namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.CompanyDatas
+namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDatas
 {
     internal sealed class CompanyDataTaxIdValidationRule : IValidationRule<CompanyData>
     {

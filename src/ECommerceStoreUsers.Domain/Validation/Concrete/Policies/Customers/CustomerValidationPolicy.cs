@@ -3,10 +3,10 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Addresses;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Addresses;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDatas;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.IndividualDatas;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Customers;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.CompanyDatas;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualDatas;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers;
 

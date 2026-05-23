@@ -3,7 +3,7 @@ using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
-namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualDatas
+namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.IndividualDatas
 {
     internal sealed class IndividualDataLastNameValidationRule : IValidationRule<IndividualData>
     {

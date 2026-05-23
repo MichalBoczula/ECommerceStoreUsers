@@ -1,7 +1,7 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.Validation.Common;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.IndividualDatas;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.IndividualDatas;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Common.IndividualDatas

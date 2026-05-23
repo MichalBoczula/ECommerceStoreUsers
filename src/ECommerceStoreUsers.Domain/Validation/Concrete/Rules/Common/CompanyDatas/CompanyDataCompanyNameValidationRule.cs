@@ -2,7 +2,7 @@
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
-namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Entities.CompanyDatas
+namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDatas
 {
     internal sealed class CompanyDataCompanyNameValidationRule : IValidationRule<CompanyData>
     {

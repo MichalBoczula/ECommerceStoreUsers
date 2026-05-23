@@ -1,6 +1,6 @@
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.Validation.Common;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Addresses;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Addresses;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Addresses

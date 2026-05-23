@@ -5,7 +5,7 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace ECommerceStoreUsers.Application.UnitTests.Services;
@@ -24,7 +24,7 @@ public sealed class CustomerServiceTests
         var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
         var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
         var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
-        var logger = NullLogger<CustomerService>.Instance;
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
 
         customerValidationPolicyMock
             .Setup(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == request.ExternalId)))
@@ -44,7 +44,7 @@ public sealed class CustomerServiceTests
             individualValidationPolicyMock.Object,
             companyValidationPolicyMock.Object,
             emptyGuidValidationPolicyMock.Object,
-            logger);
+            loggerMock.Object);
 
         var result = await sut.CreateCustomer(request, cancellationToken);
 
@@ -76,7 +76,7 @@ public sealed class CustomerServiceTests
         var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
         var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
         var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
-        var logger = NullLogger<CustomerService>.Instance;
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
 
         customerValidationPolicyMock
             .Setup(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == request.ExternalId)))
@@ -92,10 +92,12 @@ public sealed class CustomerServiceTests
             individualValidationPolicyMock.Object,
             companyValidationPolicyMock.Object,
             emptyGuidValidationPolicyMock.Object,
-            logger);
+            loggerMock.Object);
 
         await Assert.ThrowsAsync<ResourceAlreadyExistsException>(() => sut.CreateCustomer(request, cancellationToken));
 
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Customer>()), Times.Once);
+        customerRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(request.ExternalId, cancellationToken), Times.Once);
         customerRepositoryMock.Verify(repo => repo.CreateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -116,7 +118,7 @@ public sealed class CustomerServiceTests
         var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
         var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
         var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
-        var logger = NullLogger<CustomerService>.Instance;
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
 
         customerValidationPolicyMock
             .Setup(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == request.ExternalId)))
@@ -128,10 +130,11 @@ public sealed class CustomerServiceTests
             individualValidationPolicyMock.Object,
             companyValidationPolicyMock.Object,
             emptyGuidValidationPolicyMock.Object,
-            logger);
+            loggerMock.Object);
 
         await Assert.ThrowsAsync<ValidationException>(() => sut.CreateCustomer(request, CancellationToken.None));
 
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Customer>()), Times.Once);
         customerRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
         customerRepositoryMock.Verify(repo => repo.CreateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
     }

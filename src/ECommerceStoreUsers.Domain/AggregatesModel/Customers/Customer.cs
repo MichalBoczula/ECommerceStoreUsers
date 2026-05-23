@@ -28,9 +28,6 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers
 
         public void AddCompany(string name, string taxId, Address billing, Address shipping)
         {
-            if (_companies.Any(x => x.TaxId == taxId))
-                throw new InvalidOperationException("Firma o tym NIP jest już zarejestrowana.");
-
             _companies.Add(new CompanyData(taxId, name, billing, shipping));
             UpdatedAt = DateTime.UtcNow;
         }

@@ -47,7 +47,7 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
                 companies);
         }
 
-        private static IndividualDataDocument MapIndividualToDocument(IndividualData individual)
+        internal static IndividualDataDocument MapIndividualToDocument(IndividualData individual)
         {
             return new IndividualDataDocument
             {
@@ -60,7 +60,7 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
             };
         }
 
-        private static CompanyDataDocument MapCompanyToDocument(CompanyData company)
+        internal static CompanyDataDocument MapCompanyToDocument(CompanyData company)
         {
             return new CompanyDataDocument
             {
@@ -71,7 +71,7 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
             };
         }
 
-        private static AddressDocument MapAddressToDocument(Address address)
+        internal static AddressDocument MapAddressToDocument(Address address)
         {
             return new AddressDocument
             {
@@ -83,7 +83,7 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
             };
         }
 
-        private static Address MapAddressToDomain(AddressDocument doc)
+        internal static Address MapAddressToDomain(AddressDocument doc)
         {
             return new Address(
                 doc.PostalCode,

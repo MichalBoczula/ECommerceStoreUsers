@@ -8,13 +8,13 @@ namespace ECommerceStoreUsers.Application.Mapping;
 
 internal static class MappingConfig
 {
-    public static Customer MapToDomain(CreateCustomerRequestDto request)
+    internal static Customer MapToDomain(CreateCustomerRequestDto request)
     {
         var individualData = MapToDomain(request.Individual);
         return new Customer(request.ExternalId, individualData);
     }
 
-    public static IndividualData MapToDomain(IndividualDataRequestDto dto)
+    internal static IndividualData MapToDomain(IndividualDataRequestDto dto)
     {
         return new IndividualData(
             dto.FirstName,
@@ -26,7 +26,7 @@ internal static class MappingConfig
         );
     }
 
-    public static Address MapAddress(AddressRequestDto dto)
+    internal static Address MapAddress(AddressRequestDto dto)
     {
         return new Address(
             dto.PostalCode,
@@ -37,7 +37,7 @@ internal static class MappingConfig
         );
     }
 
-    public static CustomerResponseDto MapToResponse(Customer customer)
+    internal static CustomerResponseDto MapToResponse(Customer customer)
     {
         return new CustomerResponseDto
         {
@@ -49,7 +49,7 @@ internal static class MappingConfig
         };
     }
 
-    public static IndividualDataResponseDto MapToResponse(IndividualData individual)
+    internal static IndividualDataResponseDto MapToResponse(IndividualData individual)
     {
         return new IndividualDataResponseDto
         {
@@ -62,7 +62,7 @@ internal static class MappingConfig
         };
     }
 
-    public static CompanyDataResponseDto MapToResponse(CompanyData company)
+    internal static CompanyDataResponseDto MapToResponse(CompanyData company)
     {
         return new CompanyDataResponseDto
         {
@@ -74,7 +74,7 @@ internal static class MappingConfig
         };
     }
 
-    public static AddressResponseDto MapToResponse(Address address)
+    internal static AddressResponseDto MapToResponse(Address address)
     {
         return new AddressResponseDto
         {

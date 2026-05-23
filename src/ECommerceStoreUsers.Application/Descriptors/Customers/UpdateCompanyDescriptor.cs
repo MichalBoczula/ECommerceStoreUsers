@@ -87,14 +87,14 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
             company.UpdateCompanyDetails(request.TaxId, request.CompanyName, billing, shipping);
         }
 
-        [FlowStep(order: 11, bpmnId: "ValidateCustomerAggregate")]
-        public async Task<ValidationResult> ValidateCustomer(Customer customer, IValidationPolicy<Customer> customerValidationPolicy)
+        [FlowStep(order: 11, bpmnId: "ValidateCompanyData")]
+        public async Task<ValidationResult> ValidateCompany(CompanyData company, IValidationPolicy<CompanyData> companyValidationPolicy)
         {
-            return await customerValidationPolicy.Validate(customer);
+            return await companyValidationPolicy.Validate(company);
         }
 
-        [FlowStep(order: 12, bpmnId: "IsCustomerAggregateValid")]
-        public void ThrowValidationExceptionIfCustomerInvalid(ValidationResult validationResult)
+        [FlowStep(order: 12, bpmnId: "IsCompanyDataValid")]
+        public void ThrowValidationExceptionIfCompanyInvalid(ValidationResult validationResult)
         {
             if (!validationResult.IsValid)
             {

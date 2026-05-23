@@ -3,6 +3,7 @@ using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Application.Mapping;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
@@ -59,14 +60,14 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
             customer.AddCompany(request.CompanyName, request.TaxId, billing, shipping);
         }
 
-        [FlowStep(order: 7, bpmnId: "ValidateCustomerAggregate")]
-        public async Task<ValidationResult> ValidateCustomer(Customer customer, IValidationPolicy<Customer> customerValidationPolicy)
+        [FlowStep(order: 7, bpmnId: "ValidateCompanyData")]
+        public async Task<ValidationResult> ValidateCompany(CompanyData company, IValidationPolicy<CompanyData> companyValidationPolicy)
         {
-            return await customerValidationPolicy.Validate(customer);
+            return await companyValidationPolicy.Validate(company);
         }
 
-        [FlowStep(order: 8, bpmnId: "IsCustomerAggregateValid")]
-        public void ThrowValidationExceptionIfCustomerInvalid(ValidationResult validationResult)
+        [FlowStep(order: 8, bpmnId: "IsCompanyDataValid")]
+        public void ThrowValidationExceptionIfCompanyInvalid(ValidationResult validationResult)
         {
             if (!validationResult.IsValid)
             {

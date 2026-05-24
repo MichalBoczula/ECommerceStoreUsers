@@ -14,7 +14,8 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Admins
 
         public FlowDescriptor GetCreateAdminDescriptor()
         {
-            throw new NotImplementedException();
+            var descriptor = new CreateAdminDescriptor();
+            return descriptor.Describe();
         }
 
         public FlowDescriptor GetUpdateAdminProfileDescriptor()

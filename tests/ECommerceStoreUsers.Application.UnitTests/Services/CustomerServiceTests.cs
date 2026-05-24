@@ -456,9 +456,9 @@ public sealed class CustomerServiceTests
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(customer.Id);
-        result.Companies.Count.ShouldBe(1);
-        result.Companies[0].CompanyName.ShouldBe(request.CompanyName);
-        result.Companies[0].TaxId.ShouldBe(request.TaxId);
+        var company = result.Companies.ShouldHaveSingleItem();
+        company.CompanyName.ShouldBe(request.CompanyName);
+        company.TaxId.ShouldBe(request.TaxId);
 
         emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
         customerRepositoryMock.Verify(repo => repo.GetByIdAsync(clientId, cancellationToken), Times.Once);

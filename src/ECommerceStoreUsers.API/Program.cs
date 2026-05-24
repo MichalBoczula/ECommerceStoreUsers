@@ -40,6 +40,7 @@ namespace ECommerceStoreUsers.API
             app.UseHttpsRedirection();
             app.MapDocumentationEndpoints();
             app.MapCustomersEndpoints();
+            app.MapAdminsEndpoints();
             app.MapHealthChecks("/health");
 
             app.Run();

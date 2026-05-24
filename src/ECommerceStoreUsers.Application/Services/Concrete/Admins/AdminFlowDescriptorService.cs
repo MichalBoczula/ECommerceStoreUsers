@@ -1,4 +1,5 @@
 ﻿using ECommerceStoreUsers.Application.Common.FlowDescriptors;
+using ECommerceStoreUsers.Application.Descriptors.Admins;
 using ECommerceStoreUsers.Application.Services.Abstract.Admins;
 
 namespace ECommerceStoreUsers.Application.Services.Concrete.Admins
@@ -7,7 +8,8 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Admins
     {
         public FlowDescriptor GetGetAdminByExternalIdDescriptor()
         {
-            throw new NotImplementedException();
+            var descriptor = new GetAdminByExternalIdDescriptor();
+            return descriptor.Describe();
         }
 
         public FlowDescriptor GetCreateAdminDescriptor()

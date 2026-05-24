@@ -566,11 +566,11 @@ public sealed class CustomerServiceTests
             new Domain.AggregatesModel.Customers.ValueObjects.Address("00-111", "City", "Street", "1", "2"),
             new Domain.AggregatesModel.Customers.ValueObjects.Address("00-222", "City2", "Street2", "2", null)));
 
-        customer.AddCompany(new CompanyData(
-            "0987654321",
+        customer.AddCompany(
             "Old Company",
+            "0987654321",
             new Domain.AggregatesModel.Customers.ValueObjects.Address("11-111", "OldCity", "OldStreet", "8", "9"),
-            new Domain.AggregatesModel.Customers.ValueObjects.Address("22-222", "OldCity2", "OldStreet2", "10", null)));
+            new Domain.AggregatesModel.Customers.ValueObjects.Address("22-222", "OldCity2", "OldStreet2", "10", null));
 
         var companyId = customer.Companies.Single().Id;
 

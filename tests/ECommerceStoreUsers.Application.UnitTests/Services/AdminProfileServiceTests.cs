@@ -6,6 +6,7 @@ using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Shouldly;
 
 namespace ECommerceStoreUsers.Application.UnitTests.Services;
 
@@ -239,6 +240,98 @@ public sealed class AdminProfileServiceTests
         adminRepositoryMock.Verify(repo => repo.GetByIdAsync(adminId, cancellationToken), Times.Once);
         adminValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Admin>()), Times.Never);
         adminRepositoryMock.Verify(repo => repo.UpdateAdmin(It.IsAny<Admin>(), cancellationToken), Times.Never);
+    }
+
+    [Fact]
+    public async Task GetAdminByExternalId_WhenAdminExists_ShouldReturnAdminResponse()
+    {
+        var request = CreateAdminRequest();
+        var cancellationToken = CancellationToken.None;
+        var admin = new Admin(request.ExternalId, request.FullName, request.Email);
+
+        var adminRepositoryMock = new Mock<IAdminRepository>(MockBehavior.Strict);
+        var adminValidationPolicyMock = new Mock<IValidationPolicy<Admin>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<AdminProfileService>>(MockBehavior.Loose);
+
+        adminRepositoryMock
+            .Setup(repo => repo.GetByExternalIdAsync(request.ExternalId, cancellationToken))
+            .ReturnsAsync(admin);
+
+        var sut = new AdminProfileService(
+            adminRepositoryMock.Object,
+            adminValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        var result = await sut.GetAdminByExternalId(request.ExternalId, cancellationToken);
+
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(admin.Id);
+        result.ExternalId.ShouldBe(request.ExternalId);
+        result.FullName.ShouldBe(request.FullName);
+        result.Email.ShouldBe(request.Email);
+
+        adminRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(request.ExternalId, cancellationToken), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetAdminByExternalId_WhenAdminDoesNotExist_ShouldThrowResourceNotFoundException()
+    {
+        var externalId = "missing-admin-ext-id";
+        var cancellationToken = CancellationToken.None;
+
+        var adminRepositoryMock = new Mock<IAdminRepository>(MockBehavior.Strict);
+        var adminValidationPolicyMock = new Mock<IValidationPolicy<Admin>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<AdminProfileService>>(MockBehavior.Loose);
+
+        adminRepositoryMock
+            .Setup(repo => repo.GetByExternalIdAsync(externalId, cancellationToken))
+            .ReturnsAsync((Admin?)null);
+
+        var sut = new AdminProfileService(
+            adminRepositoryMock.Object,
+            adminValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        await Should.ThrowAsync<ResourceNotFoundException>(() => sut.GetAdminByExternalId(externalId, cancellationToken));
+
+        adminRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(externalId, cancellationToken), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetAdminByExternalId_WhenLoadFailsValidation_ShouldPropagateValidationException()
+    {
+        var externalId = string.Empty;
+        var cancellationToken = CancellationToken.None;
+        var invalidResult = new ValidationResult();
+        invalidResult.AddValidationError(new ValidationError
+        {
+            Entity = nameof(Admin),
+            Name = "ExternalId",
+            Message = "ExternalId is required"
+        });
+
+        var adminRepositoryMock = new Mock<IAdminRepository>(MockBehavior.Strict);
+        var adminValidationPolicyMock = new Mock<IValidationPolicy<Admin>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<AdminProfileService>>(MockBehavior.Loose);
+
+        adminRepositoryMock
+            .Setup(repo => repo.GetByExternalIdAsync(externalId, cancellationToken))
+            .ThrowsAsync(new ValidationException(invalidResult));
+
+        var sut = new AdminProfileService(
+            adminRepositoryMock.Object,
+            adminValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        await Should.ThrowAsync<ValidationException>(() => sut.GetAdminByExternalId(externalId, cancellationToken));
+
+        adminRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(externalId, cancellationToken), Times.Once);
     }
 
     private static CreateAdminRequestDto CreateAdminRequest()

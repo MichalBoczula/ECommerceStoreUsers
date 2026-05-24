@@ -20,7 +20,8 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Admins
 
         public FlowDescriptor GetUpdateAdminProfileDescriptor()
         {
-            throw new NotImplementedException();
+            var descriptor = new UpdateAdminProfileDescriptor();
+            return descriptor.Describe();
         }
     }
 }

@@ -12,6 +12,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Admins
     internal class AdminProfileService(
         IAdminRepository _adminRepository,
         IValidationPolicy<Admin> _adminValidationPolicy,
+        IValidationPolicy<Guid> _emptyGuidValidationPolicy,
         ILogger<AdminProfileService> _logger) : IAdminProfileService
     {
         public async Task<AdminResponseDto> GetAdminByExternalId(string externalId, CancellationToken cancellationToken)
@@ -53,9 +54,30 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Admins
             return response;
         }
 
-        public Task<AdminResponseDto> UpdateAdminProfile(Guid adminId, UpdateAdminProfileRequestDto request, CancellationToken cancellationToken)
+        public async Task<AdminResponseDto> UpdateAdminProfile(Guid adminId, UpdateAdminProfileRequestDto request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            _logger.LogInformation("Initiating admin profile update flow for AdminId: {AdminId}", adminId);
+
+            var descriptor = new UpdateAdminProfileDescriptor();
+
+            var adminIdValidationResult = await descriptor.ValidateAdminId(adminId, _emptyGuidValidationPolicy);
+            descriptor.ThrowValidationExceptionIfAdminIdInvalid(adminIdValidationResult);
+
+            var admin = await descriptor.LoadAdmin(adminId, _adminRepository, cancellationToken);
+            descriptor.ThrowNotFoundExceptionIfAdminMissing(adminId, admin);
+
+            var updatedAdminModel = descriptor.MapRequestToAggregate(admin!, request);
+
+            var validationResult = await descriptor.ValidateAdmin(updatedAdminModel, _adminValidationPolicy);
+            descriptor.ThrowValidationExceptionIfAdminInvalid(validationResult);
+
+            var updatedAdmin = await descriptor.Save(updatedAdminModel, _adminRepository, cancellationToken);
+
+            var response = descriptor.MapToResponse(updatedAdmin);
+
+            _logger.LogInformation("Successfully updated admin profile. AdminId: {AdminId}", adminId);
+
+            return response;
         }
     }
 }

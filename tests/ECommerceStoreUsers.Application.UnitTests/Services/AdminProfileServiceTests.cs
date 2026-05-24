@@ -128,9 +128,7 @@ public sealed class AdminProfileServiceTests
         var request = CreateUpdateAdminProfileRequest();
         var validationResult = new ValidationResult();
         var cancellationToken = CancellationToken.None;
-
         var existingAdmin = new Admin("admin-ext-123", "Old Name", "old.email@example.com");
-
         var adminRepositoryMock = new Mock<IAdminRepository>(MockBehavior.Strict);
         var adminValidationPolicyMock = new Mock<IValidationPolicy<Admin>>(MockBehavior.Strict);
         var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
@@ -208,14 +206,12 @@ public sealed class AdminProfileServiceTests
     }
 
     [Fact]
-    public async Task UpdateAdminProfile_WhenRepositoryThrowsResourceAlreadyExists_ShouldPropagateResourceAlreadyExistsException()
+    public async Task UpdateAdminProfile_WhenAdminDoesNotExist_ShouldThrowResourceNotFoundException()
     {
         var adminId = Guid.NewGuid();
         var request = CreateUpdateAdminProfileRequest();
         var validationResult = new ValidationResult();
         var cancellationToken = CancellationToken.None;
-
-        var existingAdmin = new Admin("admin-ext-123", "Old Name", "old.email@example.com");
 
         var adminRepositoryMock = new Mock<IAdminRepository>(MockBehavior.Strict);
         var adminValidationPolicyMock = new Mock<IValidationPolicy<Admin>>(MockBehavior.Strict);
@@ -228,15 +224,8 @@ public sealed class AdminProfileServiceTests
 
         adminRepositoryMock
             .Setup(repo => repo.GetByIdAsync(adminId, cancellationToken))
-            .ReturnsAsync(Admin.Rehydrate(adminId, existingAdmin.ExternalId, existingAdmin.FullName, existingAdmin.Email, existingAdmin.IsActive, existingAdmin.LastLoginAt));
+            .ReturnsAsync((Admin?)null);
 
-        adminValidationPolicyMock
-            .Setup(policy => policy.Validate(It.Is<Admin>(a => a.Id == adminId && a.FullName == request.FullName && a.Email == request.Email)))
-            .ReturnsAsync(validationResult);
-
-        adminRepositoryMock
-            .Setup(repo => repo.UpdateAdmin(It.IsAny<Admin>(), cancellationToken))
-            .ThrowsAsync(new ResourceAlreadyExistsException(nameof(Admin), request.Email, nameof(Admin)));
 
         var sut = new AdminProfileService(
             adminRepositoryMock.Object,
@@ -244,12 +233,12 @@ public sealed class AdminProfileServiceTests
             emptyGuidValidationPolicyMock.Object,
             loggerMock.Object);
 
-        await Assert.ThrowsAsync<ResourceAlreadyExistsException>(() => sut.UpdateAdminProfile(adminId, request, cancellationToken));
+        await Assert.ThrowsAsync<ResourceNotFoundException>(() => sut.UpdateAdminProfile(adminId, request, cancellationToken));
 
         emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(adminId), Times.Once);
         adminRepositoryMock.Verify(repo => repo.GetByIdAsync(adminId, cancellationToken), Times.Once);
-        adminValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Admin>()), Times.Once);
-        adminRepositoryMock.Verify(repo => repo.UpdateAdmin(It.IsAny<Admin>(), cancellationToken), Times.Once);
+        adminValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Admin>()), Times.Never);
+        adminRepositoryMock.Verify(repo => repo.UpdateAdmin(It.IsAny<Admin>(), cancellationToken), Times.Never);
     }
 
     private static CreateAdminRequestDto CreateAdminRequest()

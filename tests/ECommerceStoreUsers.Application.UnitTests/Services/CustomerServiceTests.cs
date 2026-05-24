@@ -554,7 +554,6 @@ public sealed class CustomerServiceTests
     public async Task UpdateCompany_WhenRequestIsValid_ShouldUpdateCompanyAndReturnCustomerResponse()
     {
         var clientId = Guid.NewGuid();
-        var companyId = Guid.NewGuid();
         var request = CreateUpdateCompanyRequest();
         var validationResult = new ValidationResult();
         var cancellationToken = CancellationToken.None;
@@ -568,11 +567,12 @@ public sealed class CustomerServiceTests
             new Domain.AggregatesModel.Customers.ValueObjects.Address("00-222", "City2", "Street2", "2", null)));
 
         customer.AddCompany(new CompanyData(
-            companyId,
-            "Old Company",
             "0987654321",
+            "Old Company",
             new Domain.AggregatesModel.Customers.ValueObjects.Address("11-111", "OldCity", "OldStreet", "8", "9"),
             new Domain.AggregatesModel.Customers.ValueObjects.Address("22-222", "OldCity2", "OldStreet2", "10", null)));
+
+        var companyId = customer.Companies.Single().Id;
 
         var customerRepositoryMock = new Mock<ICustomerRepository>(MockBehavior.Strict);
         var customerValidationPolicyMock = new Mock<IValidationPolicy<Customer>>(MockBehavior.Strict);
@@ -620,7 +620,8 @@ public sealed class CustomerServiceTests
 
         result.ShouldNotBeNull();
         result.Id.ShouldBe(customer.Id);
-        var company = result.Companies.ShouldContain(c => c.Id == companyId);
+        result.Companies.ShouldContain(c => c.Id == companyId);
+        var company = result.Companies.Single(c => c.Id == companyId);
         company.CompanyName.ShouldBe(request.CompanyName);
         company.TaxId.ShouldBe(request.TaxId);
 

@@ -1,4 +1,5 @@
 ﻿using ECommerceStoreUsers.Infrastructure.Configuration;
+using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -32,5 +33,8 @@ namespace ECommerceStoreUsers.Infrastructure.Context
 
         public IMongoCollection<CustomerDocument> Customers =>
             _database.GetCollection<CustomerDocument>(_settings.CustomerCollectionName);
+
+        public IMongoCollection<AdminDocument> Admins =>
+           _database.GetCollection<AdminDocument>(_settings.AdminCollectionName);
     }
 }

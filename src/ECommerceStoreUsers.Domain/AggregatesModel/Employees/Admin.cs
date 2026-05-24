@@ -37,7 +37,6 @@
 
         public void RecordLogin()
         {
-            if (!IsActive) throw new InvalidOperationException("Cannot record login for inactive admin.");
             LastLoginAt = DateTime.UtcNow;
         }
 

@@ -548,6 +548,189 @@ public sealed class CustomerServiceTests
         customerRepositoryMock.Verify(repo => repo.UpdateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
+
+
+    [Fact]
+    public async Task UpdateCompany_WhenRequestIsValid_ShouldUpdateCompanyAndReturnCustomerResponse()
+    {
+        var clientId = Guid.NewGuid();
+        var request = CreateUpdateCompanyRequest();
+        var validationResult = new ValidationResult();
+        var cancellationToken = CancellationToken.None;
+
+        var customer = new Customer("customer-ext-123", new IndividualData(
+            "John",
+            "Doe",
+            "john.doe@example.com",
+            "111222333",
+            new Domain.AggregatesModel.Customers.ValueObjects.Address("00-111", "City", "Street", "1", "2"),
+            new Domain.AggregatesModel.Customers.ValueObjects.Address("00-222", "City2", "Street2", "2", null)));
+
+        customer.AddCompany(
+            "Old Company",
+            "0987654321",
+            new Domain.AggregatesModel.Customers.ValueObjects.Address("11-111", "OldCity", "OldStreet", "8", "9"),
+            new Domain.AggregatesModel.Customers.ValueObjects.Address("22-222", "OldCity2", "OldStreet2", "10", null));
+
+        var companyId = customer.Companies.Single().Id;
+
+        var customerRepositoryMock = new Mock<ICustomerRepository>(MockBehavior.Strict);
+        var customerValidationPolicyMock = new Mock<IValidationPolicy<Customer>>(MockBehavior.Strict);
+        var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
+        var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
+
+        var sequence = new MockSequence();
+
+        emptyGuidValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(clientId))
+            .ReturnsAsync(validationResult);
+
+        emptyGuidValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(companyId))
+            .ReturnsAsync(validationResult);
+
+        customerRepositoryMock
+            .InSequence(sequence)
+            .Setup(repo => repo.GetByIdAsync(clientId, cancellationToken))
+            .ReturnsAsync(customer);
+
+        companyValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(It.Is<CompanyData>(x => x.Id == companyId && x.TaxId == request.TaxId && x.CompanyName == request.CompanyName)))
+            .ReturnsAsync(validationResult);
+
+        customerRepositoryMock
+            .InSequence(sequence)
+            .Setup(repo => repo.UpdateCustomer(customer, cancellationToken))
+            .ReturnsAsync(customer);
+
+        var sut = new CustomerService(
+            customerRepositoryMock.Object,
+            customerValidationPolicyMock.Object,
+            individualValidationPolicyMock.Object,
+            companyValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        var result = await sut.UpdateCompany(clientId, companyId, request, cancellationToken);
+
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(customer.Id);
+        result.Companies.ShouldContain(c => c.Id == companyId);
+        var company = result.Companies.Single(c => c.Id == companyId);
+        company.CompanyName.ShouldBe(request.CompanyName);
+        company.TaxId.ShouldBe(request.TaxId);
+
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(companyId), Times.Once);
+        customerRepositoryMock.Verify(repo => repo.GetByIdAsync(clientId, cancellationToken), Times.Once);
+        companyValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<CompanyData>()), Times.Once);
+        customerRepositoryMock.Verify(repo => repo.UpdateCustomer(customer, cancellationToken), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateCompany_WhenValidationFails_ShouldThrowValidationException()
+    {
+        var clientId = Guid.Empty;
+        var companyId = Guid.NewGuid();
+        var request = CreateUpdateCompanyRequest();
+        var cancellationToken = CancellationToken.None;
+        var invalidResult = new ValidationResult();
+        invalidResult.AddValidationError(new ValidationError
+        {
+            Entity = nameof(Guid),
+            Name = "clientId",
+            Message = "ClientId cannot be empty"
+        });
+
+        var customerRepositoryMock = new Mock<ICustomerRepository>(MockBehavior.Strict);
+        var customerValidationPolicyMock = new Mock<IValidationPolicy<Customer>>(MockBehavior.Strict);
+        var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
+        var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
+
+        emptyGuidValidationPolicyMock
+            .Setup(policy => policy.Validate(clientId))
+            .ReturnsAsync(invalidResult);
+
+        var sut = new CustomerService(
+            customerRepositoryMock.Object,
+            customerValidationPolicyMock.Object,
+            individualValidationPolicyMock.Object,
+            companyValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        await Should.ThrowAsync<ValidationException>(() => sut.UpdateCompany(clientId, companyId, request, cancellationToken));
+
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(companyId), Times.Never);
+        customerRepositoryMock.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        customerRepositoryMock.Verify(repo => repo.UpdateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task UpdateCompany_WhenCompanyDoesNotExist_ShouldThrowResourceNotFoundException()
+    {
+        var clientId = Guid.NewGuid();
+        var companyId = Guid.NewGuid();
+        var request = CreateUpdateCompanyRequest();
+        var cancellationToken = CancellationToken.None;
+        var validationResult = new ValidationResult();
+
+        var customer = new Customer("customer-ext-123", new IndividualData(
+            "John",
+            "Doe",
+            "john.doe@example.com",
+            "111222333",
+            new Domain.AggregatesModel.Customers.ValueObjects.Address("00-111", "City", "Street", "1", "2"),
+            new Domain.AggregatesModel.Customers.ValueObjects.Address("00-222", "City2", "Street2", "2", null)));
+
+        var customerRepositoryMock = new Mock<ICustomerRepository>(MockBehavior.Strict);
+        var customerValidationPolicyMock = new Mock<IValidationPolicy<Customer>>(MockBehavior.Strict);
+        var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
+        var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
+
+        var sequence = new MockSequence();
+        emptyGuidValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(clientId))
+            .ReturnsAsync(validationResult);
+
+        emptyGuidValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(companyId))
+            .ReturnsAsync(validationResult);
+
+        customerRepositoryMock
+            .InSequence(sequence)
+            .Setup(repo => repo.GetByIdAsync(clientId, cancellationToken))
+            .ReturnsAsync(customer);
+
+        var sut = new CustomerService(
+            customerRepositoryMock.Object,
+            customerValidationPolicyMock.Object,
+            individualValidationPolicyMock.Object,
+            companyValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        await Should.ThrowAsync<ResourceNotFoundException>(() => sut.UpdateCompany(clientId, companyId, request, cancellationToken));
+
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(companyId), Times.Once);
+        customerRepositoryMock.Verify(repo => repo.GetByIdAsync(clientId, cancellationToken), Times.Once);
+        companyValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<CompanyData>()), Times.Never);
+        customerRepositoryMock.Verify(repo => repo.UpdateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
     private static CreateCustomerRequestDto CreateCustomerRequest()
     {
         return new CreateCustomerRequestDto
@@ -601,6 +784,32 @@ public sealed class CustomerServiceTests
                 Street = "Industry",
                 BuildingNumber = "4",
                 ApartmentNumber = "16"
+            }
+        };
+    }
+
+
+    private static UpdateCompanyRequestDto CreateUpdateCompanyRequest()
+    {
+        return new UpdateCompanyRequestDto
+        {
+            CompanyName = "Updated Acme Corp",
+            TaxId = "9998887776",
+            BillingAddress = new AddressRequestDto
+            {
+                PostalCode = "50-500",
+                City = "Szczecin",
+                Street = "Enterprise",
+                BuildingNumber = "21",
+                ApartmentNumber = "31"
+            },
+            ShippingAddress = new AddressRequestDto
+            {
+                PostalCode = "60-600",
+                City = "Bydgoszcz",
+                Street = "Factory",
+                BuildingNumber = "22",
+                ApartmentNumber = "32"
             }
         };
     }

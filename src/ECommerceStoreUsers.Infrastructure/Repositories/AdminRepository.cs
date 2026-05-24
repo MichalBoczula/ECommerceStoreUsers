@@ -15,6 +15,18 @@ internal sealed class AdminRepository : IAdminRepository
         _context = context;
     }
 
+    public async Task<Admin?> GetByIdAsync(Guid adminId, CancellationToken cancellationToken)
+    {
+        var adminDocument = await _context.Admins
+            .Find(x => x.Id == adminId)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (adminDocument is null)
+            return null;
+
+        return AdminMapping.MapToDomain(adminDocument);
+    }
+
     public async Task<Admin?> GetByExternalIdAsync(string externalId, CancellationToken cancellationToken)
     {
         var adminDocument = await _context.Admins

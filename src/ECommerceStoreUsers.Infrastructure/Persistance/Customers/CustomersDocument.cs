@@ -10,6 +10,7 @@ namespace ECommerceStoreUsers.Infrastructure.Persistance.Customers
         [BsonGuidRepresentation(GuidRepresentation.Standard)]
         public required Guid Id { get; init; }
 
+        [BsonRepresentation(BsonType.String)]
         public required string ExternalId { get; init; }
 
         public required IndividualDataDocument Individual { get; init; }

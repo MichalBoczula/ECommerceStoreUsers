@@ -6,7 +6,7 @@ namespace ECommerceStoreUsers.Infrastructure.Persistance.Customers.Entities
 {
     internal sealed record CompanyDataDocument
     {
-        [BsonGuidRepresentation(GuidRepresentation.Standard)]
+        [BsonRepresentation(BsonType.String)]
         public required string TaxId { get; init; }
         public required string CompanyName { get; init; }
         public required AddressDocument BillingAddress { get; init; }

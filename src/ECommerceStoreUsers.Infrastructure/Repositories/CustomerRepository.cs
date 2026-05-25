@@ -19,7 +19,7 @@ internal sealed class CustomerRepository : ICustomerRepository
             .Find(x => x.Id == id)
             .FirstOrDefaultAsync(cancellationToken);
 
-        return CustomerMapping.MapToDomain(customerDocument);
+        return customerDocument is null ? null : CustomerMapping.MapToDomain(customerDocument);
     }
 
     public async Task<Customer?> GetByExternalIdAsync(string externalId, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ internal sealed class CustomerRepository : ICustomerRepository
             .Find(x => x.ExternalId == externalId)
             .FirstOrDefaultAsync(cancellationToken);
 
-        return CustomerMapping.MapToDomain(customerDocument);
+        return customerDocument is null ? null : CustomerMapping.MapToDomain(customerDocument);
     }
 
     public async Task<Customer> CreateCustomer(Customer customer, CancellationToken cancellationToken)

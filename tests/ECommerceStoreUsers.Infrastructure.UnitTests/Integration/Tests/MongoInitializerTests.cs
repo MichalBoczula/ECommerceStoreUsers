@@ -18,32 +18,28 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
         [Fact]
         public async Task InitializeInfrastructureAsync_ShouldCreateExpectedIndexes()
         {
-            // Arrange
+            // arrange
             var databaseName = $"user-tests-{Guid.NewGuid():N}";
 
             await using var serviceProvider = TestServiceProviderFactory.Create(
                 _fixture.ConnectionString,
                 databaseName);
 
-            // Act
+            // act
             await serviceProvider.InitializeInfrastructureAsync();
 
-            // Assert
+            // assert
             var client = new MongoClient(_fixture.ConnectionString);
             var database = client.GetDatabase(databaseName);
 
-            var customerIndexesCursor = await database
-                .GetCollection<BsonDocument>("customers")
-                .Indexes
-                .ListAsync();
-
+            var customerIndexesCursor = await database.GetCollection<BsonDocument>("customers").Indexes.ListAsync();
             var customerIndexes = await customerIndexesCursor.ToListAsync();
+            customerIndexes.ShouldContain(x => x["name"] == "UX_Customer_ExternalId");
+            customerIndexes.ShouldContain(x => x["name"] == "IX_Customer_Companies_TaxId");
 
-            customerIndexes.ShouldContain(
-                x => x["name"] == "UX_Customer_ExternalId");
-
-            customerIndexes.ShouldContain(
-                x => x["name"] == "IX_Customer_Companies_TaxId");
+            var adminIndexesCursor = await database.GetCollection<BsonDocument>("admins").Indexes.ListAsync();
+            var adminIndexes = await adminIndexesCursor.ToListAsync();
+            adminIndexes.ShouldContain(x => x["name"] == "UX_Admin_ExternalId");
         }
     }
 }

@@ -1,42 +1,60 @@
 ﻿using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
 using MongoDB.Driver;
 
-namespace ECommerceStoreUsers.Infrastructure.Configuration;
-
-internal sealed class MongoInitializer
+namespace ECommerceStoreUsers.Infrastructure.Configuration
 {
-    private readonly MongoDbContext _context;
-
-    public MongoInitializer(MongoDbContext context)
+    internal sealed class MongoInitializer
     {
-        _context = context;
-    }
+        private readonly MongoDbContext _context;
 
-    public async Task InitializeAsync(CancellationToken cancellationToken = default)
-    {
-        await CreateCustomerIndexesAsync(cancellationToken);
-    }
+        public MongoInitializer(MongoDbContext context)
+        {
+            _context = context;
+        }
 
-    private async Task CreateCustomerIndexesAsync(CancellationToken cancellationToken)
-    {
-        var externalIdIndex = new CreateIndexModel<CustomerDocument>(
-            Builders<CustomerDocument>.IndexKeys.Ascending(x => x.ExternalId),
-            new CreateIndexOptions
-            {
-                Unique = true,
-                Name = "UX_Customer_ExternalId"
-            });
+        public async Task InitializeAsync(CancellationToken cancellationToken = default)
+        {
+            await CreateCustomerIndexesAsync(cancellationToken);
+            await CreateAdminIndexesAsync(cancellationToken);
+        }
 
-        var companyTaxIdIndex = new CreateIndexModel<CustomerDocument>(
-            Builders<CustomerDocument>.IndexKeys.Ascending("Companies.TaxId"),
-            new CreateIndexOptions
-            {
-                Name = "IX_Customer_Companies_TaxId"
-            });
+        private async Task CreateCustomerIndexesAsync(CancellationToken cancellationToken)
+        {
+            var externalIdIndex = new CreateIndexModel<CustomerDocument>(
+                Builders<CustomerDocument>.IndexKeys.Ascending(x => x.ExternalId),
+                new CreateIndexOptions
+                {
+                    Unique = true,
+                    Name = "UX_Customer_ExternalId"
+                });
 
-        await _context.Customers.Indexes.CreateManyAsync(
-            new[] { externalIdIndex, companyTaxIdIndex },
-            cancellationToken: cancellationToken);
+            var companyTaxIdIndex = new CreateIndexModel<CustomerDocument>(
+                Builders<CustomerDocument>.IndexKeys.Ascending("Companies.TaxId"),
+                new CreateIndexOptions
+                {
+                    Name = "IX_Customer_Companies_TaxId"
+                });
+
+            await _context.Customers.Indexes.CreateManyAsync(
+                new[] { externalIdIndex, companyTaxIdIndex },
+                cancellationToken: cancellationToken);
+        }
+
+        private async Task CreateAdminIndexesAsync(CancellationToken cancellationToken)
+        {
+            var adminExternalIdIndex = new CreateIndexModel<AdminDocument>(
+                Builders<AdminDocument>.IndexKeys.Ascending(x => x.ExternalId),
+                new CreateIndexOptions
+                {
+                    Unique = true,
+                    Name = "UX_Admin_ExternalId"
+                });
+
+            await _context.Admins.Indexes.CreateOneAsync(
+                adminExternalIdIndex,
+                cancellationToken: cancellationToken);
+        }
     }
 }

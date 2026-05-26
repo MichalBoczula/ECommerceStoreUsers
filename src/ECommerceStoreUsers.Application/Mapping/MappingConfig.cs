@@ -1,8 +1,11 @@
-﻿using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
+﻿using ECommerceStoreUsers.Application.Common.RequestsDto.Admins;
+using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
+using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
+using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 
 namespace ECommerceStoreUsers.Application.Mapping;
 
@@ -83,6 +86,24 @@ internal static class MappingConfig
             Street = address.Street,
             BuildingNumber = address.BuildingNumber,
             ApartmentNumber = address.ApartmentNumber
+        };
+    }
+
+    internal static Admin MapToDomain(CreateAdminRequestDto request)
+    {
+        return new Admin(request.ExternalId, request.FullName, request.Email);
+    }
+
+    internal static AdminResponseDto MapToResponse(Admin admin)
+    {
+        return new AdminResponseDto
+        {
+            Id = admin.Id,
+            ExternalId = admin.ExternalId,
+            FullName = admin.FullName,
+            Email = admin.Email,
+            IsActive = admin.IsActive,
+            LastLoginAt = admin.LastLoginAt
         };
     }
 }

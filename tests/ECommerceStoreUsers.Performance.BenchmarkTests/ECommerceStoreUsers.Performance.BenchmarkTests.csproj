@@ -22,9 +22,5 @@
     <ProjectReference Include="..\..\src\ECommerceStoreUsers.Domain\ECommerceStoreUsers.Domain.csproj" />
     <ProjectReference Include="..\..\src\ECommerceStoreUsers.Infrastructure\ECommerceStoreUsers.Infrastructure.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Employees\Application\" />
-  </ItemGroup>
   
 </Project>

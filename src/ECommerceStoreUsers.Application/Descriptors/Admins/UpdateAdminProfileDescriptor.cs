@@ -1,6 +1,7 @@
 using ECommerceStoreUsers.Application.Common.FlowDescriptors;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
+using ECommerceStoreUsers.Application.Mapping;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
@@ -72,15 +73,7 @@ namespace ECommerceStoreUsers.Application.Descriptors.Admins
         [FlowStep(order: 9, bpmnId: "MapAdminResponse")]
         public AdminResponseDto MapToResponse(Admin admin)
         {
-            return new AdminResponseDto
-            {
-                Id = admin.Id,
-                ExternalId = admin.ExternalId,
-                FullName = admin.FullName,
-                Email = admin.Email,
-                IsActive = admin.IsActive,
-                LastLoginAt = admin.LastLoginAt
-            };
+            return MappingConfig.MapToResponse(admin);
         }
     }
 }

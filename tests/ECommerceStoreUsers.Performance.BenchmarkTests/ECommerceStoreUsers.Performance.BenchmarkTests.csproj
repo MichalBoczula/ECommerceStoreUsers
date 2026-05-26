@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Employees\Domain\" />
     <Folder Include="Employees\Infrastructure\" />
     <Folder Include="Employees\Application\" />
   </ItemGroup>

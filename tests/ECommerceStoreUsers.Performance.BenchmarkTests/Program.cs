@@ -1,10 +1,20 @@
-﻿namespace ECommerceStoreUsers.Performance.BenchmarkTests
+﻿using BenchmarkDotNet.Running;
+using ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain;
+
+namespace ECommerceStoreUsers.Performance.BenchmarkTests
 {
     internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            // ==========================================
+            // 1. Employees / Admins
+            // ==========================================
+            BenchmarkRunner.Run<AdminValidationPolicyBenchmarks>();
+
+            // ==========================================
+            // 2. Customers
+            // ==========================================
         }
     }
 }

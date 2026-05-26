@@ -7,4 +7,26 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="Testcontainers" Version="4.10.0" />
+    <PackageReference Include="Testcontainers.MongoDb" Version="4.10.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
+    <PackageReference Include="SharpCompress" Version="0.48.1" />
+    <PackageReference Include="Snappier" Version="1.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ECommerceStoreUsers.Application\ECommerceStoreUsers.Application.csproj" />
+    <ProjectReference Include="..\..\src\ECommerceStoreUsers.Domain\ECommerceStoreUsers.Domain.csproj" />
+    <ProjectReference Include="..\..\src\ECommerceStoreUsers.Infrastructure\ECommerceStoreUsers.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Employees\Domain\" />
+    <Folder Include="Employees\Infrastructure\" />
+    <Folder Include="Employees\Application\" />
+  </ItemGroup>
+  
 </Project>

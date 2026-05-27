@@ -20,6 +20,7 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests
             // 2. Customers
             // ==========================================
             BenchmarkRunner.Run<CustomerMappingBenchmarks>();
+            BenchmarkRunner.Run<CustomerRepositoryBenchmarks>();
         }
     }
 }

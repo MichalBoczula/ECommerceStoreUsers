@@ -1,39 +1,39 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
-using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
+using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
-using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers;
 using Microsoft.Extensions.DependencyInjection;
+using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Employees.Admins;
 
-namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Domain
+namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain
 {
     [MemoryDiagnoser]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     [RankColumn]
-    public class CustomersValidationPolicyBenchmarks
+    public class AdminValidationPolicyBenchmarks
     {
         private IServiceProvider _serviceProvider = null!;
         private IServiceScope _serviceScope = null!;
-        private IValidationPolicy<Customer> _policy = null!;
-        private Customer _validEntity = null!;
-        private Customer _invalidExternalIdEntity = null!;
-        private Customer _allInvalidEntity = null!;
+        private IValidationPolicy<Admin> _policy = null!;
+        private Admin _validEntity = null!;
+        private Admin _invalidEmailEntity = null!;
+        private Admin _allInvalidEntity = null!;
 
         [GlobalSetup]
         public void Setup()
         {
             var services = new ServiceCollection();
 
-            services.AddScoped<IValidationPolicy<Customer>, CustomerValidationPolicy>();
+            services.AddScoped<IValidationPolicy<Admin>, AdminValidationPolicy>();
 
             _serviceProvider = services.BuildServiceProvider();
             _serviceScope = _serviceProvider.CreateScope();
 
-            _policy = _serviceScope.ServiceProvider.GetRequiredService<IValidationPolicy<Customer>>();
+            _policy = _serviceScope.ServiceProvider.GetRequiredService<IValidationPolicy<Admin>>();
 
-            _validEntity = CustomersValidationDataFactory.CreateValid();
-            _invalidExternalIdEntity = CustomersValidationDataFactory.CreateInvalidExternalId();
-            _allInvalidEntity = CustomersValidationDataFactory.CreateAllInvalid();
+            _validEntity = AdminValidationDataFactory.CreateValid();
+            _invalidEmailEntity = AdminValidationDataFactory.CreateInvalidEmail();
+            _allInvalidEntity = AdminValidationDataFactory.CreateAllInvalid();
         }
 
         [Benchmark(Baseline = true)]
@@ -45,7 +45,7 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Domain
         [Benchmark]
         public async Task Validate_Failure_SingleError()
         {
-            await _policy.Validate(_invalidExternalIdEntity);
+            await _policy.Validate(_invalidEmailEntity);
         }
 
         [Benchmark]

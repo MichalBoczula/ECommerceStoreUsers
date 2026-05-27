@@ -1,6 +1,6 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 
-namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain.Admins
+namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain
 {
     internal static class AdminValidationDataFactory
     {

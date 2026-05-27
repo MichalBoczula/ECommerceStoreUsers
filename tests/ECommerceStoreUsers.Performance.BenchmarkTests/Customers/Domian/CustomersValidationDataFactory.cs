@@ -2,7 +2,7 @@
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 
-namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Domain
+namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Domian
 {
     internal static class CustomersValidationDataFactory
     {

@@ -5,7 +5,7 @@ using ECommerceStoreUsers.Domain.Validation.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Employees.Admins;
 
-namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain
+namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain.Admins
 {
     [MemoryDiagnoser]
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]

@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
-using ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain;
+using ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain.Admins;
 using ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructure;
 
 namespace ECommerceStoreUsers.Performance.BenchmarkTests

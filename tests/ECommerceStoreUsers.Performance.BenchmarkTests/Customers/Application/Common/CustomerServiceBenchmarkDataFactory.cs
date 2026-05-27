@@ -24,6 +24,44 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Application.C
             };
         }
 
+        public static UpdateIndividualDataRequestDto UpdateIndividualRequest()
+        {
+            return new UpdateIndividualDataRequestDto
+            {
+                Individual = new IndividualDataRequestDto
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "jane.doe@store.com",
+                    Phone = "+1-555-0101",
+                    BillingAddress = CreateAddressRequest("110"),
+                    ShippingAddress = CreateAddressRequest("111")
+                }
+            };
+        }
+
+        public static AddCompanyRequestDto AddCompanyRequest()
+        {
+            return new AddCompanyRequestDto
+            {
+                TaxId = "0987654321",
+                CompanyName = "Doe Retail Inc",
+                BillingAddress = CreateAddressRequest("300"),
+                ShippingAddress = CreateAddressRequest("301")
+            };
+        }
+
+        public static UpdateCompanyRequestDto UpdateCompanyRequest()
+        {
+            return new UpdateCompanyRequestDto
+            {
+                TaxId = "1234509876",
+                CompanyName = "Doe Logistics Updated LLC",
+                BillingAddress = CreateAddressRequest("400"),
+                ShippingAddress = CreateAddressRequest("401")
+            };
+        }
+
         public static Customer CreateDomainCustomer(Guid id, string externalId)
         {
             var individualData = new IndividualData(

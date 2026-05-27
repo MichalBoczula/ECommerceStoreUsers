@@ -1,6 +1,7 @@
 ﻿using BenchmarkDotNet.Running;
 using ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Domain.Admins;
 using ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructure;
+using ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Infrastructure;
 
 namespace ECommerceStoreUsers.Performance.BenchmarkTests
 {
@@ -18,6 +19,7 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests
             // ==========================================
             // 2. Customers
             // ==========================================
+            BenchmarkRunner.Run<CustomerMappingBenchmarks>();
         }
     }
 }

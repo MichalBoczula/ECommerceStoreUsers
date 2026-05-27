@@ -109,8 +109,10 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Application
         [Benchmark]
         public async Task CreateCustomer_Flow()
         {
-            var request = CustomerServiceBenchmarkDataFactory.CreateRequest();
-            request.ExternalId = "auth0|customer-unique-new";
+            var request = CustomerServiceBenchmarkDataFactory.CreateRequest() with
+            {
+                ExternalId = "auth0|customer-unique-new"
+            };
 
             await _service.CreateCustomer(request, CancellationToken.None);
         }

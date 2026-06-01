@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ReqnrollFeatureFile Remove="Features\Admins\CreateAdminSuccess.feature" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="allureConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -45,10 +49,6 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Admins\" />
   </ItemGroup>
 
   <PropertyGroup>

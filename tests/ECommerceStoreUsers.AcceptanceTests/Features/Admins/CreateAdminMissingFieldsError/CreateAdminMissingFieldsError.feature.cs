@@ -11,31 +11,31 @@
 #region Designer generated code
 #pragma warning disable
 using Reqnroll;
-namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminValidationError
+namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminMissingFieldsError
 {
     
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_creating_an_admin_profile_with_invalid_email_returns_a" +
-        "_bad_request_with_validation_errors.")]
-    public partial class CreateAdminProfileValidationFeature : object, global::Xunit.IClassFixture<CreateAdminProfileValidationFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_submitting_a_payload_missing_required_json_properties_" +
+        "returns_a_bad_request.")]
+    public partial class CreateAdminProfileDeserializationValidationFeature : object, global::Xunit.IClassFixture<CreateAdminProfileDeserializationValidationFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_creating_an_admin_profile_with_invalid_email_returns_a" +
-                    "_bad_request_with_validation_errors."};
+                "allure.description:Ensures_submitting_a_payload_missing_required_json_properties_" +
+                    "returns_a_bad_request."};
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Admins/CreateAdminValidationError", "Create admin profile validation", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Admins/CreateAdminMissingFieldsError", "Create admin profile deserialization validation", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "CreateAdminValidationError.feature"
+#line 1 "CreateAdminMissingFieldsError.feature"
 #line hidden
         
-        public CreateAdminProfileValidationFeature(CreateAdminProfileValidationFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public CreateAdminProfileDeserializationValidationFeature(CreateAdminProfileDeserializationValidationFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -109,8 +109,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminValidat
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Admins/CreateAdminValidationError/CreateAdminValidationError.feature.ndj" +
-                    "son", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Admins/CreateAdminMissingFieldsError/CreateAdminMissingFieldsError.featu" +
+                    "re.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -138,15 +138,15 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminValidat
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Create admin profile with invalid email returns bad request")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Create admin profile validation")]
-        [global::Xunit.TraitAttribute("Description", "Create admin profile with invalid email returns bad request")]
-        public async global::System.Threading.Tasks.Task CreateAdminProfileWithInvalidEmailReturnsBadRequest()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Create admin profile with missing external id returns deserialization error")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Create admin profile deserialization validation")]
+        [global::Xunit.TraitAttribute("Description", "Create admin profile with missing external id returns deserialization error")]
+        public async global::System.Threading.Tasks.Task CreateAdminProfileWithMissingExternalIdReturnsDeserializationError()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Create admin profile with invalid email returns bad request", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Create admin profile with missing external id returns deserialization error", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -159,41 +159,29 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminValidat
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table5.AddRow(new string[] {
-                            "ExternalId",
-                            "auth-678901234"});
-                table5.AddRow(new string[] {
+                table1.AddRow(new string[] {
                             "FullName",
                             "Jane Smith"});
-                table5.AddRow(new string[] {
+                table1.AddRow(new string[] {
                             "Email",
-                            "invalid-email"});
+                            "jane.smith@db.com"});
 #line 5
-    await testRunner.GivenAsync("I have an invalid create admin request", ((string)(null)), table5, "Given ");
+    await testRunner.GivenAsync("I have a create admin request payload missing the external id", ((string)(null)), table1, "Given ");
 #line hidden
-#line 10
-    await testRunner.WhenAsync("I submit the create admin request for validation", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 9
+    await testRunner.WhenAsync("I submit the incomplete create admin request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table6.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table6.AddRow(new string[] {
-                            "Message",
-                            "Email must be a valid format (address@domain.something)."});
-                table6.AddRow(new string[] {
-                            "Name",
-                            "AdminEmailValidationRule"});
-                table6.AddRow(new string[] {
-                            "Entity",
-                            "Admin"});
-#line 11
-    await testRunner.ThenAsync("the admin profile creation fails with a validation error", ((string)(null)), table6, "Then ");
+#line 10
+    await testRunner.ThenAsync("the response indicates a json deserialization failure", ((string)(null)), table2, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -206,12 +194,12 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminValidat
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await CreateAdminProfileValidationFeature.FeatureSetupAsync();
+                await CreateAdminProfileDeserializationValidationFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await CreateAdminProfileValidationFeature.FeatureTearDownAsync();
+                await CreateAdminProfileDeserializationValidationFeature.FeatureTearDownAsync();
             }
         }
     }

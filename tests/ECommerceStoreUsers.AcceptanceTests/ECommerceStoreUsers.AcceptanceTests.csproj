@@ -47,6 +47,10 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Admins\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <AllureArtifactsDir>$(MSBuildProjectDirectory)\..\..\artifacts\allure-results</AllureArtifactsDir>
   </PropertyGroup>

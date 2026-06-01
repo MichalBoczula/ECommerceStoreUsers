@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.AcceptanceTests.Features.Common;
+using ECommerceStoreUsers.AcceptanceTests.Features.Common;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
 using Reqnroll;
@@ -11,12 +11,12 @@ using System.Text.Json;
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminSuccess
 {
     [Binding]
-    public sealed class CreateAdminSuccessSteps
+    public class CreateAdminProfileStepDefinitions
     {
         private readonly ScenarioApiContext _apiContext;
         private CreateAdminRequestDto? _request;
 
-        public CreateAdminSuccessSteps(ScenarioApiContext apiContext)
+        public CreateAdminProfileStepDefinitions(ScenarioApiContext apiContext)
         {
             _apiContext = apiContext;
         }

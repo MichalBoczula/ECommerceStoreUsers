@@ -1,7 +1,8 @@
-﻿using System.Text.Json;
-using ECommerceStoreInvoice.API.Configuration.Extensions;
+﻿using ECommerceStoreInvoice.API.Configuration.Extensions;
+using ECommerceStoreUsers.API.Configuration.Extensions;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using Microsoft.AspNetCore.Diagnostics;
+using System.Text.Json;
 
 namespace ECommerceStoreInvoice.API.Configuration
 {
@@ -28,6 +29,10 @@ namespace ECommerceStoreInvoice.API.Configuration
                 ResourceNotFoundException notFoundException =>
                     NotFoundExceptionHandlerExtension.HandleNotFoundException(
                         context, notFoundException, cancellationToken),
+
+                ResourceAlreadyExistsException resourceAlreadyExistsException =>
+                    ResourceAlreadyExistsExceptionHandlerExtension.HandleResourceAlreadyExistsException(
+                        context, resourceAlreadyExistsException, _logger, cancellationToken),
 
                 BadHttpRequestException badHttpRequestException when badHttpRequestException.InnerException is JsonException =>
                     JsonDeserializationExceptionHandlerExtension.HandleJsonDeserializationException(

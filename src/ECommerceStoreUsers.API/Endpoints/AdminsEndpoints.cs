@@ -58,7 +58,7 @@ namespace ECommerceStoreUsers.API.Endpoints
 
         private static void MapAdminsQueries(IEndpointRouteBuilder group)
         {
-            group.MapGet("/admins/{externalId}", async (
+            group.MapGet("/{externalId}", async (
                 string externalId,
                 IAdminProfileService adminService,
                 CancellationToken cancellationToken) =>

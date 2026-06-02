@@ -21,6 +21,10 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Admins
 
             var descriptor = new GetAdminByExternalIdDescriptor();
 
+            var adminForValidation = descriptor.MapExternalIdToAdmin(externalId);
+            var validationResult = await descriptor.ValidateAdmin(adminForValidation, _adminValidationPolicy);
+            descriptor.ThrowValidationExceptionIfAdminInvalid(validationResult);
+
             var admin = await descriptor.LoadAdmin(externalId, _adminRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfAdminMissing(externalId, admin);
 

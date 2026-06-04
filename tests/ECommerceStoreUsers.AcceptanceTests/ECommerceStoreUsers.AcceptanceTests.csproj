@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ReqnrollFeatureFile Remove="Features\Admins\CreateAdminSuccess.feature" />
+    <ReqnrollFeatureFile Remove="Features\Customers\CreateCustomerSuccess\CreateCustomerSuccess.feature" />
   </ItemGroup>
 
   <ItemGroup>

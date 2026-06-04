@@ -17,16 +17,16 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminValidation
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_getting_an_admin_profile_with_invalid_external_id_returns_a" +
-        "_bad_request_with_validation_errors.")]
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_getting_an_admin_profile_with_invalid_external_id_retu" +
+        "rns_a_bad_request_with_validation_errors.")]
     public partial class GetAdminProfileValidationFeature : object, global::Xunit.IClassFixture<GetAdminProfileValidationFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_getting_an_admin_profile_with_invalid_external_id_returns_a" +
-                    "_bad_request_with_validation_errors."};
+                "allure.description:Ensures_getting_an_admin_profile_with_invalid_external_id_retu" +
+                    "rns_a_bad_request_with_validation_errors."};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Admins/GetAdminValidationError", "Get admin profile validation", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -109,8 +109,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminValidation
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Admins/GetAdminValidationError/GetAdminValidationError.feature.ndj" +
-                    "son", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Admins/GetAdminValidationError/GetAdminValidationError.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -159,35 +158,35 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminValidation
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table5.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "ExternalId",
                             "<whitespace>"});
 #line 5
-    await testRunner.GivenAsync("I have an invalid get admin external id", ((string)(null)), table5, "Given ");
+    await testRunner.GivenAsync("I have an invalid get admin external id", ((string)(null)), table14, "Given ");
 #line hidden
 #line 8
     await testRunner.WhenAsync("I submit the get admin request for validation", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table6.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table6.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "Message",
                             "ExternalId cannot be null or white space."});
-                table6.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "Name",
                             "AdminExternalIdValidationRule"});
-                table6.AddRow(new string[] {
+                table15.AddRow(new string[] {
                             "Entity",
                             "Admin"});
 #line 9
-    await testRunner.ThenAsync("the get admin request fails with a validation error", ((string)(null)), table6, "Then ");
+    await testRunner.ThenAsync("the get admin request fails with a validation error", ((string)(null)), table15, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

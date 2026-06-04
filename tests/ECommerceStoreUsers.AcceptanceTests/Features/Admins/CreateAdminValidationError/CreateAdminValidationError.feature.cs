@@ -159,41 +159,41 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminValidat
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table5.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "ExternalId",
                             "auth-678901234"});
-                table5.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "FullName",
                             "Jane Smith"});
-                table5.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "Email",
                             "invalid-email"});
 #line 5
-    await testRunner.GivenAsync("I have an invalid create admin request", ((string)(null)), table5, "Given ");
+    await testRunner.GivenAsync("I have an invalid create admin request", ((string)(null)), table7, "Given ");
 #line hidden
 #line 10
     await testRunner.WhenAsync("I submit the create admin request for validation", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table6.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table6.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "Message",
                             "Email must be a valid format (address@domain.something)."});
-                table6.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "Name",
                             "AdminEmailValidationRule"});
-                table6.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "Entity",
                             "Admin"});
 #line 11
-    await testRunner.ThenAsync("the admin profile creation fails with a validation error", ((string)(null)), table6, "Then ");
+    await testRunner.ThenAsync("the admin profile creation fails with a validation error", ((string)(null)), table8, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

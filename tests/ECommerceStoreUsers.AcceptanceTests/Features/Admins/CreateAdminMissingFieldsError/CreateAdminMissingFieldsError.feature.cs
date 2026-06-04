@@ -159,29 +159,29 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminMissing
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table1.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "FullName",
                             "Jane Smith"});
-                table1.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "Email",
                             "jane.smith@db.com"});
 #line 5
-    await testRunner.GivenAsync("I have a create admin request payload missing the external id", ((string)(null)), table1, "Given ");
+    await testRunner.GivenAsync("I have a create admin request payload missing the external id", ((string)(null)), table3, "Given ");
 #line hidden
 #line 9
     await testRunner.WhenAsync("I submit the incomplete create admin request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table2.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "StatusCode",
                             "400"});
 #line 10
-    await testRunner.ThenAsync("the response indicates a json deserialization failure", ((string)(null)), table2, "Then ");
+    await testRunner.ThenAsync("the response indicates a json deserialization failure", ((string)(null)), table4, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

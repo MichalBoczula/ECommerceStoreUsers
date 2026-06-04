@@ -158,44 +158,44 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminSuccess
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table3.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "ExternalId",
                             "auth-678901234"});
-                table3.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "FullName",
                             "Jane Smith"});
-                table3.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Email",
                             "jane.smith@db.com"});
 #line 5
-    await testRunner.GivenAsync("I have a valid create admin request", ((string)(null)), table3, "Given ");
+    await testRunner.GivenAsync("I have a valid create admin request", ((string)(null)), table5, "Given ");
 #line hidden
 #line 10
     await testRunner.WhenAsync("I submit the create admin request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table4.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "StatusCode",
                             "200"});
-                table4.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "HasId",
                             "true"});
-                table4.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "ExternalId",
                             "auth-678901234"});
-                table4.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "FullName",
                             "Jane Smith"});
-                table4.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "Email",
                             "jane.smith@db.com"});
 #line 11
-    await testRunner.ThenAsync("the admin profile is created successfully", ((string)(null)), table4, "Then ");
+    await testRunner.ThenAsync("the admin profile is created successfully", ((string)(null)), table6, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

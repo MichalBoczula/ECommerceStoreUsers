@@ -17,16 +17,16 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminSuccess
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_getting_an_existing_admin_profile_returns_a_success_res" +
-        "ponse_with_the_admin_payload_fields.")]
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_getting_an_existing_admin_profile_returns_a_success_re" +
+        "sponse_with_the_admin_payload_fields.")]
     public partial class GetAdminProfileFeature : object, global::Xunit.IClassFixture<GetAdminProfileFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_getting_an_existing_admin_profile_returns_a_success_res" +
-                    "ponse_with_the_admin_payload_fields."};
+                "allure.description:Ensures_getting_an_existing_admin_profile_returns_a_success_re" +
+                    "sponse_with_the_admin_payload_fields."};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Admins/GetAdminSuccess", "Get admin profile", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -158,56 +158,56 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminSuccess
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table3.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "ExternalId",
                             "auth-get-123456"});
-                table3.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "FullName",
                             "Get Admin Success"});
-                table3.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "Email",
                             "get.admin@db.com"});
 #line 5
-    await testRunner.GivenAsync("an admin profile exists for get admin request", ((string)(null)), table3, "Given ");
+    await testRunner.GivenAsync("an admin profile exists for get admin request", ((string)(null)), table11, "Given ");
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table4.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "ExternalId",
                             "auth-get-123456"});
 #line 10
-    await testRunner.WhenAsync("I request the admin profile by external id", ((string)(null)), table4, "When ");
+    await testRunner.WhenAsync("I request the admin profile by external id", ((string)(null)), table12, "When ");
 #line hidden
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "StatusCode",
                             "200"});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "HasId",
                             "true"});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "ExternalId",
                             "auth-get-123456"});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "FullName",
                             "Get Admin Success"});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "Email",
                             "get.admin@db.com"});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "IsActive",
                             "true"});
-                table5.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "HasLastLoginAt",
                             "true"});
 #line 13
-    await testRunner.ThenAsync("the admin profile is returned successfully", ((string)(null)), table5, "Then ");
+    await testRunner.ThenAsync("the admin profile is returned successfully", ((string)(null)), table13, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

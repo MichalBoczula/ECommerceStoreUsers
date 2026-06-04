@@ -186,7 +186,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.UpdateAdminSuccess
     await testRunner.AndAsync("I have a valid update admin request", ((string)(null)), table19, "And ");
 #line hidden
 #line 14
-    await testRunner.WhenAsync("I submit the update admin request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+    await testRunner.WhenAsync("I submit the valid update admin request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
                 global::Reqnroll.Table table20 = new global::Reqnroll.Table(new string[] {
                             "Field",

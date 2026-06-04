@@ -4,6 +4,7 @@ using ECommerceStoreUsers.API.Endpoints;
 using ECommerceStoreUsers.Application;
 using ECommerceStoreUsers.Domain;
 using ECommerceStoreUsers.Infrastructure;
+using Microsoft.AspNetCore.Routing;
 
 namespace ECommerceStoreUsers.API
 {
@@ -26,6 +27,10 @@ namespace ECommerceStoreUsers.API
             });
 
             builder.Services.AddHealthChecks();
+            builder.Services.Configure<RouteHandlerOptions>(options =>
+            {
+                options.ThrowOnBadRequest = true;
+            });
             builder.Services.AddExceptionHandler<ExceptionHandler>();
             builder.Services.AddProblemDetails();
             builder.Services.AddDomain();

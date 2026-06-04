@@ -11,7 +11,7 @@ Feature: Update admin profile
       | Field    | Value                 |
       | FullName | Updated Admin Success |
       | Email    | updated.admin@db.com  |
-    When I submit the update admin request
+    When I submit the valid update admin request
     Then the admin profile is updated successfully
       | Field          | Value                 |
       | StatusCode     | 200                   |

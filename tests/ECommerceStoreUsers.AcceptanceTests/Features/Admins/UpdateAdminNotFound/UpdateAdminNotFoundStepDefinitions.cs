@@ -41,8 +41,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.UpdateAdminNotFoun
                 _apiContext.JsonOptions);
         }
 
-        [When("I submit the update admin request")]
-        public async Task WhenISubmitTheUpdateAdminRequest()
+        [When("I submit the missing admin update request")]
+        public async Task WhenISubmitTheMissingAdminUpdateRequest()
         {
             _adminId.ShouldNotBeNull();
             _request.ShouldNotBeNull();

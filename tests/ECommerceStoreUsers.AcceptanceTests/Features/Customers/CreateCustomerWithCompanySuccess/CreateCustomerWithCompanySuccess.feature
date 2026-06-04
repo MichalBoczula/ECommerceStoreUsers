@@ -8,7 +8,7 @@ Feature: Create customer with company data
       | Individual.FirstName                 | John                     |
       | Individual.LastName                  | Customer                 |
       | Individual.Email                     | john.customer@db.com     |
-      | Individual.Phone                     | +48123456789             |
+      | Individual.Phone                     | 123456789                |
       | Individual.BillingAddress.PostalCode | 00-001                   |
       | Individual.BillingAddress.City       | Warsaw                   |
       | Individual.BillingAddress.Street     | Billing Street           |
@@ -28,7 +28,7 @@ Feature: Create customer with company data
       | Individual.FirstName                 | John                     |
       | Individual.LastName                  | Customer                 |
       | Individual.Email                     | john.customer@db.com     |
-      | Individual.Phone                     | +48123456789             |
+      | Individual.Phone                     | 123456789                |
       | Individual.BillingAddress.PostalCode | 00-001                   |
       | Individual.BillingAddress.City       | Warsaw                   |
       | Individual.BillingAddress.Street     | Billing Street           |

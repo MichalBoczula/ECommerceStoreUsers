@@ -158,62 +158,62 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.UpdateAdminSuccess
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
-                            "Field",
-                            "Value"});
-                table18.AddRow(new string[] {
-                            "ExternalId",
-                            "auth-update-123456"});
-                table18.AddRow(new string[] {
-                            "FullName",
-                            "Original Admin Success"});
-                table18.AddRow(new string[] {
-                            "Email",
-                            "original.admin@db.com"});
-#line 5
-    await testRunner.GivenAsync("an admin profile exists for update admin request", ((string)(null)), table18, "Given ");
-#line hidden
-                global::Reqnroll.Table table19 = new global::Reqnroll.Table(new string[] {
-                            "Field",
-                            "Value"});
-                table19.AddRow(new string[] {
-                            "FullName",
-                            "Updated Admin Success"});
-                table19.AddRow(new string[] {
-                            "Email",
-                            "updated.admin@db.com"});
-#line 10
-    await testRunner.AndAsync("I have a valid update admin request", ((string)(null)), table19, "And ");
-#line hidden
-#line 14
-    await testRunner.WhenAsync("I submit the valid update admin request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
                 global::Reqnroll.Table table20 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
                 table20.AddRow(new string[] {
-                            "StatusCode",
-                            "200"});
-                table20.AddRow(new string[] {
-                            "HasId",
-                            "true"});
-                table20.AddRow(new string[] {
                             "ExternalId",
                             "auth-update-123456"});
                 table20.AddRow(new string[] {
                             "FullName",
-                            "Updated Admin Success"});
+                            "Original Admin Success"});
                 table20.AddRow(new string[] {
                             "Email",
+                            "original.admin@db.com"});
+#line 5
+    await testRunner.GivenAsync("an admin profile exists for update admin request", ((string)(null)), table20, "Given ");
+#line hidden
+                global::Reqnroll.Table table21 = new global::Reqnroll.Table(new string[] {
+                            "Field",
+                            "Value"});
+                table21.AddRow(new string[] {
+                            "FullName",
+                            "Updated Admin Success"});
+                table21.AddRow(new string[] {
+                            "Email",
                             "updated.admin@db.com"});
-                table20.AddRow(new string[] {
+#line 10
+    await testRunner.AndAsync("I have a valid update admin request", ((string)(null)), table21, "And ");
+#line hidden
+#line 14
+    await testRunner.WhenAsync("I submit the valid update admin request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table22 = new global::Reqnroll.Table(new string[] {
+                            "Field",
+                            "Value"});
+                table22.AddRow(new string[] {
+                            "StatusCode",
+                            "200"});
+                table22.AddRow(new string[] {
+                            "HasId",
+                            "true"});
+                table22.AddRow(new string[] {
+                            "ExternalId",
+                            "auth-update-123456"});
+                table22.AddRow(new string[] {
+                            "FullName",
+                            "Updated Admin Success"});
+                table22.AddRow(new string[] {
+                            "Email",
+                            "updated.admin@db.com"});
+                table22.AddRow(new string[] {
                             "IsActive",
                             "true"});
-                table20.AddRow(new string[] {
+                table22.AddRow(new string[] {
                             "HasLastLoginAt",
                             "true"});
 #line 15
-    await testRunner.ThenAsync("the admin profile is updated successfully", ((string)(null)), table20, "Then ");
+    await testRunner.ThenAsync("the admin profile is updated successfully", ((string)(null)), table22, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

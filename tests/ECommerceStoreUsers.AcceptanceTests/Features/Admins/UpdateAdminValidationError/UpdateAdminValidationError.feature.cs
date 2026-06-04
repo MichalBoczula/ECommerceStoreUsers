@@ -159,47 +159,47 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.UpdateAdminValidat
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table21 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table23 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table21.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "ExistingExternalId",
                             "auth-update-678901234"});
-                table21.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "ExistingFullName",
                             "Jane Smith"});
-                table21.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "ExistingEmail",
                             "jane.smith@db.com"});
-                table21.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "UpdatedFullName",
                             "Jane Smith Updated"});
-                table21.AddRow(new string[] {
+                table23.AddRow(new string[] {
                             "UpdatedEmail",
                             "invalid-email"});
 #line 5
-    await testRunner.GivenAsync("I have an existing admin profile and an invalid update admin request", ((string)(null)), table21, "Given ");
+    await testRunner.GivenAsync("I have an existing admin profile and an invalid update admin request", ((string)(null)), table23, "Given ");
 #line hidden
 #line 12
     await testRunner.WhenAsync("I submit the update admin request for validation", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table22 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table24 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table22.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table22.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "Message",
                             "Email must be a valid format (address@domain.something)."});
-                table22.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "Name",
                             "AdminEmailValidationRule"});
-                table22.AddRow(new string[] {
+                table24.AddRow(new string[] {
                             "Entity",
                             "Admin"});
 #line 13
-    await testRunner.ThenAsync("the admin profile update fails with a validation error", ((string)(null)), table22, "Then ");
+    await testRunner.ThenAsync("the admin profile update fails with a validation error", ((string)(null)), table24, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

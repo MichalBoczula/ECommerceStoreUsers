@@ -158,48 +158,48 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.UpdateAdminNotFoun
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table16.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "AdminId",
                             "11111111-1111-1111-1111-111111111111"});
-                table16.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "FullName",
                             "Missing Update Admin"});
-                table16.AddRow(new string[] {
+                table18.AddRow(new string[] {
                             "Email",
                             "missing.update.admin@db.com"});
 #line 5
-    await testRunner.GivenAsync("I have a missing admin update request", ((string)(null)), table16, "Given ");
+    await testRunner.GivenAsync("I have a missing admin update request", ((string)(null)), table18, "Given ");
 #line hidden
 #line 10
     await testRunner.WhenAsync("I submit the missing admin update request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table19 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table17.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "StatusCode",
                             "404"});
-                table17.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "Title",
                             "Resource not found."});
-                table17.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "Detail",
                             "Resource Admin identified by id 11111111-1111-1111-1111-111111111111 cannot be fo" +
                                 "und in database during action UpdateAdminProfile."});
-                table17.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4"});
-                table17.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "Instance",
                             "/admins/11111111-1111-1111-1111-111111111111"});
-                table17.AddRow(new string[] {
+                table19.AddRow(new string[] {
                             "HasTraceId",
                             "true"});
 #line 11
-    await testRunner.ThenAsync("the update admin profile request fails with a not found response", ((string)(null)), table17, "Then ");
+    await testRunner.ThenAsync("the update admin profile request fails with a not found response", ((string)(null)), table19, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

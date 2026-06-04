@@ -76,8 +76,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.UpdateAdminSuccess
                 _apiContext.JsonOptions);
         }
 
-        [When("I submit the update admin request")]
-        public async Task WhenISubmitTheUpdateAdminRequest()
+        [When("I submit the valid update admin request")]
+        public async Task WhenISubmitTheValidUpdateAdminRequest()
         {
             _adminId.ShouldNotBe(Guid.Empty);
             _updateRequest.ShouldNotBeNull();

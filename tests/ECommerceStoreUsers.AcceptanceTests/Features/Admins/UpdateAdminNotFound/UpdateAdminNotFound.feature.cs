@@ -174,7 +174,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.UpdateAdminNotFoun
     await testRunner.GivenAsync("I have a missing admin update request", ((string)(null)), table16, "Given ");
 #line hidden
 #line 10
-    await testRunner.WhenAsync("I submit the update admin request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+    await testRunner.WhenAsync("I submit the missing admin update request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
                 global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
                             "Field",

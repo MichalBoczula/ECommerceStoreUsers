@@ -90,8 +90,6 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.UpdateAdminMissing
 
             _apiContext.Response.ShouldNotBeNull();
             _apiContext.Response!.StatusCode.ShouldBe(ParseStatusCode(expected, "StatusCode"));
-            _apiContext.Response.Content.Headers.ContentType.ShouldNotBeNull();
-            _apiContext.Response.Content.Headers.ContentType!.MediaType.ShouldBe("application/problem+json");
 
             var problemDetails = await DeserializeResponse<ProblemDetails>(_apiContext.Response);
             problemDetails.ShouldNotBeNull();

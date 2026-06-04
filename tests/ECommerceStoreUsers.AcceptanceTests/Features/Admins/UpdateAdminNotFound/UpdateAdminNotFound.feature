@@ -7,7 +7,7 @@ Feature: Update admin profile not found
       | AdminId   | 11111111-1111-1111-1111-111111111111 |
       | FullName  | Missing Update Admin                 |
       | Email     | missing.update.admin@db.com          |
-    When I submit the update admin request
+    When I submit the missing admin update request
     Then the update admin profile request fails with a not found response
       | Field      | Value                                                                                                                                                 |
       | StatusCode | 404                                                                                                                                                   |

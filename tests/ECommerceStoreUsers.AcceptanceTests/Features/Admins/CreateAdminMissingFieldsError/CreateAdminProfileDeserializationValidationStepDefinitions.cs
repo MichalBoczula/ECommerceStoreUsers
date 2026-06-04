@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace ECommerceStoreUsers.AcceptanceTests
+namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.CreateAdminMissingFieldsError
 {
     [Binding]
     public class CreateAdminProfileDeserializationValidationStepDefinitions

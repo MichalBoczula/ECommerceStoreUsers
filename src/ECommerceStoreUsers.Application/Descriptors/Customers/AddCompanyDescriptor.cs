@@ -89,7 +89,7 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
                 return;
             }
 
-            if (validationResult.GetValidationErrors().Any(error => error.Name == "CustomerCompanyTaxIdValidationRule"))
+            if (validationResult.GetValidationErrors().Any(error => IsDuplicatedCompanyTaxIdError(error.Name)))
             {
                 throw new ResourceAlreadyExistsException(
                     nameof(AddCompany),
@@ -110,6 +110,11 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
         public CustomerResponseDto MapToResponse(Customer customer)
         {
             return MappingConfig.MapToResponse(customer);
+        }
+
+        private static bool IsDuplicatedCompanyTaxIdError(string errorName)
+        {
+            return errorName is "CompanyDataTaxIdUniquenessValidationRule" or "CustomerCompanyTaxIdValidationRule";
         }
     }
 }

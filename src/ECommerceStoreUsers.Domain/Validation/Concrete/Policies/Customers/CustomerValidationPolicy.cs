@@ -15,12 +15,13 @@ internal sealed class CustomerValidationPolicy : IValidationPolicy<Customer>, IV
     private readonly List<IValidationRule<Customer>> _customerRules = [];
     private readonly List<IValidationRule<IndividualData>> _individualRules = [];
     private readonly List<IValidationRule<CompanyData>> _companyRules = [];
+    private readonly List<IValidationRule<IReadOnlyCollection<CompanyData>>> _companyCollectionRules = [];
     private readonly List<IValidationRule<Address>> _addressRules = [];
 
     public CustomerValidationPolicy()
     {
         _customerRules.Add(new CustomerExternalIdValidationRule());
-        _customerRules.Add(new CustomerCompanyTaxIdValidationRule());
+        _companyCollectionRules.Add(new CompanyDataTaxIdUniquenessValidationRule());
 
         _individualRules.Add(new IndividualDataFirstNameValidationRule());
         _individualRules.Add(new IndividualDataLastNameValidationRule());
@@ -56,6 +57,9 @@ internal sealed class CustomerValidationPolicy : IValidationPolicy<Customer>, IV
             }
         }
 
+        foreach (var rule in _companyCollectionRules)
+            await rule.IsValid(entity.Companies, validationResult);
+
         foreach (var company in entity.Companies)
         {
             foreach (var rule in _companyRules)
@@ -78,6 +82,7 @@ internal sealed class CustomerValidationPolicy : IValidationPolicy<Customer>, IV
         descriptors.AddRange(_customerRules.Select(r => new ValidationRuleDescriptor { RuleName = r.GetType().Name, Rules = r.Describe() }));
         descriptors.AddRange(_individualRules.Select(r => new ValidationRuleDescriptor { RuleName = r.GetType().Name, Rules = r.Describe() }));
         descriptors.AddRange(_companyRules.Select(r => new ValidationRuleDescriptor { RuleName = r.GetType().Name, Rules = r.Describe() }));
+        descriptors.AddRange(_companyCollectionRules.Select(r => new ValidationRuleDescriptor { RuleName = r.GetType().Name, Rules = r.Describe() }));
         descriptors.AddRange(_addressRules.Select(r => new ValidationRuleDescriptor { RuleName = r.GetType().Name, Rules = r.Describe() }));
 
         return new ValidationPolicyDescriptor

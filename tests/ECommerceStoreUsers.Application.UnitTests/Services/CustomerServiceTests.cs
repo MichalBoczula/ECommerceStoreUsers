@@ -156,7 +156,7 @@ public sealed class CustomerServiceTests
         invalidResult.AddValidationError(new ValidationError
         {
             Entity = nameof(CompanyData),
-            Name = "CustomerCompanyTaxIdValidationRule",
+            Name = "CompanyDataTaxIdUniquenessValidationRule",
             Message = "Customer already contains a company with the same Tax Id."
         });
 
@@ -583,7 +583,7 @@ public sealed class CustomerServiceTests
         invalidCustomerResult.AddValidationError(new ValidationError
         {
             Entity = nameof(CompanyData),
-            Name = "CustomerCompanyTaxIdValidationRule",
+            Name = "CompanyDataTaxIdUniquenessValidationRule",
             Message = "Customer already contains a company with the same Tax Id."
         });
 

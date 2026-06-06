@@ -52,10 +52,24 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerD
             var companies = table.Rows
                 .Select(row => new AddCompanyRequestDto
                 {
-                    CompanyName = GetRequiredValue(row, "CompanyName"),
-                    TaxId = GetRequiredValue(row, "TaxId"),
-                    BillingAddress = CreateAddressRequest(row, "BillingAddress"),
-                    ShippingAddress = CreateAddressRequest(row, "ShippingAddress")
+                    CompanyName = row["CompanyName"],
+                    TaxId = row["TaxId"],
+                    BillingAddress = new AddressRequestDto
+                    {
+                        PostalCode = row["BillingAddress.PostalCode"],
+                        City = row["BillingAddress.City"],
+                        Street = row["BillingAddress.Street"],
+                        BuildingNumber = row["BillingAddress.BuildingNumber"],
+                        ApartmentNumber = row["BillingAddress.ApartmentNumber"]
+                    },
+                    ShippingAddress = new AddressRequestDto
+                    {
+                        PostalCode = row["ShippingAddress.PostalCode"],
+                        City = row["ShippingAddress.City"],
+                        Street = row["ShippingAddress.Street"],
+                        BuildingNumber = row["ShippingAddress.BuildingNumber"],
+                        ApartmentNumber = row["ShippingAddress.ApartmentNumber"]
+                    }
                 })
                 .ToArray();
 
@@ -134,18 +148,6 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerD
             };
         }
 
-        private static AddressRequestDto CreateAddressRequest(TableRow row, string prefix)
-        {
-            return new AddressRequestDto
-            {
-                PostalCode = GetRequiredValue(row, $"{prefix}.PostalCode"),
-                City = GetRequiredValue(row, $"{prefix}.City"),
-                Street = GetRequiredValue(row, $"{prefix}.Street"),
-                BuildingNumber = GetRequiredValue(row, $"{prefix}.BuildingNumber"),
-                ApartmentNumber = GetRequiredValue(row, $"{prefix}.ApartmentNumber")
-            };
-        }
-
         private static Dictionary<string, string> ParseExpectedTable(Table table)
         {
             var values = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -160,16 +162,6 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerD
         private static string GetRequiredValue(IReadOnlyDictionary<string, string> values, string key)
         {
             if (!values.TryGetValue(key, out var value))
-            {
-                throw new InvalidOperationException($"Missing '{key}' key in create customer duplicate companies data table mapping.");
-            }
-
-            return value;
-        }
-
-        private static string GetRequiredValue(TableRow row, string key)
-        {
-            if (!row.TryGetValue(key, out var value))
             {
                 throw new InvalidOperationException($"Missing '{key}' key in create customer duplicate companies data table mapping.");
             }

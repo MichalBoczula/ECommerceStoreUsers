@@ -28,6 +28,22 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Custom
         }
 
         [Fact]
+        public async Task IsValid_ExternalIdIsEmptyGuid_ShouldReturnError()
+        {
+            // Arrange
+            var rule = new CustomerExternalIdValidationRule();
+            var validationResult = new ValidationResult();
+            var customer = CreateCustomer(Guid.Empty.ToString());
+
+            // Act
+            await rule.IsValid(customer, validationResult);
+
+            // Assert
+            validationResult.GetValidationErrors().Count.ShouldBe(1);
+            validationResult.GetValidationErrors().First().Message.ShouldBe("ExternalId cannot be an empty guid.");
+        }
+
+        [Fact]
         public void Describe_ShouldReturnRuleDescriptors()
         {
             // Arrange
@@ -37,8 +53,9 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Custom
             var descriptors = rule.Describe();
 
             // Assert
-            descriptors.Count.ShouldBe(1);
+            descriptors.Count.ShouldBe(2);
             descriptors.ShouldContain(d => d.Message == "ExternalId cannot be null or white space.");
+            descriptors.ShouldContain(d => d.Message == "ExternalId cannot be an empty guid.");
         }
 
         private static Customer CreateCustomer(string externalId)

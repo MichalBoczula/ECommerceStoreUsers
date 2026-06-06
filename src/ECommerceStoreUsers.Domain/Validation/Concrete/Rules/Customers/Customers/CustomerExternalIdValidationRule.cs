@@ -7,12 +7,20 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Custome
     internal sealed class CustomerExternalIdValidationRule : IValidationRule<Customer>
     {
         private readonly ValidationError _invalidExternalId;
+        private readonly ValidationError _emptyGuidExternalId;
 
         public CustomerExternalIdValidationRule()
         {
             _invalidExternalId = new ValidationError
             {
                 Message = "ExternalId cannot be null or white space.",
+                Name = nameof(CustomerExternalIdValidationRule),
+                Entity = nameof(Customer)
+            };
+
+            _emptyGuidExternalId = new ValidationError
+            {
+                Message = "ExternalId cannot be an empty guid.",
                 Name = nameof(CustomerExternalIdValidationRule),
                 Entity = nameof(Customer)
             };
@@ -23,9 +31,15 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Custome
             if (entity is null) return;
 
             if (string.IsNullOrWhiteSpace(entity.ExternalId))
+            {
                 validationResults.AddValidationError(_invalidExternalId);
+                return;
+            }
+
+            if (Guid.TryParse(entity.ExternalId, out var externalId) && externalId == Guid.Empty)
+                validationResults.AddValidationError(_emptyGuidExternalId);
         }
 
-        public List<ValidationError> Describe() => [_invalidExternalId];
+        public List<ValidationError> Describe() => [_invalidExternalId, _emptyGuidExternalId];
     }
 }

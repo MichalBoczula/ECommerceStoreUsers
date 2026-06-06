@@ -54,6 +54,7 @@ public sealed class CustomerServiceTests
         Assert.Equal(request.Individual.FirstName, result.Individual.FirstName);
 
         customerValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Customer>()), Times.Once);
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == request.ExternalId)), Times.Once);
         customerRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(request.ExternalId, cancellationToken), Times.Once);
         customerRepositoryMock.Verify(repo => repo.CreateCustomer(It.IsAny<Customer>(), cancellationToken), Times.Once);
     }
@@ -145,6 +146,7 @@ public sealed class CustomerServiceTests
     {
         var request = CreateCustomerRequest();
         var cancellationToken = CancellationToken.None;
+        var validationResult = new ValidationResult();
         var customer = new Customer(request.ExternalId, new IndividualData(
             request.Individual.FirstName,
             request.Individual.LastName,
@@ -159,6 +161,10 @@ public sealed class CustomerServiceTests
         var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
         var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
         var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
+
+        customerValidationPolicyMock
+            .Setup(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == request.ExternalId)))
+            .ReturnsAsync(validationResult);
 
         customerRepositoryMock
             .Setup(repo => repo.GetByExternalIdAsync(request.ExternalId, cancellationToken))
@@ -179,6 +185,7 @@ public sealed class CustomerServiceTests
         result.ExternalId.ShouldBe(request.ExternalId);
         result.Individual.FirstName.ShouldBe(request.Individual.FirstName);
 
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == request.ExternalId)), Times.Once);
         customerRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(request.ExternalId, cancellationToken), Times.Once);
     }
 
@@ -187,6 +194,7 @@ public sealed class CustomerServiceTests
     {
         var externalId = "missing-customer-ext-id";
         var cancellationToken = CancellationToken.None;
+        var validationResult = new ValidationResult();
 
         var customerRepositoryMock = new Mock<ICustomerRepository>(MockBehavior.Strict);
         var customerValidationPolicyMock = new Mock<IValidationPolicy<Customer>>(MockBehavior.Strict);
@@ -194,6 +202,10 @@ public sealed class CustomerServiceTests
         var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
         var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
         var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
+
+        customerValidationPolicyMock
+            .Setup(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == externalId)))
+            .ReturnsAsync(validationResult);
 
         customerRepositoryMock
             .Setup(repo => repo.GetByExternalIdAsync(externalId, cancellationToken))
@@ -209,6 +221,7 @@ public sealed class CustomerServiceTests
 
         await Should.ThrowAsync<ResourceNotFoundException>(() => sut.GetCustomerByExternalId(externalId, cancellationToken));
 
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == externalId)), Times.Once);
         customerRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(externalId, cancellationToken), Times.Once);
     }
 
@@ -232,9 +245,9 @@ public sealed class CustomerServiceTests
         var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
         var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
 
-        customerRepositoryMock
-            .Setup(repo => repo.GetByExternalIdAsync(externalId, cancellationToken))
-            .ThrowsAsync(new ValidationException(invalidResult));
+        customerValidationPolicyMock
+            .Setup(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == externalId)))
+            .ReturnsAsync(invalidResult);
 
         var sut = new CustomerService(
             customerRepositoryMock.Object,
@@ -246,7 +259,8 @@ public sealed class CustomerServiceTests
 
         await Should.ThrowAsync<ValidationException>(() => sut.GetCustomerByExternalId(externalId, cancellationToken));
 
-        customerRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(externalId, cancellationToken), Times.Once);
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == externalId)), Times.Once);
+        customerRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]

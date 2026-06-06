@@ -49,6 +49,10 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
 
             var descriptor = new GetCustomerByExternalIdDescriptor();
 
+            var customerForValidation = descriptor.MapExternalIdToCustomer(externalId);
+            var validationResult = await descriptor.ValidateCustomer(customerForValidation, _customerValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
+
             var customer = await descriptor.LoadCustomer(externalId, _customerRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfCustomerMissing(externalId, customer);
 

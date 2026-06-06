@@ -162,78 +162,78 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerM
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table30 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table38 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "ExternalId",
                             "auth-customer-missing-123456"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.FirstName",
                             "John"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.LastName",
                             "Doe"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.BillingAddress.PostalCode",
                             "00-001"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.BillingAddress.City",
                             "Warsaw"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.BillingAddress.Street",
                             "Main Street"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.BillingAddress.BuildingNumber",
                             "10"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.BillingAddress.ApartmentNumber",
                             "20"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.ShippingAddress.PostalCode",
                             "00-002"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.ShippingAddress.City",
                             "Krakow"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.ShippingAddress.Street",
                             "Shipping Street"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.ShippingAddress.BuildingNumber",
                             "15"});
-                table30.AddRow(new string[] {
+                table38.AddRow(new string[] {
                             "Individual.ShippingAddress.ApartmentNumber",
                             "25"});
 #line 5
-    await testRunner.GivenAsync("I have a create customer request payload missing the individual email and phone", ((string)(null)), table30, "Given ");
+    await testRunner.GivenAsync("I have a create customer request payload missing the individual email and phone", ((string)(null)), table38, "Given ");
 #line hidden
 #line 20
     await testRunner.WhenAsync("I submit the incomplete create customer request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table31 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table39 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table31.AddRow(new string[] {
+                table39.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table31.AddRow(new string[] {
+                table39.AddRow(new string[] {
                             "Title",
                             "Invalid JSON payload."});
-                table31.AddRow(new string[] {
+                table39.AddRow(new string[] {
                             "Detail",
                             "JSON payload for IndividualDataRequestDto is missing required properties: email, " +
                                 "phone."});
-                table31.AddRow(new string[] {
+                table39.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"});
-                table31.AddRow(new string[] {
+                table39.AddRow(new string[] {
                             "MissingProperty",
                             "email"});
-                table31.AddRow(new string[] {
+                table39.AddRow(new string[] {
                             "MissingProperty",
                             "phone"});
 #line 21
-    await testRunner.ThenAsync("the create customer response indicates a json deserialization failure", ((string)(null)), table31, "Then ");
+    await testRunner.ThenAsync("the create customer response indicates a json deserialization failure", ((string)(null)), table39, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

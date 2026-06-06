@@ -159,87 +159,87 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerC
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table28 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table36 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "ExternalId",
                             "auth-customer-conflict-123456"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.FirstName",
                             "Jane"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.LastName",
                             "Duplicate"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.Email",
                             "jane.duplicate@example.com"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.Phone",
                             "987654321"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.BillingAddress.PostalCode",
                             "01-001"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.BillingAddress.City",
                             "Warsaw"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.BillingAddress.Street",
                             "Conflict Street"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.BillingAddress.BuildingNumber",
                             "11"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.BillingAddress.ApartmentNumber",
                             "21"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.ShippingAddress.PostalCode",
                             "01-002"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.ShippingAddress.City",
                             "Krakow"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.ShippingAddress.Street",
                             "Duplicate Avenue"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.ShippingAddress.BuildingNumber",
                             "16"});
-                table28.AddRow(new string[] {
+                table36.AddRow(new string[] {
                             "Individual.ShippingAddress.ApartmentNumber",
                             "26"});
 #line 5
-    await testRunner.GivenAsync("I have a valid create individual customer request payload", ((string)(null)), table28, "Given ");
+    await testRunner.GivenAsync("I have a valid create individual customer request payload", ((string)(null)), table36, "Given ");
 #line hidden
 #line 22
     await testRunner.WhenAsync("I submit the same create customer request twice", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table29 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table37 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table29.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "StatusCode",
                             "409"});
-                table29.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "Status",
                             "409"});
-                table29.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "Title",
                             "Conflict."});
-                table29.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8"});
-                table29.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "Instance",
                             "/customers"});
-                table29.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "DetailContains",
                             "Resource Customer identified by id auth-customer-conflict-123456 already exists i" +
                                 "n db. Error in action CreateCustomer."});
-                table29.AddRow(new string[] {
+                table37.AddRow(new string[] {
                             "HasTraceId",
                             "true"});
 #line 23
-    await testRunner.ThenAsync("the customer profile creation fails with a conflict error", ((string)(null)), table29, "Then ");
+    await testRunner.ThenAsync("the customer profile creation fails with a conflict error", ((string)(null)), table37, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

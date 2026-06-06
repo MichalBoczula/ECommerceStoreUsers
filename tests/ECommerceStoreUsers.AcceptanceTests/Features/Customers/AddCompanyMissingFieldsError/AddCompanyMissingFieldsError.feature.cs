@@ -17,14 +17,16 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.AddCompanyMissi
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_adding_a_company_with_a_payload_missing_required_json_properties_returns_a_bad_request_after_customer_creation.")]
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_adding_a_company_with_a_payload_missing_required_json_" +
+        "properties_returns_a_bad_request_after_customer_creation.")]
     public partial class AddCompanyDeserializationValidationFeature : object, global::Xunit.IClassFixture<AddCompanyDeserializationValidationFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_adding_a_company_with_a_payload_missing_required_json_properties_returns_a_bad_request_after_customer_creation."};
+                "allure.description:Ensures_adding_a_company_with_a_payload_missing_required_json_" +
+                    "properties_returns_a_bad_request_after_customer_creation."};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Customers/AddCompanyMissingFieldsError", "Add company deserialization validation", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -107,7 +109,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.AddCompanyMissi
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Customers/AddCompanyMissingFieldsError/AddCompanyMissingFieldsError.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Customers/AddCompanyMissingFieldsError/AddCompanyMissingFieldsError.feat" +
+                    "ure.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -135,15 +138,18 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.AddCompanyMissi
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Add company to existing customer with missing company name returns deserialization error")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Add company to existing customer with missing company name returns deserializatio" +
+            "n error")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Add company deserialization validation")]
-        [global::Xunit.TraitAttribute("Description", "Add company to existing customer with missing company name returns deserialization error")]
+        [global::Xunit.TraitAttribute("Description", "Add company to existing customer with missing company name returns deserializatio" +
+            "n error")]
         public async global::System.Threading.Tasks.Task AddCompanyToExistingCustomerWithMissingCompanyNameReturnsDeserializationError()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Add company to existing customer with missing company name returns deserialization error", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Add company to existing customer with missing company name returns deserializatio" +
+                    "n error", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -156,119 +162,120 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.AddCompanyMissi
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table25 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "ExternalId",
                             "customer-company-missing-123456"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "FirstName",
                             "Missing"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "LastName",
                             "Company"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "Email",
                             "missing.company.customer@db.com"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "Phone",
                             "123456789"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "BillingPostalCode",
                             "00-001"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "BillingCity",
                             "Warsaw"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "BillingStreet",
                             "Marszalkowska"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "10"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "5"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "ShippingPostalCode",
                             "30-002"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "ShippingCity",
                             "Krakow"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "ShippingStreet",
                             "Dluga"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "12"});
-                table1.AddRow(new string[] {
+                table25.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "7"});
 #line 5
-    await testRunner.GivenAsync("a customer exists for add company missing fields request", ((string)(null)), table1, "Given ");
+    await testRunner.GivenAsync("a customer exists for add company missing fields request", ((string)(null)), table25, "Given ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table26 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "TaxId",
                             "1234567890"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "BillingPostalCode",
                             "00-950"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "BillingCity",
                             "Warsaw"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "BillingStreet",
                             "Prosta"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "20"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "15"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "ShippingPostalCode",
                             "80-001"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "ShippingCity",
                             "Gdansk"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "ShippingStreet",
                             "Portowa"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "4A"});
-                table2.AddRow(new string[] {
+                table26.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "2"});
 #line 22
-    await testRunner.AndAsync("I have an add company request payload missing the company name", ((string)(null)), table2, "And ");
+    await testRunner.AndAsync("I have an add company request payload missing the company name", ((string)(null)), table26, "And ");
 #line hidden
-#line 36
+#line 35
     await testRunner.WhenAsync("I submit the incomplete add company request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table27 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table4.AddRow(new string[] {
+                table27.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table4.AddRow(new string[] {
+                table27.AddRow(new string[] {
                             "Title",
                             "Invalid JSON payload."});
-                table4.AddRow(new string[] {
+                table27.AddRow(new string[] {
                             "Detail",
-                            "JSON payload for AddCompanyRequestDto is missing required properties: companyName."});
-                table4.AddRow(new string[] {
+                            "JSON payload for AddCompanyRequestDto is missing required properties: companyName" +
+                                "."});
+                table27.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"});
-                table4.AddRow(new string[] {
+                table27.AddRow(new string[] {
                             "MissingProperty",
                             "companyName"});
-#line 37
-    await testRunner.ThenAsync("the add company response indicates a json deserialization failure", ((string)(null)), table4, "Then ");
+#line 36
+    await testRunner.ThenAsync("the add company response indicates a json deserialization failure", ((string)(null)), table27, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

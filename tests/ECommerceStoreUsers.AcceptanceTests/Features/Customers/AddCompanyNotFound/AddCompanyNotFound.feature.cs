@@ -17,14 +17,16 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.AddCompanyNotFo
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_adding_a_company_to_a_missing_customer_by_customer_id_returns_a_not_found_problem_details_response.")]
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_adding_a_company_to_a_missing_customer_by_customer_id_" +
+        "returns_a_not_found_problem_details_response.")]
     public partial class AddCompanyNotFoundFeature : object, global::Xunit.IClassFixture<AddCompanyNotFoundFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_adding_a_company_to_a_missing_customer_by_customer_id_returns_a_not_found_problem_details_response."};
+                "allure.description:Ensures_adding_a_company_to_a_missing_customer_by_customer_id_" +
+                    "returns_a_not_found_problem_details_response."};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Customers/AddCompanyNotFound", "Add company not found", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -156,77 +158,78 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.AddCompanyNotFo
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table28 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "CustomerId",
                             "22222222-2222-2222-2222-222222222222"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "TaxId",
                             "1234567890"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "CompanyName",
                             "Missing Customer Company Sp. z o.o."});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "BillingPostalCode",
                             "00-950"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "BillingCity",
                             "Warsaw"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "BillingStreet",
                             "Prosta"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "20"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "15"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "ShippingPostalCode",
                             "80-001"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "ShippingCity",
                             "Gdansk"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "ShippingStreet",
                             "Portowa"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "4A"});
-                table1.AddRow(new string[] {
+                table28.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "2"});
 #line 5
-    await testRunner.GivenAsync("I have a missing customer add company request", ((string)(null)), table1, "Given ");
+    await testRunner.GivenAsync("I have a missing customer add company request", ((string)(null)), table28, "Given ");
 #line hidden
 #line 20
     await testRunner.WhenAsync("I submit the missing customer add company request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table29 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table3.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "StatusCode",
                             "404"});
-                table3.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "Title",
                             "Resource not found."});
-                table3.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "Detail",
-                            "Resource Customer identified by id 22222222-2222-2222-2222-222222222222 cannot be found in database during action AddCompany."});
-                table3.AddRow(new string[] {
+                            "Resource Customer identified by id 22222222-2222-2222-2222-222222222222 cannot be" +
+                                " found in database during action AddCompany."});
+                table29.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4"});
-                table3.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "Instance",
                             "/customers/22222222-2222-2222-2222-222222222222/companies"});
-                table3.AddRow(new string[] {
+                table29.AddRow(new string[] {
                             "HasTraceId",
                             "true"});
 #line 21
-    await testRunner.ThenAsync("the add company request fails with a not found response", ((string)(null)), table3, "Then ");
+    await testRunner.ThenAsync("the add company request fails with a not found response", ((string)(null)), table29, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

@@ -162,77 +162,77 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerV
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table32 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table40 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "ExternalId",
                             "auth-customer-654321"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.FirstName",
                             "John"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.LastName",
                             "Doe"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.Email",
                             "john.doe@example.com"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.Phone",
                             "123456789"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.BillingAddress.PostalCode",
                             "00-001"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.BillingAddress.City",
                             ""});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.BillingAddress.Street",
                             "Main Street"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.BillingAddress.BuildingNumber",
                             "10"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.BillingAddress.ApartmentNumber",
                             "20"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.ShippingAddress.PostalCode",
                             "00-002"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.ShippingAddress.City",
                             "Krakow"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.ShippingAddress.Street",
                             "Shipping Street"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.ShippingAddress.BuildingNumber",
                             "15"});
-                table32.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Individual.ShippingAddress.ApartmentNumber",
                             "25"});
 #line 5
-    await testRunner.GivenAsync("I have an invalid individual create customer request", ((string)(null)), table32, "Given ");
+    await testRunner.GivenAsync("I have an invalid individual create customer request", ((string)(null)), table40, "Given ");
 #line hidden
 #line 22
     await testRunner.WhenAsync("I submit the create customer request for validation", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table33 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table41 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table33.AddRow(new string[] {
+                table41.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table33.AddRow(new string[] {
+                table41.AddRow(new string[] {
                             "Message",
                             "City cannot be empty or white space."});
-                table33.AddRow(new string[] {
+                table41.AddRow(new string[] {
                             "Name",
                             "AddressCityValidationRule"});
-                table33.AddRow(new string[] {
+                table41.AddRow(new string[] {
                             "Entity",
                             "Address"});
 #line 23
-    await testRunner.ThenAsync("the customer profile creation fails with a validation error", ((string)(null)), table33, "Then ");
+    await testRunner.ThenAsync("the customer profile creation fails with a validation error", ((string)(null)), table41, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

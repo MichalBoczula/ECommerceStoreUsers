@@ -17,16 +17,16 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_creating_an_individual_customer_profile_returns_a_succ" +
-        "ess_response_with_the_created_payload_fields.")]
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_creating_a_customer_profile_returns_a_success_response_with_the_created_individual" +
+        "_and_company_payload_fields.")]
     public partial class CreateCustomerProfileFeature : object, global::Xunit.IClassFixture<CreateCustomerProfileFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_creating_an_individual_customer_profile_returns_a_succ" +
-                    "ess_response_with_the_created_payload_fields."};
+                "allure.description:Ensures_creating_a_customer_profile_returns_a_success_response_with_the_created_individual" +
+                    "_and_company_payload_fields."};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Customers/CreateCustomerSuccess", "Create customer profile", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -137,15 +137,15 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Create individual customer profile returns created customer data")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Create customer profile returns created individual and company data")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Create customer profile")]
-        [global::Xunit.TraitAttribute("Description", "Create individual customer profile returns created customer data")]
-        public async global::System.Threading.Tasks.Task CreateIndividualCustomerProfileReturnsCreatedCustomerData()
+        [global::Xunit.TraitAttribute("Description", "Create customer profile returns created individual and company data")]
+        public async global::System.Threading.Tasks.Task CreateCustomerProfileReturnsCreatedIndividualAndCompanyData()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Create individual customer profile returns created customer data", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Create customer profile returns created individual and company data", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -206,11 +206,47 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
                 table5.AddRow(new string[] {
                             "Individual.ShippingAddress.ApartmentNumber",
                             "25"});
+                table5.AddRow(new string[] {
+                            "Company.TaxId",
+                            "1234567890"});
+                table5.AddRow(new string[] {
+                            "Company.CompanyName",
+                            "Example Company Sp. z o.o."});
+                table5.AddRow(new string[] {
+                            "Company.BillingAddress.PostalCode",
+                            "00-950"});
+                table5.AddRow(new string[] {
+                            "Company.BillingAddress.City",
+                            "Warsaw"});
+                table5.AddRow(new string[] {
+                            "Company.BillingAddress.Street",
+                            "Prosta"});
+                table5.AddRow(new string[] {
+                            "Company.BillingAddress.BuildingNumber",
+                            "20"});
+                table5.AddRow(new string[] {
+                            "Company.BillingAddress.ApartmentNumber",
+                            "15"});
+                table5.AddRow(new string[] {
+                            "Company.ShippingAddress.PostalCode",
+                            "80-001"});
+                table5.AddRow(new string[] {
+                            "Company.ShippingAddress.City",
+                            "Gdansk"});
+                table5.AddRow(new string[] {
+                            "Company.ShippingAddress.Street",
+                            "Portowa"});
+                table5.AddRow(new string[] {
+                            "Company.ShippingAddress.BuildingNumber",
+                            "4A"});
+                table5.AddRow(new string[] {
+                            "Company.ShippingAddress.ApartmentNumber",
+                            "2"});
 #line 5
-    await testRunner.GivenAsync("I have a valid create individual customer request", ((string)(null)), table5, "Given ");
+    await testRunner.GivenAsync("I have a valid create customer request", ((string)(null)), table5, "Given ");
 #line hidden
-#line 22
-    await testRunner.WhenAsync("I submit the create individual customer request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 34
+    await testRunner.WhenAsync("I submit the create customer request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
                 global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "Field",
@@ -226,7 +262,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
                             "auth-customer-123456"});
                 table6.AddRow(new string[] {
                             "CompaniesCount",
-                            "0"});
+                            "1"});
                 table6.AddRow(new string[] {
                             "HasUpdatedAt",
                             "true"});
@@ -272,8 +308,47 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
                 table6.AddRow(new string[] {
                             "Individual.ShippingAddress.ApartmentNumber",
                             "25"});
-#line 23
-    await testRunner.ThenAsync("the individual customer profile is created successfully", ((string)(null)), table6, "Then ");
+                table6.AddRow(new string[] {
+                            "Company.HasId",
+                            "true"});
+                table6.AddRow(new string[] {
+                            "Company.TaxId",
+                            "1234567890"});
+                table6.AddRow(new string[] {
+                            "Company.CompanyName",
+                            "Example Company Sp. z o.o."});
+                table6.AddRow(new string[] {
+                            "Company.BillingAddress.PostalCode",
+                            "00-950"});
+                table6.AddRow(new string[] {
+                            "Company.BillingAddress.City",
+                            "Warsaw"});
+                table6.AddRow(new string[] {
+                            "Company.BillingAddress.Street",
+                            "Prosta"});
+                table6.AddRow(new string[] {
+                            "Company.BillingAddress.BuildingNumber",
+                            "20"});
+                table6.AddRow(new string[] {
+                            "Company.BillingAddress.ApartmentNumber",
+                            "15"});
+                table6.AddRow(new string[] {
+                            "Company.ShippingAddress.PostalCode",
+                            "80-001"});
+                table6.AddRow(new string[] {
+                            "Company.ShippingAddress.City",
+                            "Gdansk"});
+                table6.AddRow(new string[] {
+                            "Company.ShippingAddress.Street",
+                            "Portowa"});
+                table6.AddRow(new string[] {
+                            "Company.ShippingAddress.BuildingNumber",
+                            "4A"});
+                table6.AddRow(new string[] {
+                            "Company.ShippingAddress.ApartmentNumber",
+                            "2"});
+#line 35
+    await testRunner.ThenAsync("the customer profile is created successfully", ((string)(null)), table6, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

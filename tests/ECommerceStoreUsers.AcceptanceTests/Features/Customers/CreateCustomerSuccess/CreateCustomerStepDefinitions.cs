@@ -21,11 +21,11 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
             _apiContext = apiContext;
         }
 
-        [Given("I have a valid create individual customer request")]
-        public void GivenIHaveAValidCreateIndividualCustomerRequest(Table table)
+        [Given("I have a valid create customer request")]
+        public void GivenIHaveAValidCreateCustomerRequest(Table table)
         {
             var requestValues = ParseExpectedTable(table);
-            AllureJson.AttachObject("Create individual customer request table", requestValues, _apiContext.JsonOptions);
+            AllureJson.AttachObject("Create customer request table", requestValues, _apiContext.JsonOptions);
 
             _request = new CreateCustomerRequestDto
             {
@@ -38,17 +38,18 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
                     Phone = GetRequiredValue(requestValues, "Individual.Phone"),
                     BillingAddress = CreateAddressRequest(requestValues, "Individual.BillingAddress"),
                     ShippingAddress = CreateAddressRequest(requestValues, "Individual.ShippingAddress")
-                }
+                },
+                Companies = CreateCompanyRequests(requestValues)
             };
 
             AllureJson.AttachObject(
-                "Create individual customer request contract",
+                "Create customer request contract",
                 _request,
                 _apiContext.JsonOptions);
         }
 
-        [When("I submit the create individual customer request")]
-        public async Task WhenISubmitTheCreateIndividualCustomerRequest()
+        [When("I submit the create customer request")]
+        public async Task WhenISubmitTheCreateCustomerRequest()
         {
             _request.ShouldNotBeNull();
 
@@ -58,15 +59,15 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
                 _apiContext.JsonOptions);
 
             var body = await _apiContext.Response.Content.ReadAsStringAsync();
-            AllureJson.AttachRawJson($"Create individual customer response contract ({(int)_apiContext.Response.StatusCode})", body);
+            AllureJson.AttachRawJson($"Create customer response contract ({(int)_apiContext.Response.StatusCode})", body);
         }
 
-        [Then("the individual customer profile is created successfully")]
-        public async Task ThenTheIndividualCustomerProfileIsCreatedSuccessfully(Table table)
+        [Then("the customer profile is created successfully")]
+        public async Task ThenTheCustomerProfileIsCreatedSuccessfully(Table table)
         {
             var expected = ParseExpectedTable(table);
 
-            AllureJson.AttachObject("Expected individual customer response table", expected, _apiContext.JsonOptions);
+            AllureJson.AttachObject("Expected customer response table", expected, _apiContext.JsonOptions);
 
             _apiContext.Response.ShouldNotBeNull();
             _apiContext.Response!.StatusCode.ShouldBe(ParseStatusCode(expected, "StatusCode"));
@@ -75,7 +76,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
             customerResponse.ShouldNotBeNull();
 
             AllureJson.AttachObject(
-                "Create individual customer response dto contract",
+                "Create customer response dto contract",
                 customerResponse!,
                 _apiContext.JsonOptions);
 
@@ -106,12 +107,32 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
             customerResponse!.ExternalId.ShouldBe(GetExpectedValue(expected, "ExternalId", customerResponse.ExternalId));
             customerResponse.Companies.Count.ShouldBe(ParseInt(expected, "CompaniesCount"));
             AssertIndividual(customerResponse.Individual, expected);
+            AssertCompany(customerResponse.Companies, expected);
         }
 
         private async Task<T?> DeserializeResponse<T>(HttpResponseMessage response)
         {
             var content = await response.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(content, _apiContext.JsonOptions);
+        }
+
+        private static IReadOnlyCollection<AddCompanyRequestDto> CreateCompanyRequests(IReadOnlyDictionary<string, string> values)
+        {
+            if (!values.ContainsKey("Company.TaxId"))
+            {
+                return [];
+            }
+
+            return
+            [
+                new AddCompanyRequestDto
+                {
+                    TaxId = GetRequiredValue(values, "Company.TaxId"),
+                    CompanyName = GetRequiredValue(values, "Company.CompanyName"),
+                    BillingAddress = CreateAddressRequest(values, "Company.BillingAddress"),
+                    ShippingAddress = CreateAddressRequest(values, "Company.ShippingAddress")
+                }
+            ];
         }
 
         private static AddressRequestDto CreateAddressRequest(IReadOnlyDictionary<string, string> values, string prefix)
@@ -134,6 +155,33 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerS
             actual.Phone.ShouldBe(GetExpectedValue(expected, "Individual.Phone", actual.Phone));
             AssertAddress(actual.BillingAddress, expected, "Individual.BillingAddress");
             AssertAddress(actual.ShippingAddress, expected, "Individual.ShippingAddress");
+        }
+
+        private static void AssertCompany(IReadOnlyCollection<CompanyDataResponseDto> actual, IReadOnlyDictionary<string, string> expected)
+        {
+            if (!expected.ContainsKey("Company.TaxId"))
+            {
+                return;
+            }
+
+            var company = actual.ShouldHaveSingleItem();
+
+            if (TryGetBool(expected, "Company.HasId", out var hasCompanyId))
+            {
+                if (hasCompanyId)
+                {
+                    company.Id.ShouldNotBe(Guid.Empty);
+                }
+                else
+                {
+                    company.Id.ShouldBe(Guid.Empty);
+                }
+            }
+
+            company.TaxId.ShouldBe(GetExpectedValue(expected, "Company.TaxId", company.TaxId));
+            company.CompanyName.ShouldBe(GetExpectedValue(expected, "Company.CompanyName", company.CompanyName));
+            AssertAddress(company.BillingAddress, expected, "Company.BillingAddress");
+            AssertAddress(company.ShippingAddress, expected, "Company.ShippingAddress");
         }
 
         private static void AssertAddress(AddressResponseDto actual, IReadOnlyDictionary<string, string> expected, string prefix)

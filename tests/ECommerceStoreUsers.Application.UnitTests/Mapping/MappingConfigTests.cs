@@ -40,6 +40,53 @@ namespace ECommerceStoreUsers.Application.UnitTests.Mapping
         }
 
         [Fact]
+        public void MapToDomain_CreateCustomerRequestDto_ShouldMapCustomerWithCompanyData()
+        {
+            // Arrange
+            var request = new CreateCustomerRequestDto
+            {
+                ExternalId = "external-company-1",
+                Individual = CreateIndividualRequestDto(),
+                Companies =
+                [
+                    new AddCompanyRequestDto
+                    {
+                        TaxId = "1234567890",
+                        CompanyName = "Example Company",
+                        BillingAddress = new AddressRequestDto
+                        {
+                            PostalCode = "30-300",
+                            City = "Poznan",
+                            Street = "Business",
+                            BuildingNumber = "3",
+                            ApartmentNumber = "15"
+                        },
+                        ShippingAddress = new AddressRequestDto
+                        {
+                            PostalCode = "40-400",
+                            City = "Lodz",
+                            Street = "Industry",
+                            BuildingNumber = "4",
+                            ApartmentNumber = "16"
+                        }
+                    }
+                ]
+            };
+
+            // Act
+            var result = MappingConfig.MapToDomain(request);
+
+            // Assert
+            var company = result.Companies.ShouldHaveSingleItem();
+            company.TaxId.ShouldBe("1234567890");
+            company.CompanyName.ShouldBe("Example Company");
+            company.BillingAddress.PostalCode.ShouldBe("30-300");
+            company.BillingAddress.City.ShouldBe("Poznan");
+            company.ShippingAddress.PostalCode.ShouldBe("40-400");
+            company.ShippingAddress.City.ShouldBe("Lodz");
+        }
+
+        [Fact]
         public void MapToDomain_IndividualDataRequestDto_ShouldMapAllFields()
         {
             // Arrange

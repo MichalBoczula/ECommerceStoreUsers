@@ -6,5 +6,6 @@ namespace ECommerceStoreUsers.Application.Common.RequestsDto.Customers
     {
         [property: JsonRequired] public required string ExternalId { get; init; }
         [property: JsonRequired] public required IndividualDataRequestDto Individual { get; init; }
+        public IReadOnlyCollection<AddCompanyRequestDto> Companies { get; init; } = [];
     }
 }

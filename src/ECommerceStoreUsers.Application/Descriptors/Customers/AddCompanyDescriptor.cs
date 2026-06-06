@@ -75,13 +75,28 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
             }
         }
 
-        [FlowStep(order: 9, bpmnId: "SaveCustomer")]
+        [FlowStep(order: 9, bpmnId: "ValidateCustomerCompanies")]
+        public async Task<ValidationResult> ValidateCustomer(Customer customer, IValidationPolicy<Customer> customerValidationPolicy)
+        {
+            return await customerValidationPolicy.Validate(customer);
+        }
+
+        [FlowStep(order: 10, bpmnId: "AreCustomerCompaniesValid")]
+        public void ThrowValidationExceptionIfCustomerInvalid(ValidationResult validationResult)
+        {
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult);
+            }
+        }
+
+        [FlowStep(order: 11, bpmnId: "SaveCustomer")]
         public async Task<Customer> Save(Customer customer, ICustomerRepository customerRepository, CancellationToken cancellationToken)
         {
             return await customerRepository.UpdateCustomer(customer, cancellationToken);
         }
 
-        [FlowStep(order: 10, bpmnId: "MapCustomerResponse")]
+        [FlowStep(order: 12, bpmnId: "MapCustomerResponse")]
         public CustomerResponseDto MapToResponse(Customer customer)
         {
             return MappingConfig.MapToResponse(customer);

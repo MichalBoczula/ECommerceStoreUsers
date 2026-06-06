@@ -39,6 +39,26 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Policies.Customers.Cus
             result.GetValidationErrors().Count.ShouldBe(0);
         }
 
+
+        [Fact]
+        public async Task Validate_CustomerHasCompaniesWithSameTaxId_ShouldReturnError()
+        {
+            // Arrange
+            var policy = new CustomerValidationPolicy();
+            var customer = CreateCustomer("EXT-123");
+            var address = new Address("00-001", "Warsaw", "Main", "10", "2");
+            customer.AddCompany("Acme Sp. z o.o.", "1234567890", address, address);
+            customer.AddCompany("Contoso Sp. z o.o.", "1234567890", address, address);
+
+            // Act
+            var result = await policy.Validate(customer);
+
+            // Assert
+            result.IsValid.ShouldBeFalse();
+            result.GetValidationErrors().Count.ShouldBe(1);
+            result.GetValidationErrors().ShouldContain(e => e.Name == "CustomerCompanyTaxIdValidationRule");
+        }
+
         private static Customer CreateCustomer(string externalId)
         {
             var address = new Address("00-001", "Warsaw", "Main", "10", "2");

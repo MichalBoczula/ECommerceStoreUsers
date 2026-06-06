@@ -111,6 +111,9 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var validationResult = await descriptor.ValidateCompany(company, _companyValidationPolicy);
             descriptor.ThrowValidationExceptionIfCompanyInvalid(validationResult);
 
+            var customerValidationResult = await descriptor.ValidateCustomer(customer!, _customerValidationPolicy);
+            descriptor.ThrowValidationExceptionIfCustomerInvalid(customerValidationResult);
+
             var updatedCustomer = await descriptor.Save(customer!, _customerRepository, cancellationToken);
 
             var response = descriptor.MapToResponse(updatedCustomer);

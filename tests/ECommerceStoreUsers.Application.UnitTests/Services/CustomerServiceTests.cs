@@ -453,6 +453,11 @@ public sealed class CustomerServiceTests
             .Setup(policy => policy.Validate(It.Is<CompanyData>(x => x.TaxId == request.TaxId && x.CompanyName == request.CompanyName)))
             .ReturnsAsync(validationResult);
 
+        customerValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(It.Is<Customer>(x => x.Id == customer.Id && x.Companies.Any(c => c.TaxId == request.TaxId))))
+            .ReturnsAsync(validationResult);
+
         customerRepositoryMock
             .InSequence(sequence)
             .Setup(repo => repo.UpdateCustomer(customer, cancellationToken))
@@ -477,6 +482,7 @@ public sealed class CustomerServiceTests
         emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
         customerRepositoryMock.Verify(repo => repo.GetByIdAsync(clientId, cancellationToken), Times.Once);
         companyValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<CompanyData>()), Times.Once);
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Customer>()), Times.Once);
         customerRepositoryMock.Verify(repo => repo.UpdateCustomer(customer, cancellationToken), Times.Once);
     }
 
@@ -517,6 +523,77 @@ public sealed class CustomerServiceTests
 
         emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
         customerRepositoryMock.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        customerRepositoryMock.Verify(repo => repo.UpdateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+
+    [Fact]
+    public async Task AddCompany_WhenCustomerAlreadyHasCompanyWithSameTaxId_ShouldThrowValidationException()
+    {
+        var clientId = Guid.NewGuid();
+        var request = CreateAddCompanyRequest();
+        var cancellationToken = CancellationToken.None;
+        var validationResult = new ValidationResult();
+        var invalidCustomerResult = new ValidationResult();
+        invalidCustomerResult.AddValidationError(new ValidationError
+        {
+            Entity = nameof(CompanyData),
+            Name = "CustomerCompanyTaxIdValidationRule",
+            Message = "Customer already contains a company with the same Tax Id."
+        });
+
+        var address = new Domain.AggregatesModel.Customers.ValueObjects.Address("00-111", "City", "Street", "1", "2");
+        var customer = new Customer("customer-ext-123", new IndividualData(
+            "John",
+            "Doe",
+            "john.doe@example.com",
+            "111222333",
+            address,
+            address));
+        customer.AddCompany("Existing company", request.TaxId, address, address);
+
+        var customerRepositoryMock = new Mock<ICustomerRepository>(MockBehavior.Strict);
+        var customerValidationPolicyMock = new Mock<IValidationPolicy<Customer>>(MockBehavior.Strict);
+        var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
+        var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
+
+        var sequence = new MockSequence();
+        emptyGuidValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(clientId))
+            .ReturnsAsync(validationResult);
+
+        customerRepositoryMock
+            .InSequence(sequence)
+            .Setup(repo => repo.GetByIdAsync(clientId, cancellationToken))
+            .ReturnsAsync(customer);
+
+        companyValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(It.Is<CompanyData>(x => x.TaxId == request.TaxId && x.CompanyName == request.CompanyName)))
+            .ReturnsAsync(validationResult);
+
+        customerValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(It.Is<Customer>(x => x.Companies.Count(c => c.TaxId == request.TaxId) == 2)))
+            .ReturnsAsync(invalidCustomerResult);
+
+        var sut = new CustomerService(
+            customerRepositoryMock.Object,
+            customerValidationPolicyMock.Object,
+            individualValidationPolicyMock.Object,
+            companyValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        await Should.ThrowAsync<ValidationException>(() => sut.AddCompany(clientId, request, cancellationToken));
+
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
+        customerRepositoryMock.Verify(repo => repo.GetByIdAsync(clientId, cancellationToken), Times.Once);
+        companyValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<CompanyData>()), Times.Once);
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Customer>()), Times.Once);
         customerRepositoryMock.Verify(repo => repo.UpdateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 

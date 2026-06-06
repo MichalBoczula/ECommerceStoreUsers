@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.Application.Common.FlowDescriptors;
+using ECommerceStoreUsers.Application.Common.FlowDescriptors;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Application.Mapping;
@@ -87,13 +87,26 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
             company.UpdateCompanyDetails(request.TaxId, request.CompanyName, billing, shipping);
         }
 
-        [FlowStep(order: 11, bpmnId: "ValidateCompanyData")]
+
+        [FlowStep(order: 11, bpmnId: "VerifyCompanyTaxIdIsUnique")]
+        public void ThrowAlreadyExistsExceptionIfCompanyTaxIdExists(Customer customer, Guid companyId, string taxId)
+        {
+            if (customer.Companies.Any(company => company.Id != companyId && company.TaxId == taxId))
+            {
+                throw new ResourceAlreadyExistsException(
+                    nameof(UpdateCompany),
+                    taxId,
+                    nameof(CompanyData));
+            }
+        }
+
+        [FlowStep(order: 12, bpmnId: "ValidateCompanyData")]
         public async Task<ValidationResult> ValidateCompany(CompanyData company, IValidationPolicy<CompanyData> companyValidationPolicy)
         {
             return await companyValidationPolicy.Validate(company);
         }
 
-        [FlowStep(order: 12, bpmnId: "IsCompanyDataValid")]
+        [FlowStep(order: 13, bpmnId: "IsCompanyDataValid")]
         public void ThrowValidationExceptionIfCompanyInvalid(ValidationResult validationResult)
         {
             if (!validationResult.IsValid)
@@ -102,13 +115,13 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
             }
         }
 
-        [FlowStep(order: 13, bpmnId: "SaveCustomer")]
+        [FlowStep(order: 14, bpmnId: "SaveCustomer")]
         public async Task<Customer> Save(Customer customer, ICustomerRepository customerRepository, CancellationToken cancellationToken)
         {
             return await customerRepository.UpdateCustomer(customer, cancellationToken);
         }
 
-        [FlowStep(order: 14, bpmnId: "MapCustomerResponse")]
+        [FlowStep(order: 15, bpmnId: "MapCustomerResponse")]
         public CustomerResponseDto MapToResponse(Customer customer)
         {
             return MappingConfig.MapToResponse(customer);

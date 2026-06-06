@@ -56,7 +56,7 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Policies.Customers.Cus
             // Assert
             result.IsValid.ShouldBeFalse();
             result.GetValidationErrors().Count.ShouldBe(1);
-            result.GetValidationErrors().ShouldContain(e => e.Name == "CustomerCompanyTaxIdValidationRule");
+            result.GetValidationErrors().ShouldContain(e => e.Name == "CompanyDataTaxIdUniquenessValidationRule");
         }
 
         private static Customer CreateCustomer(string externalId)

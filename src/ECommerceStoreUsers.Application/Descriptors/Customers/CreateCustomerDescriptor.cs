@@ -1,8 +1,9 @@
-﻿using ECommerceStoreUsers.Application.Common.FlowDescriptors;
+using ECommerceStoreUsers.Application.Common.FlowDescriptors;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Application.Mapping;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
@@ -26,12 +27,22 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
         }
 
         [FlowStep(order: 3, bpmnId: "IsCustomerAggregateValid")]
-        public void ThrowValidationExceptionIfCustomerInvalid(ValidationResult validationResult)
+        public void ThrowValidationExceptionIfCustomerInvalid(Customer customer, ValidationResult validationResult)
         {
-            if (!validationResult.IsValid)
+            if (validationResult.IsValid)
             {
-                throw new ValidationException(validationResult);
+                return;
             }
+
+            if (validationResult.GetValidationErrors().Any(error => error.Name == "CustomerCompanyTaxIdValidationRule"))
+            {
+                throw new ResourceAlreadyExistsException(
+                    nameof(CreateCustomer),
+                    string.Join(",", customer.Companies.Select(company => company.TaxId).Where(taxId => !string.IsNullOrWhiteSpace(taxId)).Distinct()),
+                    nameof(CompanyData));
+            }
+
+            throw new ValidationException(validationResult);
         }
 
         [FlowStep(order: 4, bpmnId: "LoadExistingCustomerByExternalId")]

@@ -82,12 +82,22 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
         }
 
         [FlowStep(order: 10, bpmnId: "AreCustomerCompaniesValid")]
-        public void ThrowValidationExceptionIfCustomerInvalid(ValidationResult validationResult)
+        public void ThrowValidationExceptionIfCustomerInvalid(Customer customer, ValidationResult validationResult)
         {
-            if (!validationResult.IsValid)
+            if (validationResult.IsValid)
             {
-                throw new ValidationException(validationResult);
+                return;
             }
+
+            if (validationResult.GetValidationErrors().Any(error => error.Name == "CustomerCompanyTaxIdValidationRule"))
+            {
+                throw new ResourceAlreadyExistsException(
+                    nameof(AddCompany),
+                    customer.Companies.LastOrDefault()?.TaxId ?? string.Empty,
+                    nameof(CompanyData));
+            }
+
+            throw new ValidationException(validationResult);
         }
 
         [FlowStep(order: 11, bpmnId: "SaveCustomer")]

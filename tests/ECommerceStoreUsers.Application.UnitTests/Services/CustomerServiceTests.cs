@@ -142,6 +142,51 @@ public sealed class CustomerServiceTests
     }
 
     [Fact]
+    public async Task CreateCustomer_WhenCompanyTaxIdExistsInCustomerScope_ShouldThrowResourceAlreadyExistsException()
+    {
+        var request = CreateCustomerRequest() with
+        {
+            Companies = new List<AddCompanyRequestDto>
+            {
+                CreateAddCompanyRequest(),
+                CreateAddCompanyRequest()
+            }
+        };
+        var invalidResult = new ValidationResult();
+        invalidResult.AddValidationError(new ValidationError
+        {
+            Entity = nameof(CompanyData),
+            Name = "CustomerCompanyTaxIdValidationRule",
+            Message = "Customer already contains a company with the same Tax Id."
+        });
+
+        var customerRepositoryMock = new Mock<ICustomerRepository>(MockBehavior.Strict);
+        var customerValidationPolicyMock = new Mock<IValidationPolicy<Customer>>(MockBehavior.Strict);
+        var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
+        var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
+
+        customerValidationPolicyMock
+            .Setup(policy => policy.Validate(It.Is<Customer>(c => c.ExternalId == request.ExternalId)))
+            .ReturnsAsync(invalidResult);
+
+        var sut = new CustomerService(
+            customerRepositoryMock.Object,
+            customerValidationPolicyMock.Object,
+            individualValidationPolicyMock.Object,
+            companyValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        await Assert.ThrowsAsync<ResourceAlreadyExistsException>(() => sut.CreateCustomer(request, CancellationToken.None));
+
+        customerValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<Customer>()), Times.Once);
+        customerRepositoryMock.Verify(repo => repo.GetByExternalIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        customerRepositoryMock.Verify(repo => repo.CreateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
     public async Task GetCustomerByExternalId_WhenCustomerExists_ShouldReturnCustomerResponse()
     {
         var request = CreateCustomerRequest();
@@ -528,7 +573,7 @@ public sealed class CustomerServiceTests
 
 
     [Fact]
-    public async Task AddCompany_WhenCustomerAlreadyHasCompanyWithSameTaxId_ShouldThrowValidationException()
+    public async Task AddCompany_WhenCustomerAlreadyHasCompanyWithSameTaxId_ShouldThrowResourceAlreadyExistsException()
     {
         var clientId = Guid.NewGuid();
         var request = CreateAddCompanyRequest();
@@ -588,7 +633,7 @@ public sealed class CustomerServiceTests
             emptyGuidValidationPolicyMock.Object,
             loggerMock.Object);
 
-        await Should.ThrowAsync<ValidationException>(() => sut.AddCompany(clientId, request, cancellationToken));
+        await Should.ThrowAsync<ResourceAlreadyExistsException>(() => sut.AddCompany(clientId, request, cancellationToken));
 
         emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
         customerRepositoryMock.Verify(repo => repo.GetByIdAsync(clientId, cancellationToken), Times.Once);
@@ -762,6 +807,65 @@ public sealed class CustomerServiceTests
         emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
         emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(companyId), Times.Never);
         customerRepositoryMock.Verify(repo => repo.GetByIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+        customerRepositoryMock.Verify(repo => repo.UpdateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task UpdateCompany_WhenTaxIdExistsInCustomerScope_ShouldThrowResourceAlreadyExistsException()
+    {
+        var clientId = Guid.NewGuid();
+        var request = CreateUpdateCompanyRequest();
+        var validationResult = new ValidationResult();
+        var cancellationToken = CancellationToken.None;
+        var address = new Domain.AggregatesModel.Customers.ValueObjects.Address("00-111", "City", "Street", "1", "2");
+        var customer = new Customer("customer-ext-123", new IndividualData(
+            "John",
+            "Doe",
+            "john.doe@example.com",
+            "111222333",
+            address,
+            address));
+        customer.AddCompany("Company to edit", "0987654321", address, address);
+        customer.AddCompany("Existing company", request.TaxId, address, address);
+        var companyId = customer.Companies.First().Id;
+
+        var customerRepositoryMock = new Mock<ICustomerRepository>(MockBehavior.Strict);
+        var customerValidationPolicyMock = new Mock<IValidationPolicy<Customer>>(MockBehavior.Strict);
+        var individualValidationPolicyMock = new Mock<IValidationPolicy<IndividualData>>(MockBehavior.Strict);
+        var companyValidationPolicyMock = new Mock<IValidationPolicy<CompanyData>>(MockBehavior.Strict);
+        var emptyGuidValidationPolicyMock = new Mock<IValidationPolicy<Guid>>(MockBehavior.Strict);
+        var loggerMock = new Mock<ILogger<CustomerService>>(MockBehavior.Loose);
+
+        var sequence = new MockSequence();
+        emptyGuidValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(clientId))
+            .ReturnsAsync(validationResult);
+
+        emptyGuidValidationPolicyMock
+            .InSequence(sequence)
+            .Setup(policy => policy.Validate(companyId))
+            .ReturnsAsync(validationResult);
+
+        customerRepositoryMock
+            .InSequence(sequence)
+            .Setup(repo => repo.GetByIdAsync(clientId, cancellationToken))
+            .ReturnsAsync(customer);
+
+        var sut = new CustomerService(
+            customerRepositoryMock.Object,
+            customerValidationPolicyMock.Object,
+            individualValidationPolicyMock.Object,
+            companyValidationPolicyMock.Object,
+            emptyGuidValidationPolicyMock.Object,
+            loggerMock.Object);
+
+        await Should.ThrowAsync<ResourceAlreadyExistsException>(() => sut.UpdateCompany(clientId, companyId, request, cancellationToken));
+
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(clientId), Times.Once);
+        emptyGuidValidationPolicyMock.Verify(policy => policy.Validate(companyId), Times.Once);
+        customerRepositoryMock.Verify(repo => repo.GetByIdAsync(clientId, cancellationToken), Times.Once);
+        companyValidationPolicyMock.Verify(policy => policy.Validate(It.IsAny<CompanyData>()), Times.Never);
         customerRepositoryMock.Verify(repo => repo.UpdateCustomer(It.IsAny<Customer>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 

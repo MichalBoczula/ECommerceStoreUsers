@@ -23,14 +23,12 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Custome
         {
             if (entity is null) return;
 
-            var addedCompany = entity.Companies.LastOrDefault();
-            if (addedCompany is null || string.IsNullOrWhiteSpace(addedCompany.TaxId)) return;
+            var hasDuplicatedTaxId = entity.Companies
+                .Where(company => !string.IsNullOrWhiteSpace(company.TaxId))
+                .GroupBy(company => company.TaxId)
+                .Any(group => group.Count() > 1);
 
-            var existingTaxIds = entity.Companies
-                .Take(entity.Companies.Count - 1)
-                .Select(company => company.TaxId);
-
-            if (existingTaxIds.Contains(addedCompany.TaxId))
+            if (hasDuplicatedTaxId)
                 validationResults.AddValidationError(_duplicatedTaxId);
         }
 

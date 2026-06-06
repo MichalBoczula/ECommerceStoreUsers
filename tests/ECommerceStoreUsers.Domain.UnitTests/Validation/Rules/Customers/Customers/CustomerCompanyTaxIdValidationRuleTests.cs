@@ -28,6 +28,25 @@ namespace ECommerceStoreUsers.Domain.UnitTests.Validation.Rules.Customers.Custom
         }
 
         [Fact]
+        public async Task IsValid_CustomerHasDuplicatedTaxIdBeforeLastCompany_ShouldReturnError()
+        {
+            // Arrange
+            var rule = new CustomerCompanyTaxIdValidationRule();
+            var validationResult = new ValidationResult();
+            var customer = CreateCustomer();
+            customer.AddCompany("Acme Sp. z o.o.", "1234567890", CreateAddress(), CreateAddress());
+            customer.AddCompany("Contoso Sp. z o.o.", "1234567890", CreateAddress(), CreateAddress());
+            customer.AddCompany("Fabrikam Sp. z o.o.", "0987654321", CreateAddress(), CreateAddress());
+
+            // Act
+            await rule.IsValid(customer, validationResult);
+
+            // Assert
+            validationResult.GetValidationErrors().Count.ShouldBe(1);
+            validationResult.GetValidationErrors().First().Message.ShouldBe("Customer already contains a company with the same Tax Id.");
+        }
+
+        [Fact]
         public async Task IsValid_CustomerHasCompanyWithDifferentTaxId_ShouldReturnNoErrors()
         {
             // Arrange

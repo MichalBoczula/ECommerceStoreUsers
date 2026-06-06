@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
+using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Application.Descriptors.Customers;
 using ECommerceStoreUsers.Application.Services.Abstract.Customers;
@@ -29,7 +29,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var customer = descriptor.MapToDomain(request);
 
             var validationResult = await descriptor.ValidateCustomer(customer, _customerValidationPolicy);
-            descriptor.ThrowValidationExceptionIfCustomerInvalid(validationResult);
+            descriptor.ThrowValidationExceptionIfCustomerInvalid(customer, validationResult);
 
             var existingCustomer = await descriptor.LoadCustomer(customer.ExternalId, _customerRepository, cancellationToken);
             descriptor.ThrowAlreadyExistsExceptionIfCustomerExists(customer.ExternalId, existingCustomer);
@@ -112,7 +112,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             descriptor.ThrowValidationExceptionIfCompanyInvalid(validationResult);
 
             var customerValidationResult = await descriptor.ValidateCustomer(customer!, _customerValidationPolicy);
-            descriptor.ThrowValidationExceptionIfCustomerInvalid(customerValidationResult);
+            descriptor.ThrowValidationExceptionIfCustomerInvalid(customer!, customerValidationResult);
 
             var updatedCustomer = await descriptor.Save(customer!, _customerRepository, cancellationToken);
 
@@ -143,6 +143,7 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var company = descriptor.LoadCompany(customer!, companyId);
             descriptor.ThrowNotFoundExceptionIfCompanyMissing(companyId, company);
             descriptor.UpdateCompanyInsideAggregate(company!, request, billingAddress, shippingAddress);
+            descriptor.ThrowAlreadyExistsExceptionIfCompanyTaxIdExists(customer!, companyId, request.TaxId);
 
             var validationResult = await descriptor.ValidateCompany(company!, _companyValidationPolicy);
             descriptor.ThrowValidationExceptionIfCompanyInvalid(validationResult);

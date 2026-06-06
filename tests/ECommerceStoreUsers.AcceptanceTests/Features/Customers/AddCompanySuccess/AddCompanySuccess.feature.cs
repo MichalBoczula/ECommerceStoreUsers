@@ -158,158 +158,158 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.AddCompanySucce
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table30 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table33 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "ExternalId",
                             "customer-company-123456"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "FirstName",
                             "Company"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "LastName",
                             "Client"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "Email",
                             "company.client@db.com"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "Phone",
                             "123456789"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "BillingPostalCode",
                             "00-001"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "BillingCity",
                             "Warsaw"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "BillingStreet",
                             "Marszalkowska"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "10"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "5"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "ShippingPostalCode",
                             "30-002"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "ShippingCity",
                             "Krakow"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "ShippingStreet",
                             "Dluga"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "12"});
-                table30.AddRow(new string[] {
+                table33.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "7"});
 #line 5
-    await testRunner.GivenAsync("a customer exists for add company request", ((string)(null)), table30, "Given ");
+    await testRunner.GivenAsync("a customer exists for add company request", ((string)(null)), table33, "Given ");
 #line hidden
-                global::Reqnroll.Table table31 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table34 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "TaxId",
                             "1234567890"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "CompanyName",
                             "Example Company Sp. z o.o."});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "BillingPostalCode",
                             "00-950"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "BillingCity",
                             "Warsaw"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "BillingStreet",
                             "Prosta"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "20"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "15"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "ShippingPostalCode",
                             "80-001"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "ShippingCity",
                             "Gdansk"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "ShippingStreet",
                             "Portowa"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "4A"});
-                table31.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "2"});
 #line 22
-    await testRunner.AndAsync("I have a valid add company request", ((string)(null)), table31, "And ");
+    await testRunner.AndAsync("I have a valid add company request", ((string)(null)), table34, "And ");
 #line hidden
 #line 36
     await testRunner.WhenAsync("I submit the add company request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table32 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table35 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "StatusCode",
                             "200"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "HasCustomerId",
                             "true"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "ExternalId",
                             "customer-company-123456"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "CompanyCount",
                             "1"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "HasCompanyId",
                             "true"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "TaxId",
                             "1234567890"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "CompanyName",
                             "Example Company Sp. z o.o."});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "BillingPostalCode",
                             "00-950"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "BillingCity",
                             "Warsaw"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "BillingStreet",
                             "Prosta"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "20"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "15"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "ShippingPostalCode",
                             "80-001"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "ShippingCity",
                             "Gdansk"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "ShippingStreet",
                             "Portowa"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "4A"});
-                table32.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "2"});
 #line 37
-    await testRunner.ThenAsync("the company is added to the customer successfully", ((string)(null)), table32, "Then ");
+    await testRunner.ThenAsync("the company is added to the customer successfully", ((string)(null)), table35, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

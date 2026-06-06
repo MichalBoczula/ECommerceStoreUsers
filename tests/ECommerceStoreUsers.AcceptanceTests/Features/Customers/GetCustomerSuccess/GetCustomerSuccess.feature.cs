@@ -158,128 +158,128 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.GetCustomerSucc
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table44 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table50 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "ExternalId",
                             "auth-get-customer-123456"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.FirstName",
                             "Get"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.LastName",
                             "Customer"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.Email",
                             "get.customer@db.com"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.Phone",
                             "123456789"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.BillingAddress.PostalCode",
                             "00-001"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.BillingAddress.City",
                             "Warsaw"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.BillingAddress.Street",
                             "Main Street"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.BillingAddress.BuildingNumber",
                             "10"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.BillingAddress.ApartmentNumber",
                             "20"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.ShippingAddress.PostalCode",
                             "00-002"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.ShippingAddress.City",
                             "Krakow"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.ShippingAddress.Street",
                             "Shipping Street"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.ShippingAddress.BuildingNumber",
                             "15"});
-                table44.AddRow(new string[] {
+                table50.AddRow(new string[] {
                             "Individual.ShippingAddress.ApartmentNumber",
                             "25"});
 #line 5
-    await testRunner.GivenAsync("a customer profile exists for get customer request", ((string)(null)), table44, "Given ");
+    await testRunner.GivenAsync("a customer profile exists for get customer request", ((string)(null)), table50, "Given ");
 #line hidden
-                global::Reqnroll.Table table45 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table51 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table45.AddRow(new string[] {
+                table51.AddRow(new string[] {
                             "ExternalId",
                             "auth-get-customer-123456"});
 #line 22
-    await testRunner.WhenAsync("I request the customer profile by external id", ((string)(null)), table45, "When ");
+    await testRunner.WhenAsync("I request the customer profile by external id", ((string)(null)), table51, "When ");
 #line hidden
-                global::Reqnroll.Table table46 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table52 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "StatusCode",
                             "200"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "HasId",
                             "true"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "ExternalId",
                             "auth-get-customer-123456"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "CompaniesCount",
                             "0"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "HasUpdatedAt",
                             "true"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.FirstName",
                             "Get"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.LastName",
                             "Customer"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.Email",
                             "get.customer@db.com"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.Phone",
                             "123456789"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.BillingAddress.PostalCode",
                             "00-001"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.BillingAddress.City",
                             "Warsaw"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.BillingAddress.Street",
                             "Main Street"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.BillingAddress.BuildingNumber",
                             "10"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.BillingAddress.ApartmentNumber",
                             "20"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.ShippingAddress.PostalCode",
                             "00-002"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.ShippingAddress.City",
                             "Krakow"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.ShippingAddress.Street",
                             "Shipping Street"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.ShippingAddress.BuildingNumber",
                             "15"});
-                table46.AddRow(new string[] {
+                table52.AddRow(new string[] {
                             "Individual.ShippingAddress.ApartmentNumber",
                             "25"});
 #line 25
-    await testRunner.ThenAsync("the customer profile is returned successfully", ((string)(null)), table46, "Then ");
+    await testRunner.ThenAsync("the customer profile is returned successfully", ((string)(null)), table52, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

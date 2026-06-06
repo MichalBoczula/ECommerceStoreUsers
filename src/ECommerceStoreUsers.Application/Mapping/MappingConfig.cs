@@ -14,7 +14,18 @@ internal static class MappingConfig
     internal static Customer MapToDomain(CreateCustomerRequestDto request)
     {
         var individualData = MapToDomain(request.Individual);
-        return new Customer(request.ExternalId, individualData);
+        var customer = new Customer(request.ExternalId, individualData);
+
+        foreach (var company in request.Companies ?? [])
+        {
+            customer.AddCompany(
+                company.CompanyName,
+                company.TaxId,
+                MapAddress(company.BillingAddress),
+                MapAddress(company.ShippingAddress));
+        }
+
+        return customer;
     }
 
     internal static IndividualData MapToDomain(IndividualDataRequestDto dto)

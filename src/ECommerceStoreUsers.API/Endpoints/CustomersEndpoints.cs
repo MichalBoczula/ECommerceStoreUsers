@@ -30,7 +30,7 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(customer);
             })
             .WithSummary("Create customer profile.")
-            .WithDescription("Creates a new customer aggregate record complete with individual user data details.")
+            .WithDescription("Creates a new customer aggregate record complete with individual user data details and optional company metadata.")
             .WithName("CreateCustomer")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)

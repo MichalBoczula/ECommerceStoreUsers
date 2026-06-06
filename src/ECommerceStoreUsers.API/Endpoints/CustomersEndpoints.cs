@@ -71,6 +71,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
             group.MapPut("/{customerId:guid}/companies/{companyId:guid}", async (

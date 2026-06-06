@@ -158,42 +158,42 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.GetCustomerNotF
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table28 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table34 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table28.AddRow(new string[] {
+                table34.AddRow(new string[] {
                             "ExternalId",
                             "auth-missing-404-customer"});
 #line 5
-    await testRunner.GivenAsync("I have a missing customer external id", ((string)(null)), table28, "Given ");
+    await testRunner.GivenAsync("I have a missing customer external id", ((string)(null)), table34, "Given ");
 #line hidden
 #line 8
     await testRunner.WhenAsync("I request the customer profile by external id", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table29 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table35 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table29.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "StatusCode",
                             "404"});
-                table29.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "Title",
                             "Resource not found."});
-                table29.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "Detail",
                             "Resource Customer identified by id auth-missing-404-customer cannot be found in d" +
                                 "atabase during action GetCustomerByExternalId."});
-                table29.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4"});
-                table29.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "Instance",
                             "/customers/external/auth-missing-404-customer"});
-                table29.AddRow(new string[] {
+                table35.AddRow(new string[] {
                             "HasTraceId",
                             "true"});
 #line 9
-    await testRunner.ThenAsync("the customer profile request fails with a not found response", ((string)(null)), table29, "Then ");
+    await testRunner.ThenAsync("the customer profile request fails with a not found response", ((string)(null)), table35, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

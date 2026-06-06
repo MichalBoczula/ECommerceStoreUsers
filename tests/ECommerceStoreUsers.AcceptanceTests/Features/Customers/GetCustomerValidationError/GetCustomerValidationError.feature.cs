@@ -159,35 +159,35 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.GetCustomerVali
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table33 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table39 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table33.AddRow(new string[] {
+                table39.AddRow(new string[] {
                             "ExternalId",
                             "00000000-0000-0000-0000-000000000000"});
 #line 5
-    await testRunner.GivenAsync("I have an invalid get customer request", ((string)(null)), table33, "Given ");
+    await testRunner.GivenAsync("I have an invalid get customer request", ((string)(null)), table39, "Given ");
 #line hidden
 #line 8
     await testRunner.WhenAsync("I submit the get customer request for validation", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table34 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table40 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table34.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table34.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Message",
                             "ExternalId cannot be an empty guid."});
-                table34.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Name",
                             "CustomerExternalIdValidationRule"});
-                table34.AddRow(new string[] {
+                table40.AddRow(new string[] {
                             "Entity",
                             "Customer"});
 #line 9
-    await testRunner.ThenAsync("the get customer request fails with a validation error", ((string)(null)), table34, "Then ");
+    await testRunner.ThenAsync("the get customer request fails with a validation error", ((string)(null)), table40, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

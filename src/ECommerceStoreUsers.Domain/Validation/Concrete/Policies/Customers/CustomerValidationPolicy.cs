@@ -20,6 +20,7 @@ internal sealed class CustomerValidationPolicy : IValidationPolicy<Customer>, IV
     public CustomerValidationPolicy()
     {
         _customerRules.Add(new CustomerExternalIdValidationRule());
+        _customerRules.Add(new CustomerCompanyTaxIdValidationRule());
 
         _individualRules.Add(new IndividualDataFirstNameValidationRule());
         _individualRules.Add(new IndividualDataLastNameValidationRule());

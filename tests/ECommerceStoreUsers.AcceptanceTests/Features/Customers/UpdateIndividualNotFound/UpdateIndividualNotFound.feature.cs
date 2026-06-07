@@ -17,16 +17,16 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateIndividua
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_updating_individual_data_for_a_missing_customer_by_c" +
-        "ustomer_id_returns_a_not_found_problem_details_response.")]
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_updating_individual_data_for_a_missing_customer_by_cus" +
+        "tomer_id_returns_a_not_found_problem_details_response.")]
     public partial class UpdateCustomerIndividualDataNotFoundFeature : object, global::Xunit.IClassFixture<UpdateCustomerIndividualDataNotFoundFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_updating_individual_data_for_a_missing_customer_by_c" +
-                    "ustomer_id_returns_a_not_found_problem_details_response."};
+                "allure.description:Ensures_updating_individual_data_for_a_missing_customer_by_cus" +
+                    "tomer_id_returns_a_not_found_problem_details_response."};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Customers/UpdateIndividualNotFound", "Update customer individual data not found", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -109,7 +109,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateIndividua
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Customers/UpdateIndividualNotFound/UpdateIndividualNotFound.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Customers/UpdateIndividualNotFound/UpdateIndividualNotFound.feature.ndjs" +
+                    "on", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -158,84 +159,84 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateIndividua
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table25 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table58 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CustomerId",
                             "33333333-3333-3333-3333-333333333333"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.FirstName",
                             "Missing"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.LastName",
                             "Individual"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.Email",
                             "missing.individual.customer@db.com"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.Phone",
                             "+48123123123"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.BillingAddress.PostalCode",
                             "00-950"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.BillingAddress.City",
                             "Warsaw"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.BillingAddress.Street",
                             "Prosta"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.BillingAddress.BuildingNumber",
                             "20"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.BillingAddress.ApartmentNumber",
                             "15"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.ShippingAddress.PostalCode",
                             "80-001"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.ShippingAddress.City",
                             "Gdansk"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.ShippingAddress.Street",
                             "Portowa"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.ShippingAddress.BuildingNumber",
                             "4A"});
-                table25.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Individual.ShippingAddress.ApartmentNumber",
                             "2"});
 #line 5
-    await testRunner.GivenAsync("I have a missing customer update individual request", ((string)(null)), table25, "Given ");
+    await testRunner.GivenAsync("I have a missing customer update individual request", ((string)(null)), table58, "Given ");
 #line hidden
 #line 22
     await testRunner.WhenAsync("I submit the missing customer update individual request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table26 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table59 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table26.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "StatusCode",
                             "404"});
-                table26.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "Title",
                             "Resource not found."});
-                table26.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "Detail",
-                            "Resource Customer identified by id 33333333-3333-3333-3333-333333333333 cannot" +
-                                " be found in database during action UpdateIndividualData."});
-                table26.AddRow(new string[] {
+                            "Resource Customer identified by id 33333333-3333-3333-3333-333333333333 cannot be" +
+                                " found in database during action UpdateIndividualData."});
+                table59.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4"});
-                table26.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "Instance",
                             "/customers/33333333-3333-3333-3333-333333333333/individual"});
-                table26.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "HasTraceId",
                             "true"});
 #line 23
-    await testRunner.ThenAsync("the update individual data request fails with a not found response", ((string)(null)), table26, "Then ");
+    await testRunner.ThenAsync("the update individual data request fails with a not found response", ((string)(null)), table59, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

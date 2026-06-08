@@ -23,6 +23,7 @@ public sealed class CustomerMappingTests
         Assert.Equal(customer.Individual.FirstName, document.Individual.FirstName);
         Assert.Equal(customer.Individual.ShippingAddress.PostalCode, document.Individual.ShippingAddress.PostalCode);
         Assert.Single(document.Companies);
+        Assert.Equal(customer.Companies.Single().Id, document.Companies.Single().Id);
         Assert.Equal(customer.Companies.Single().CompanyName, document.Companies.Single().CompanyName);
         Assert.Equal(customer.Companies.Single().BillingAddress.City, document.Companies.Single().BillingAddress.City);
     }
@@ -39,6 +40,7 @@ public sealed class CustomerMappingTests
         Assert.Equal(document.Individual.Email, domain.Individual.Email);
         Assert.Equal(document.Individual.BillingAddress.Street, domain.Individual.BillingAddress.Street);
         Assert.Single(domain.Companies);
+        Assert.Equal(document.Companies.Single().Id, domain.Companies.Single().Id);
         Assert.Equal(document.Companies.Single().TaxId, domain.Companies.Single().TaxId);
         Assert.Equal(document.Companies.Single().ShippingAddress.City, domain.Companies.Single().ShippingAddress.City);
     }
@@ -65,6 +67,7 @@ public sealed class CustomerMappingTests
 
         var document = CustomerMapping.MapCompanyToDocument(company);
 
+        Assert.Equal(company.Id, document.Id);
         Assert.Equal(company.TaxId, document.TaxId);
         Assert.Equal(company.CompanyName, document.CompanyName);
         Assert.Equal(company.BillingAddress.City, document.BillingAddress.City);
@@ -164,6 +167,7 @@ public sealed class CustomerMappingTests
         [
             new CompanyDataDocument
             {
+                Id = Guid.NewGuid(),
                 TaxId = "1112223334",
                 CompanyName = "Fabrikam",
                 BillingAddress = new AddressDocument

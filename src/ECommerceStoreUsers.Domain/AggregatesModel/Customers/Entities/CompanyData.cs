@@ -15,12 +15,32 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities
             string companyName,
             Address billingAddress,
             Address shippingAddress)
+            : this(Guid.NewGuid(), taxId, companyName, billingAddress, shippingAddress)
         {
-            Id = Guid.NewGuid();
+        }
+
+        private CompanyData(
+            Guid id,
+            string taxId,
+            string companyName,
+            Address billingAddress,
+            Address shippingAddress)
+        {
+            Id = id;
             TaxId = taxId;
             CompanyName = companyName;
             BillingAddress = billingAddress;
             ShippingAddress = shippingAddress;
+        }
+
+        public static CompanyData Rehydrate(
+            Guid id,
+            string taxId,
+            string companyName,
+            Address billingAddress,
+            Address shippingAddress)
+        {
+            return new CompanyData(id, taxId, companyName, billingAddress, shippingAddress);
         }
 
         public void UpdateCompanyDetails(string taxId, string companyName, Address billingAddress, Address shippingAddress)

@@ -42,6 +42,7 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Infrastructur
                 [
                     new CompanyDataDocument
                     {
+                        Id = Guid.NewGuid(),
                         TaxId = "1234567890",
                         CompanyName = "Contoso",
                         BillingAddress = new AddressDocument

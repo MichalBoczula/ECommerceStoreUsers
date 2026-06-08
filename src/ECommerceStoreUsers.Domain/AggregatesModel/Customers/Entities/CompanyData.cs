@@ -30,5 +30,18 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities
             BillingAddress = billingAddress;
             ShippingAddress = shippingAddress;
         }
+
+        public static CompanyData Rehydrate(
+            Guid id,
+            string taxId,
+            string companyName,
+            Address billingAddress,
+            Address shippingAddress)
+        {
+            return new CompanyData(taxId, companyName, billingAddress, shippingAddress)
+            {
+                Id = id
+            };
+        }
     }
 }

@@ -8,7 +8,7 @@ Feature: Update company not found
       | Individual.FirstName                       | Update                                     |
       | Individual.LastName                        | CompanyNotFound                           |
       | Individual.Email                           | update.company.notfound@example.com        |
-      | Individual.Phone                           | +48111222333                               |
+      | Individual.Phone                           | 111222333                                  |
       | Individual.BillingAddress.PostalCode       | 00-950                                     |
       | Individual.BillingAddress.City             | Warsaw                                     |
       | Individual.BillingAddress.Street           | Existing Customer Street                   |

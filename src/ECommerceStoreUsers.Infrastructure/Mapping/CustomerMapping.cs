@@ -33,7 +33,8 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
             );
 
             var companies = customerDocument.Companies.Select(x =>
-                new CompanyData(
+                CompanyData.Rehydrate(
+                    x.Id,
                     x.TaxId,
                     x.CompanyName,
                     MapAddressToDomain(x.BillingAddress),
@@ -64,6 +65,7 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
         {
             return new CompanyDataDocument
             {
+                Id = company.Id,
                 TaxId = company.TaxId,
                 CompanyName = company.CompanyName,
                 BillingAddress = MapAddressToDocument(company.BillingAddress),

@@ -49,7 +49,9 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             result.Individual.BillingAddress.City.ShouldBe("Warszawa");
 
             result.Companies.Count.ShouldBe(1);
+            var company = customer.Companies.First();
             var companyResult = result.Companies.First();
+            companyResult.Id.ShouldBe(company.Id);
             companyResult.CompanyName.ShouldBe("Test Company LLC");
             companyResult.TaxId.ShouldBe("PL1234567890");
         }
@@ -180,6 +182,7 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             customerToUpdate.ShouldNotBeNull();
 
             var company = customerToUpdate.Companies.First();
+            var companyId = company.Id;
             company.UpdateCompanyDetails("TAX-999", "Updated Company Name", company.BillingAddress, company.ShippingAddress);
 
             // act
@@ -189,6 +192,7 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             var updatedResult = await repository.GetByIdAsync(customer.Id, CancellationToken.None);
             updatedResult.ShouldNotBeNull();
             updatedResult.Companies.Count.ShouldBe(1);
+            updatedResult.Companies.First().Id.ShouldBe(companyId);
             updatedResult.Companies.First().CompanyName.ShouldBe("Updated Company Name");
             updatedResult.Companies.First().TaxId.ShouldBe("TAX-999");
         }

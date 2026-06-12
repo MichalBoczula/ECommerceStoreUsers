@@ -13,15 +13,20 @@
 using Reqnroll;
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyValidationError
 {
+    
+    
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_updating_existing_customer_company_data_with_invalid_update_company_contract_values_returns_a_bad_request_with_validation_errors.")]
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_updating_existing_customer_company_data_with_invalid_u" +
+        "pdate_company_contract_values_returns_a_bad_request_with_validation_errors.")]
     public partial class UpdateCustomerCompanyDataValidationFeature : object, global::Xunit.IClassFixture<UpdateCustomerCompanyDataValidationFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
+        
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_updating_existing_customer_company_data_with_invalid_update_company_contract_values_returns_a_bad_request_with_validation_errors."};
+                "allure.description:Ensures_updating_existing_customer_company_data_with_invalid_u" +
+                    "pdate_company_contract_values_returns_a_bad_request_with_validation_errors."};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Customers/UpdateCompanyValidationError", "Update customer company data validation", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -104,7 +109,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyVa
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Customers/UpdateCompanyValidationError/UpdateCompanyValidationError.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Customers/UpdateCompanyValidationError/UpdateCompanyValidationError.feat" +
+                    "ure.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -132,15 +138,18 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyVa
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Update existing customer company data with invalid tax id and company name returns bad request")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Update existing customer company data with invalid tax id and company name return" +
+            "s bad request")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Update customer company data validation")]
-        [global::Xunit.TraitAttribute("Description", "Update existing customer company data with invalid tax id and company name returns bad request")]
+        [global::Xunit.TraitAttribute("Description", "Update existing customer company data with invalid tax id and company name return" +
+            "s bad request")]
         public async global::System.Threading.Tasks.Task UpdateExistingCustomerCompanyDataWithInvalidTaxIdAndCompanyNameReturnsBadRequest()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Update existing customer company data with invalid tax id and company name returns bad request", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Update existing customer company data with invalid tax id and company name return" +
+                    "s bad request", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -153,164 +162,164 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyVa
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table67 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "ExternalId",
                             "customer-update-company-validation-123"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "FirstName",
                             "Existing"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "LastName",
                             "CompanyOwner"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "Email",
                             "update.company.validation@db.com"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "Phone",
                             "111222333"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "BillingPostalCode",
                             "00-001"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "BillingCity",
                             "Warsaw"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "BillingStreet",
                             "Main Street"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "10"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "20"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "ShippingPostalCode",
                             "00-002"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "ShippingCity",
                             "Krakow"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "ShippingStreet",
                             "Shipping Street"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "15"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "25"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyTaxId",
                             "1234567890"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyName",
                             "Existing Company Sp. z o.o."});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyBillingPostalCode",
                             "10-100"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyBillingCity",
                             "Poznan"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyBillingStreet",
                             "Company Billing Street"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyBillingBuildingNumber",
                             "5"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyBillingApartmentNumber",
                             "11"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyShippingPostalCode",
                             "20-200"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyShippingCity",
                             "Wroclaw"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyShippingStreet",
                             "Company Shipping Street"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyShippingBuildingNumber",
                             "7B"});
-                table1.AddRow(new string[] {
+                table67.AddRow(new string[] {
                             "CompanyShippingApartmentNumber",
                             "14"});
 #line 5
-    await testRunner.GivenAsync("a customer with a company exists for update company validation request", ((string)(null)), table1, "Given ");
+    await testRunner.GivenAsync("a customer with a company exists for update company validation request", ((string)(null)), table67, "Given ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table68 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "TaxId",
                             "invalid-tax-id"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "CompanyName",
                             ""});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "BillingPostalCode",
                             "30-300"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "BillingCity",
                             "Gdansk"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "BillingStreet",
                             "Updated Billing Street"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "22"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "3"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "ShippingPostalCode",
                             "40-400"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "ShippingCity",
                             "Lodz"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "ShippingStreet",
                             "Updated Shipping Street"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "44"});
-                table2.AddRow(new string[] {
+                table68.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "8"});
 #line 34
-    await testRunner.AndAsync("I have an invalid update company request", ((string)(null)), table2, "And ");
+    await testRunner.AndAsync("I have an invalid update company request", ((string)(null)), table68, "And ");
 #line hidden
 #line 48
     await testRunner.WhenAsync("I submit the update company request for validation", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table69 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table3.AddRow(new string[] {
+                table69.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table3.AddRow(new string[] {
+                table69.AddRow(new string[] {
                             "TaxIdMessage",
                             "Tax Id must be a valid Polish NIP containing exactly 10 digits."});
-                table3.AddRow(new string[] {
+                table69.AddRow(new string[] {
                             "TaxIdName",
                             "CompanyDataTaxIdValidationRule"});
-                table3.AddRow(new string[] {
+                table69.AddRow(new string[] {
                             "TaxIdEntity",
                             "CompanyData"});
-                table3.AddRow(new string[] {
+                table69.AddRow(new string[] {
                             "CompanyNameMessage",
                             "Company Name cannot be empty or white space."});
-                table3.AddRow(new string[] {
+                table69.AddRow(new string[] {
                             "CompanyNameName",
                             "CompanyDataCompanyNameValidationRule"});
-                table3.AddRow(new string[] {
+                table69.AddRow(new string[] {
                             "CompanyNameEntity",
                             "CompanyData"});
 #line 49
-    await testRunner.ThenAsync("updating the company data fails with validation errors", ((string)(null)), table3, "Then ");
+    await testRunner.ThenAsync("updating the company data fails with validation errors", ((string)(null)), table69, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -320,6 +329,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyVa
         [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : object, global::Xunit.IAsyncLifetime
         {
+            
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
                 await UpdateCustomerCompanyDataValidationFeature.FeatureSetupAsync();

@@ -13,15 +13,20 @@
 using Reqnroll;
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyMissingFieldsError
 {
+    
+    
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_updating_customer_company_data_with_a_payload_missing_required_update_company_json_properties_returns_a_bad_request.")]
+    [global::Xunit.TraitAttribute("Category", "allure.description:Ensures_updating_customer_company_data_with_a_payload_missing_" +
+        "required_update_company_json_properties_returns_a_bad_request.")]
     public partial class UpdateCustomerCompanyDataDeserializationValidationFeature : object, global::Xunit.IClassFixture<UpdateCustomerCompanyDataDeserializationValidationFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
+        
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = new string[] {
-                "allure.description:Ensures_updating_customer_company_data_with_a_payload_missing_required_update_company_json_properties_returns_a_bad_request."};
+                "allure.description:Ensures_updating_customer_company_data_with_a_payload_missing_" +
+                    "required_update_company_json_properties_returns_a_bad_request."};
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Customers/UpdateCompanyMissingFieldsError", "Update customer company data deserialization validation", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
@@ -104,7 +109,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyMi
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Customers/UpdateCompanyMissingFieldsError/UpdateCompanyMissingFieldsError.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Customers/UpdateCompanyMissingFieldsError/UpdateCompanyMissingFieldsErro" +
+                    "r.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -132,15 +138,18 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyMi
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Update customer company data with missing company name and shipping address returns deserialization error")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Update customer company data with missing company name and shipping address retur" +
+            "ns deserialization error")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Update customer company data deserialization validation")]
-        [global::Xunit.TraitAttribute("Description", "Update customer company data with missing company name and shipping address returns deserialization error")]
+        [global::Xunit.TraitAttribute("Description", "Update customer company data with missing company name and shipping address retur" +
+            "ns deserialization error")]
         public async global::System.Threading.Tasks.Task UpdateCustomerCompanyDataWithMissingCompanyNameAndShippingAddressReturnsDeserializationError()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Update customer company data with missing company name and shipping address returns deserialization error", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Update customer company data with missing company name and shipping address retur" +
+                    "ns deserialization error", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -153,143 +162,145 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyMi
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table58 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "ExternalId",
                             "customer-update-company-missing-123"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "FirstName",
                             "Existing"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "LastName",
                             "CompanyOwner"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Email",
                             "update.company.owner@db.com"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "Phone",
                             "111222333"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "BillingPostalCode",
                             "00-001"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "BillingCity",
                             "Warsaw"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "BillingStreet",
                             "Main Street"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "10"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "20"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "ShippingPostalCode",
                             "00-002"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "ShippingCity",
                             "Krakow"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "ShippingStreet",
                             "Shipping Street"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "ShippingBuildingNumber",
                             "15"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "ShippingApartmentNumber",
                             "25"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyTaxId",
                             "1234567890"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyName",
                             "Existing Company Sp. z o.o."});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyBillingPostalCode",
                             "10-100"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyBillingCity",
                             "Poznan"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyBillingStreet",
                             "Company Billing Street"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyBillingBuildingNumber",
                             "5"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyBillingApartmentNumber",
                             "11"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyShippingPostalCode",
                             "20-200"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyShippingCity",
                             "Wroclaw"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyShippingStreet",
                             "Company Shipping Street"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyShippingBuildingNumber",
                             "7B"});
-                table1.AddRow(new string[] {
+                table58.AddRow(new string[] {
                             "CompanyShippingApartmentNumber",
                             "14"});
 #line 5
-    await testRunner.GivenAsync("a customer with a company exists for update company missing fields request", ((string)(null)), table1, "Given ");
+    await testRunner.GivenAsync("a customer with a company exists for update company missing fields request", ((string)(null)), table58, "Given ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table59 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table2.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "TaxId",
                             "0987654321"});
-                table2.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "BillingPostalCode",
                             "30-300"});
-                table2.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "BillingCity",
                             "Gdansk"});
-                table2.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "BillingStreet",
                             "Updated Billing Street"});
-                table2.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "BillingBuildingNumber",
                             "22"});
-                table2.AddRow(new string[] {
+                table59.AddRow(new string[] {
                             "BillingApartmentNumber",
                             "3"});
 #line 34
-    await testRunner.AndAsync("I have an update company request payload missing the company name and shipping address", ((string)(null)), table2, "And ");
+    await testRunner.AndAsync("I have an update company request payload missing the company name and shipping ad" +
+                        "dress", ((string)(null)), table59, "And ");
 #line hidden
 #line 42
     await testRunner.WhenAsync("I submit the incomplete update company request", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table60 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table3.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "StatusCode",
                             "400"});
-                table3.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "Title",
                             "Invalid JSON payload."});
-                table3.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "Detail",
-                            "JSON payload for UpdateCompanyRequestDto is missing required properties: companyName, shippingAddress."});
-                table3.AddRow(new string[] {
+                            "JSON payload for UpdateCompanyRequestDto is missing required properties: companyN" +
+                                "ame, shippingAddress."});
+                table60.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1"});
-                table3.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "MissingProperty",
                             "companyName"});
-                table3.AddRow(new string[] {
+                table60.AddRow(new string[] {
                             "MissingProperty",
                             "shippingAddress"});
 #line 43
-    await testRunner.ThenAsync("the update company response indicates a json deserialization failure", ((string)(null)), table3, "Then ");
+    await testRunner.ThenAsync("the update company response indicates a json deserialization failure", ((string)(null)), table60, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -299,6 +310,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.UpdateCompanyMi
         [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
         public class FixtureData : object, global::Xunit.IAsyncLifetime
         {
+            
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
                 await UpdateCustomerCompanyDataDeserializationValidationFeature.FeatureSetupAsync();

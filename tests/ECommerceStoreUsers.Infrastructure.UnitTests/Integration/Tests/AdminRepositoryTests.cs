@@ -1,7 +1,10 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
+using ECommerceStoreUsers.Domain.Common.Enums;
+using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
@@ -192,6 +195,69 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             var result = await repository.GetByIdAsync(admin.Id, CancellationToken.None);
             result.ShouldNotBeNull();
             result.LastLoginAt.ShouldBeGreaterThan(historicalDate);
+        }
+
+        [Fact]
+        public async Task CreateAdmin_ShouldCreateHistoryRecordWithInsertAction()
+        {
+            // arrange
+            var databaseName = $"admin-tests-{Guid.NewGuid():N}";
+            await using var serviceProvider = TestServiceProviderFactory.Create(_fixture.ConnectionString, databaseName);
+            var repository = serviceProvider.GetRequiredService<IAdminRepository>();
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+
+            var admin = CreateTestAdmin();
+
+            // act
+            await repository.CreateAdmin(admin, CancellationToken.None);
+
+            // assert
+            var historyRecord = await context.AdminsHistory
+                .Find(x => x.AdminId == admin.Id)
+                .FirstOrDefaultAsync(CancellationToken.None);
+
+            historyRecord.ShouldNotBeNull();
+            historyRecord.Id.ShouldNotBe(Guid.Empty);
+            historyRecord.AdminId.ShouldBe(admin.Id);
+            historyRecord.FullName.ShouldBe(admin.FullName);
+            historyRecord.Email.ShouldBe(admin.Email);
+            historyRecord.Action.ShouldBe(ActionType.Insert);
+            historyRecord.ChangedAt.ShouldBeLessThanOrEqualTo(DateTime.UtcNow);
+        }
+
+        [Fact]
+        public async Task UpdateAdmin_ShouldAppendNewHistoryRecordWithUpdateAction()
+        {
+            // arrange
+            var databaseName = $"admin-tests-{Guid.NewGuid():N}";
+            await using var serviceProvider = TestServiceProviderFactory.Create(_fixture.ConnectionString, databaseName);
+            var repository = serviceProvider.GetRequiredService<IAdminRepository>();
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+
+            var admin = CreateTestAdmin();
+            await repository.CreateAdmin(admin, CancellationToken.None);
+
+            var adminToUpdate = await repository.GetByIdAsync(admin.Id, CancellationToken.None);
+            adminToUpdate!.Deactivate();
+
+            // act
+            await repository.UpdateAdmin(adminToUpdate, CancellationToken.None);
+
+            // assert
+            var historyRecords = await context.AdminsHistory
+                .Find(x => x.AdminId == admin.Id)
+                .SortBy(x => x.ChangedAt)
+                .ToListAsync(CancellationToken.None);
+
+            historyRecords.Count.ShouldBe(2);
+
+            var initialRecord = historyRecords[0];
+            initialRecord.Action.ShouldBe(ActionType.Insert);
+            initialRecord.IsActive.ShouldBeTrue();
+
+            var updatedRecord = historyRecords[1];
+            updatedRecord.Action.ShouldBe(ActionType.Update);
+            updatedRecord.IsActive.ShouldBeFalse();
         }
 
         private static Admin CreateTestAdmin() =>

@@ -1,6 +1,7 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
+using ECommerceStoreUsers.Domain.Common.Enums;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers.Entities;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers.ValueObjects;
@@ -18,6 +19,21 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
                 UpdatedAt = customer.UpdatedAt,
                 Individual = MapIndividualToDocument(customer.Individual),
                 Companies = customer.Companies.Select(MapCompanyToDocument).ToList()
+            };
+        }
+
+        internal static CustomersHistoryDocument MapToHistoryDocument(Customer customer, ActionType action)
+        {
+            return new CustomersHistoryDocument
+            {
+                Id = Guid.NewGuid(),
+                CustomerId = customer.Id,
+                ExternalId = customer.ExternalId,
+                Individual = MapIndividualToDocument(customer.Individual),
+                Companies = customer.Companies.Select(MapCompanyToDocument).ToList(),
+                UpdatedAt = customer.UpdatedAt,
+                ChangedAt = DateTime.UtcNow,
+                Action = action
             };
         }
 

@@ -1,5 +1,6 @@
 ﻿using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
+using ECommerceStoreUsers.Infrastructure.Persistance.Admins.History;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -10,6 +11,7 @@ namespace ECommerceStoreUsers.Infrastructure.Context
     {
         private readonly IMongoDatabase _database;
         private readonly MongoDbSettings _settings;
+        public IMongoClient Client { get; }
 
         public MongoDbContext(IOptions<MongoDbSettings> options)
         {
@@ -25,10 +27,13 @@ namespace ECommerceStoreUsers.Infrastructure.Context
                 throw new InvalidOperationException("MongoDbSettings.CustomerCollectionName is not configured.");
 
             if (string.IsNullOrWhiteSpace(_settings.CustomerHistoryCollectionName))
-                throw new InvalidOperationException("MongoDbSettings.CustomerHistoryCollectionName   is not configured.");
+                throw new InvalidOperationException("MongoDbSettings.CustomerHistoryCollectionName is not configured.");
+            
+            if (string.IsNullOrWhiteSpace(_settings.AdminsHistoryCollectionName))
+                throw new InvalidOperationException("MongoDbSettings.AdminsHistoryCollectionName is not configured.");
 
-            var client = new MongoClient(_settings.ConnectionString);
-            _database = client.GetDatabase(_settings.DatabaseName);
+            Client = new MongoClient(_settings.ConnectionString);
+            _database = Client.GetDatabase(_settings.DatabaseName);
         }
 
         public IMongoCollection<CustomerDocument> Customers =>
@@ -36,5 +41,8 @@ namespace ECommerceStoreUsers.Infrastructure.Context
 
         public IMongoCollection<AdminDocument> Admins =>
            _database.GetCollection<AdminDocument>(_settings.AdminCollectionName);
+
+        public IMongoCollection<AdminHistoryDocument> AdminsHistory =>
+           _database.GetCollection<AdminHistoryDocument>(_settings.AdminsHistoryCollectionName);
     }
 }

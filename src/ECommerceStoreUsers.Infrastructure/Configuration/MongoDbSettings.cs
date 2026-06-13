@@ -8,5 +8,6 @@
         public required string CustomerCollectionName { get; init; }
         public required string CustomerHistoryCollectionName { get; init; }
         public required string AdminCollectionName { get; init; }
+        public required string AdminsHistoryCollectionName { get; init; }
     }
 }

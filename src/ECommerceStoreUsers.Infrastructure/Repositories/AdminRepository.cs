@@ -1,5 +1,6 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
+using ECommerceStoreUsers.Domain.Common.Enums;
 using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
 using MongoDB.Driver;
@@ -42,21 +43,51 @@ internal sealed class AdminRepository : IAdminRepository
     public async Task<Admin> CreateAdmin(Admin admin, CancellationToken cancellationToken)
     {
         var adminDocument = AdminMapping.MapToDocument(admin);
+        var historyDocument = AdminMapping.MapToHistoryDocument(admin, ActionType.Insert);
 
-        await _context.Admins.InsertOneAsync(adminDocument, cancellationToken: cancellationToken);
+        using var session = await _context.Client.StartSessionAsync(cancellationToken: cancellationToken);
+        session.StartTransaction();
 
-        return admin;
+        try
+        {
+            await _context.Admins.InsertOneAsync(session, adminDocument, cancellationToken: cancellationToken);
+            await _context.AdminsHistory.InsertOneAsync(session, historyDocument, cancellationToken: cancellationToken);
+
+            await session.CommitTransactionAsync(cancellationToken);
+            return admin;
+        }
+        catch
+        {
+            await session.AbortTransactionAsync(cancellationToken);
+            throw;
+        }
     }
 
     public async Task<Admin> UpdateAdmin(Admin admin, CancellationToken cancellationToken)
     {
         var adminDocument = AdminMapping.MapToDocument(admin);
+        var historyDocument = AdminMapping.MapToHistoryDocument(admin, ActionType.Update);
 
-        await _context.Admins.ReplaceOneAsync(
-            x => x.Id == adminDocument.Id,
-            adminDocument,
-            cancellationToken: cancellationToken);
+        using var session = await _context.Client.StartSessionAsync(cancellationToken: cancellationToken);
+        session.StartTransaction();
 
-        return admin;
+        try
+        {
+            await _context.Admins.ReplaceOneAsync(
+                session,
+                x => x.Id == adminDocument.Id,
+                adminDocument,
+                cancellationToken: cancellationToken);
+
+            await _context.AdminsHistory.InsertOneAsync(session, historyDocument, cancellationToken: cancellationToken);
+
+            await session.CommitTransactionAsync(cancellationToken);
+            return admin;
+        }
+        catch
+        {
+            await session.AbortTransactionAsync(cancellationToken);
+            throw;
+        }
     }
 }

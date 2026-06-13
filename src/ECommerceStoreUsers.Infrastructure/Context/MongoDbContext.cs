@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.Infrastructure.Configuration;
+using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
 using ECommerceStoreUsers.Infrastructure.Persistance.Admins.History;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
@@ -26,8 +26,11 @@ namespace ECommerceStoreUsers.Infrastructure.Context
             if (string.IsNullOrWhiteSpace(_settings.CustomerCollectionName))
                 throw new InvalidOperationException("MongoDbSettings.CustomerCollectionName is not configured.");
 
-            if (string.IsNullOrWhiteSpace(_settings.CustomerHistoryCollectionName))
-                throw new InvalidOperationException("MongoDbSettings.CustomerHistoryCollectionName is not configured.");
+            if (string.IsNullOrWhiteSpace(_settings.CustomersHistoryCollectionName))
+                throw new InvalidOperationException("MongoDbSettings.CustomersHistoryCollectionName is not configured.");
+
+            if (string.IsNullOrWhiteSpace(_settings.AdminCollectionName))
+                throw new InvalidOperationException("MongoDbSettings.AdminCollectionName is not configured.");
             
             if (string.IsNullOrWhiteSpace(_settings.AdminsHistoryCollectionName))
                 throw new InvalidOperationException("MongoDbSettings.AdminsHistoryCollectionName is not configured.");
@@ -38,6 +41,9 @@ namespace ECommerceStoreUsers.Infrastructure.Context
 
         public IMongoCollection<CustomerDocument> Customers =>
             _database.GetCollection<CustomerDocument>(_settings.CustomerCollectionName);
+
+        public IMongoCollection<CustomersHistoryDocument> CustomersHistory =>
+           _database.GetCollection<CustomersHistoryDocument>(_settings.CustomersHistoryCollectionName);
 
         public IMongoCollection<AdminDocument> Admins =>
            _database.GetCollection<AdminDocument>(_settings.AdminCollectionName);

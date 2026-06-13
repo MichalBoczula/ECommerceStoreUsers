@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using ECommerceStoreUsers.API;
 using ECommerceStoreUsers.Infrastructure.Context;
 using Microsoft.AspNetCore.Hosting;
@@ -24,6 +24,7 @@ namespace ECommerceStoreUsers.AcceptanceTests
             _mongoContainer = new MongoDbBuilder("mongo:8.0")
                 .WithUsername(Username)
                 .WithPassword(Password)
+                .WithReplicaSet()
                 .Build();
         }
 
@@ -38,7 +39,7 @@ namespace ECommerceStoreUsers.AcceptanceTests
                     ["MongoDbSettings:ConnectionString"] = _connectionString,
                     ["MongoDbSettings:DatabaseName"] = Database,
                     ["MongoDbSettings:CustomerCollectionName"] = "customers",
-                    ["MongoDbSettings:CustomerHistoryCollectionName"] = "customer-history",
+                    ["MongoDbSettings:CustomersHistoryCollectionName"] = "customers-history",
                     ["MongoDbSettings:AdminCollectionName"] = "admins",
                     ["MongoDbSettings:AdminsHistoryCollectionName"] = "admins-history"
                 };

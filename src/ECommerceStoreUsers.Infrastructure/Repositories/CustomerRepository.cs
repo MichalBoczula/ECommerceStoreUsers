@@ -1,5 +1,6 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
+using ECommerceStoreUsers.Domain.Common.Enums;
 using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
 using MongoDB.Driver;
@@ -34,21 +35,51 @@ internal sealed class CustomerRepository : ICustomerRepository
     public async Task<Customer> CreateCustomer(Customer customer, CancellationToken cancellationToken)
     {
         var customerDocument = CustomerMapping.MapToDocument(customer);
+        var historyDocument = CustomerMapping.MapToHistoryDocument(customer, ActionType.Insert);
 
-        await _context.Customers.InsertOneAsync(customerDocument, cancellationToken: cancellationToken);
+        using var session = await _context.Client.StartSessionAsync(cancellationToken: cancellationToken);
+        session.StartTransaction();
 
-        return customer;
+        try
+        {
+            await _context.Customers.InsertOneAsync(session, customerDocument, cancellationToken: cancellationToken);
+            await _context.CustomersHistory.InsertOneAsync(session, historyDocument, cancellationToken: cancellationToken);
+
+            await session.CommitTransactionAsync(cancellationToken);
+            return customer;
+        }
+        catch
+        {
+            await session.AbortTransactionAsync(cancellationToken);
+            throw;
+        }
     }
 
     public async Task<Customer> UpdateCustomer(Customer customer, CancellationToken cancellationToken)
     {
         var customerDocument = CustomerMapping.MapToDocument(customer);
+        var historyDocument = CustomerMapping.MapToHistoryDocument(customer, ActionType.Update);
 
-        var result = await _context.Customers.ReplaceOneAsync(
-            x => x.Id == customerDocument.Id,
-            customerDocument,
-            cancellationToken: cancellationToken);
+        using var session = await _context.Client.StartSessionAsync(cancellationToken: cancellationToken);
+        session.StartTransaction();
 
-        return customer;
+        try
+        {
+            await _context.Customers.ReplaceOneAsync(
+                session,
+                x => x.Id == customerDocument.Id,
+                customerDocument,
+                cancellationToken: cancellationToken);
+
+            await _context.CustomersHistory.InsertOneAsync(session, historyDocument, cancellationToken: cancellationToken);
+
+            await session.CommitTransactionAsync(cancellationToken);
+            return customer;
+        }
+        catch
+        {
+            await session.AbortTransactionAsync(cancellationToken);
+            throw;
+        }
     }
 }

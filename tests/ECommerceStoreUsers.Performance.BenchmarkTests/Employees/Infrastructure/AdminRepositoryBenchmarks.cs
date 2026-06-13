@@ -1,4 +1,4 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Infrastructure.Configuration;
@@ -37,6 +37,7 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructur
             _mongoContainer = new MongoDbBuilder("mongo:8")
                 .WithUsername("admin")
                 .WithPassword("admin123")
+                .WithReplicaSet()
                 .WithCreateParameterModifier(p => p.HostConfig.Tmpfs = new Dictionary<string, string> { { "/data/db", "rw" } })
                 .Build();
 
@@ -48,7 +49,7 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructur
                 DatabaseName = DatabaseName,
                 AdminCollectionName = AdminCollectionName,
                 CustomerCollectionName = "customers",
-                CustomerHistoryCollectionName = "customer-history",
+                CustomersHistoryCollectionName = "customers-history",
                 AdminsHistoryCollectionName = "admin-history"
             };
 

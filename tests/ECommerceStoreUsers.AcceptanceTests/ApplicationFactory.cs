@@ -39,7 +39,8 @@ namespace ECommerceStoreUsers.AcceptanceTests
                     ["MongoDbSettings:DatabaseName"] = Database,
                     ["MongoDbSettings:CustomerCollectionName"] = "customers",
                     ["MongoDbSettings:CustomerHistoryCollectionName"] = "customer-history",
-                    ["MongoDbSettings:AdminCollectionName"] = "admins"
+                    ["MongoDbSettings:AdminCollectionName"] = "admins",
+                    ["MongoDbSettings:AdminsHistoryCollectionName"] = "admins-history"
                 };
 
                 config.AddInMemoryCollection(overrides);

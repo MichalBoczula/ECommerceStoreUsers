@@ -18,17 +18,14 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
         [Fact]
         public async Task InitializeInfrastructureAsync_ShouldCreateExpectedIndexes()
         {
-            // arrange
             var databaseName = $"user-tests-{Guid.NewGuid():N}";
 
             await using var serviceProvider = TestServiceProviderFactory.Create(
                 _fixture.ConnectionString,
                 databaseName);
 
-            // act
             await serviceProvider.InitializeInfrastructureAsync();
 
-            // assert
             var client = new MongoClient(_fixture.ConnectionString);
             var database = client.GetDatabase(databaseName);
 
@@ -40,6 +37,10 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             var adminIndexesCursor = await database.GetCollection<BsonDocument>("admins").Indexes.ListAsync();
             var adminIndexes = await adminIndexesCursor.ToListAsync();
             adminIndexes.ShouldContain(x => x["name"] == "UX_Admin_ExternalId");
+
+            var adminHistoryIndexesCursor = await database.GetCollection<BsonDocument>("admins-history").Indexes.ListAsync();
+            var adminHistoryIndexes = await adminHistoryIndexesCursor.ToListAsync();
+            adminHistoryIndexes.ShouldNotBeEmpty();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
+using ECommerceStoreUsers.Infrastructure.Persistance.Admins.History;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
 using MongoDB.Driver;
 
@@ -18,6 +19,7 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
         {
             await CreateCustomerIndexesAsync(cancellationToken);
             await CreateAdminIndexesAsync(cancellationToken);
+            await CreateAdminHistoryIndexesAsync(cancellationToken);
         }
 
         private async Task CreateCustomerIndexesAsync(CancellationToken cancellationToken)
@@ -54,6 +56,20 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
 
             await _context.Admins.Indexes.CreateOneAsync(
                 adminExternalIdIndex,
+                cancellationToken: cancellationToken);
+        }
+
+        private async Task CreateAdminHistoryIndexesAsync(CancellationToken cancellationToken)
+        {
+            var adminHistoryIdIndex = new CreateIndexModel<AdminHistoryDocument>(
+                Builders<AdminHistoryDocument>.IndexKeys.Ascending(x => x.AdminId),
+                new CreateIndexOptions
+                {
+                    Name = "IX_AdminHistory_AdminId"
+                });
+
+            await _context.AdminsHistory.Indexes.CreateOneAsync(
+                adminHistoryIdIndex,
                 cancellationToken: cancellationToken);
         }
     }

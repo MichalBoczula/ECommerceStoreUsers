@@ -39,6 +39,7 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Infrastructur
             _mongoContainer = new MongoDbBuilder("mongo:8")
                 .WithUsername("admin")
                 .WithPassword("admin123")
+                .WithReplicaSet()
                 .WithCreateParameterModifier(p => p.HostConfig.Tmpfs = new Dictionary<string, string> { { "/data/db", "rw" } })
                 .Build();
 
@@ -50,7 +51,7 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Infrastructur
                 DatabaseName = DatabaseName,
                 AdminCollectionName = "admins",
                 CustomerCollectionName = CustomerCollectionName,
-                CustomerHistoryCollectionName = "customer-history",
+                CustomersHistoryCollectionName = "customers-history",
                 AdminsHistoryCollectionName = "admin-history"
             };
 

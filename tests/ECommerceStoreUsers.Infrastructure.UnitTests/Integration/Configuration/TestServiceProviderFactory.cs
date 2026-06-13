@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration
@@ -13,7 +13,7 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration
                     ["MongoDbSettings:ConnectionString"] = mongoConnectionString,
                     ["MongoDbSettings:DatabaseName"] = databaseName,
                     ["MongoDbSettings:CustomerCollectionName"] = "customers",
-                    ["MongoDbSettings:CustomerHistoryCollectionName"] = "customer-history",
+                    ["MongoDbSettings:CustomersHistoryCollectionName"] = "customers-history",
                     ["MongoDbSettings:AdminCollectionName"] = "admins",
                     ["MongoDbSettings:AdminsHistoryCollectionName"] = "admins-history"
                 })

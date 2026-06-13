@@ -2,8 +2,11 @@
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
+using ECommerceStoreUsers.Domain.Common.Enums;
+using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
@@ -223,6 +226,76 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             updatedResult.Companies.Count.ShouldBe(2);
             updatedResult.Companies.ShouldContain(x => x.CompanyName == "First Company");
             updatedResult.Companies.ShouldContain(x => x.CompanyName == "Second Company");
+        }
+
+
+        [Fact]
+        public async Task CreateCustomer_ShouldCreateHistoryRecordWithInsertAction()
+        {
+            // arrange
+            var databaseName = $"user-tests-{Guid.NewGuid():N}";
+            await using var serviceProvider = TestServiceProviderFactory.Create(_fixture.ConnectionString, databaseName);
+            var repository = serviceProvider.GetRequiredService<ICustomerRepository>();
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+
+            var customer = CreateTestCustomer();
+
+            // act
+            await repository.CreateCustomer(customer, CancellationToken.None);
+
+            // assert
+            var historyRecord = await context.CustomersHistory
+                .Find(x => x.CustomerId == customer.Id)
+                .FirstOrDefaultAsync(CancellationToken.None);
+
+            historyRecord.ShouldNotBeNull();
+            historyRecord.Id.ShouldNotBe(Guid.Empty);
+            historyRecord.CustomerId.ShouldBe(customer.Id);
+            historyRecord.ExternalId.ShouldBe(customer.ExternalId);
+            historyRecord.Individual.Email.ShouldBe(customer.Individual.Email);
+            historyRecord.Action.ShouldBe(ActionType.Insert);
+            historyRecord.ChangedAt.ShouldBeLessThanOrEqualTo(DateTime.UtcNow);
+        }
+
+        [Fact]
+        public async Task UpdateCustomer_ShouldAppendNewHistoryRecordWithUpdateAction()
+        {
+            // arrange
+            var databaseName = $"user-tests-{Guid.NewGuid():N}";
+            await using var serviceProvider = TestServiceProviderFactory.Create(_fixture.ConnectionString, databaseName);
+            var repository = serviceProvider.GetRequiredService<ICustomerRepository>();
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+
+            var customer = CreateTestCustomer();
+            await repository.CreateCustomer(customer, CancellationToken.None);
+
+            var customerToUpdate = await repository.GetByIdAsync(customer.Id, CancellationToken.None);
+            customerToUpdate.ShouldNotBeNull();
+
+            var updatedIndividual = new IndividualData(
+                "Anna",
+                "Nowak",
+                "anna.nowak@test.pl",
+                "+48123456789",
+                CreateDefaultAddress("03-333"),
+                CreateDefaultAddress("03-444"));
+
+            customerToUpdate.UpdateIndividualData(updatedIndividual);
+
+            // act
+            await repository.UpdateCustomer(customerToUpdate, CancellationToken.None);
+
+            // assert
+            var historyRecords = await context.CustomersHistory
+                .Find(x => x.CustomerId == customer.Id)
+                .SortBy(x => x.ChangedAt)
+                .ToListAsync(CancellationToken.None);
+
+            historyRecords.Count.ShouldBe(2);
+            historyRecords[0].Action.ShouldBe(ActionType.Insert);
+            historyRecords[0].Individual.Email.ShouldBe(customer.Individual.Email);
+            historyRecords[1].Action.ShouldBe(ActionType.Update);
+            historyRecords[1].Individual.Email.ShouldBe("anna.nowak@test.pl");
         }
 
         private static Address CreateDefaultAddress(string postalCode) =>

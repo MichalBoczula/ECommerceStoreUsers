@@ -34,6 +34,10 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             customerIndexes.ShouldContain(x => x["name"] == "UX_Customer_ExternalId");
             customerIndexes.ShouldContain(x => x["name"] == "IX_Customer_Companies_TaxId");
 
+            var customersHistoryIndexesCursor = await database.GetCollection<BsonDocument>("customers-history").Indexes.ListAsync();
+            var customersHistoryIndexes = await customersHistoryIndexesCursor.ToListAsync();
+            customersHistoryIndexes.ShouldContain(x => x["name"] == "IX_CustomersHistory_CustomerId");
+
             var adminIndexesCursor = await database.GetCollection<BsonDocument>("admins").Indexes.ListAsync();
             var adminIndexes = await adminIndexesCursor.ToListAsync();
             adminIndexes.ShouldContain(x => x["name"] == "UX_Admin_ExternalId");

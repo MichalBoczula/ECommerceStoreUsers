@@ -18,6 +18,7 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
             await CreateCustomerIndexesAsync(cancellationToken);
+            await CreateCustomersHistoryIndexesAsync(cancellationToken);
             await CreateAdminIndexesAsync(cancellationToken);
             await CreateAdminHistoryIndexesAsync(cancellationToken);
         }
@@ -41,6 +42,20 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
 
             await _context.Customers.Indexes.CreateManyAsync(
                 new[] { externalIdIndex, companyTaxIdIndex },
+                cancellationToken: cancellationToken);
+        }
+
+        private async Task CreateCustomersHistoryIndexesAsync(CancellationToken cancellationToken)
+        {
+            var customerHistoryCustomerIdIndex = new CreateIndexModel<CustomersHistoryDocument>(
+                Builders<CustomersHistoryDocument>.IndexKeys.Ascending(x => x.CustomerId),
+                new CreateIndexOptions
+                {
+                    Name = "IX_CustomersHistory_CustomerId"
+                });
+
+            await _context.CustomersHistory.Indexes.CreateOneAsync(
+                customerHistoryCustomerIdIndex,
                 cancellationToken: cancellationToken);
         }
 

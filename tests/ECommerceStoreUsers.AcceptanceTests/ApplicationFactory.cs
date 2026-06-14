@@ -30,6 +30,10 @@ namespace ECommerceStoreUsers.AcceptanceTests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            _mongoContainer.StartAsync().GetAwaiter().GetResult();
+
+            _connectionString = _mongoContainer.GetConnectionString();
+
             builder.UseEnvironment("Testing");
 
             builder.ConfigureAppConfiguration((_, config) =>
@@ -56,13 +60,7 @@ namespace ECommerceStoreUsers.AcceptanceTests
 
         public async Task InitializeAsync()
         {
-            await _mongoContainer.StartAsync();
-
-            var host = _mongoContainer.Hostname;
-            var port = _mongoContainer.GetMappedPublicPort(27017);
-
-            _connectionString = $"mongodb://{Username}:{Password}@{host}:{port}/?authSource=admin";
-
+            // Container lifecycle is managed by ConfigureWebHost startup sequence now.
             using var scope = Services.CreateScope();
 
             var infrastructureAssembly = Assembly.GetAssembly(typeof(MongoDbContext))

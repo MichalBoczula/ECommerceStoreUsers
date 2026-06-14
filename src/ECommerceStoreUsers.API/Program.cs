@@ -4,13 +4,13 @@ using ECommerceStoreUsers.API.Endpoints;
 using ECommerceStoreUsers.Application;
 using ECommerceStoreUsers.Domain;
 using ECommerceStoreUsers.Infrastructure;
-using Microsoft.AspNetCore.Routing;
+using ECommerceStoreUsers.Infrastructure.Configuration;
 
 namespace ECommerceStoreUsers.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +38,8 @@ namespace ECommerceStoreUsers.API
             builder.Services.AddApplication();
 
             var app = builder.Build();
+
+            await app.Services.InitializeInfrastructureAsync();
 
             app.UseExceptionHandler();
             app.UseOpenApi();

@@ -12,4 +12,7 @@
     <Project Path="tests/ECommerceStoreUsers.Infrastructure.UnitTests/ECommerceStoreUsers.Infrastructure.UnitTests.csproj" />
     <Project Path="tests/ECommerceStoreUsers.Performance.BenchmarkTests/ECommerceStoreUsers.Performance.BenchmarkTests.csproj" />
   </Folder>
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

@@ -44,7 +44,6 @@ namespace ECommerceStoreUsers.API
             app.UseExceptionHandler();
             app.UseOpenApi();
             app.UseSwaggerUi();
-            app.UseHttpsRedirection();
             app.MapDocumentationEndpoints();
             app.MapCustomersEndpoints();
             app.MapAdminsEndpoints();

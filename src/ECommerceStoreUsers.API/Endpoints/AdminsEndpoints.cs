@@ -1,8 +1,8 @@
-﻿using ECommerceStoreInvoice.API.Configuration.Common;
+﻿using Microsoft.AspNetCore.Mvc;
+using ECommerceStoreInvoice.API.Configuration.Common;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
 using ECommerceStoreUsers.Application.Services.Abstract.Admins;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceStoreUsers.API.Endpoints
 {
@@ -51,14 +51,13 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Modifies existing administrator workspace identity details including name parameters and personal mail references.")
             .WithName("UpdateAdminProfile")
             .Produces<AdminResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
         }
 
         private static void MapAdminsQueries(IEndpointRouteBuilder group)
         {
-            group.MapGet("/{externalId}", async (
+            group.MapGet("/external/{externalId}", async (
                 string externalId,
                 IAdminProfileService adminService,
                 CancellationToken cancellationToken) =>

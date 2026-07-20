@@ -1,3 +1,5 @@
+name: users
+
 services:
   ecommercestoreusers.api:
     image: ${DOCKER_REGISTRY-}ecommercestoreusersapi

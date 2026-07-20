@@ -1,39 +1,148 @@
-version: '3.8'
-
 services:
-  # 1. Your .NET Web API Service  
   ecommercestoreusers.api:
     image: ${DOCKER_REGISTRY-}ecommercestoreusersapi
     build:
       context: .
-      dockerfile: src/ECommerceStoreUsers.API/Dockerfile 
+      dockerfile: src/ECommerceStoreUsers.API/Dockerfile
+
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
-      - MongoDbSettings__ConnectionString=mongodb://admin:admin123@compose-mongodb:27017/?authSource=admin
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ASPNETCORE_HTTPS_PORTS: 8081
+
+      MongoDbSettings__ConnectionString: >-
+        mongodb://admin:admin123@compose-mongodb:27017/admin?authSource=admin&replicaSet=rs0
+
     ports:
-      - "8080:8080" 
-      - "8081:8081" 
+      - "8080:8080"
+      - "8081:8081"
+
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
-    depends_on:
-      - compose-mongodb
 
-  # 2. The MongoDB 8 Service (Renamed service to compose-mongodb)
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+
+  mongo-keyfile-init:
+    image: busybox:latest
+    container_name: mongodb-keyfile-init
+    user: root
+
+    volumes:
+      - mongo-keyfile:/mongo-keyfile
+
+    command:
+      - sh
+      - -c
+      - |
+        if [ ! -f /mongo-keyfile/keyfile ]; then
+          head -c 96 /dev/urandom |
+          base64 |
+          tr -d '\n' > /mongo-keyfile/keyfile
+
+          chown 999:999 /mongo-keyfile/keyfile
+          chmod 400 /mongo-keyfile/keyfile
+        fi
+
   compose-mongodb:
     image: mongo:8
     container_name: local-mongodb
+
     ports:
-      - "27018:27017" # Exposed to your windows host on port 27018
+      - "27018:27017"
+
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin123
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+
     volumes:
       - mongo-data:/data/db
+      - mongo-keyfile:/etc/mongo-keyfile:ro
+
+    command:
+      - mongod
+      - --replSet
+      - rs0
+      - --bind_ip_all
+      - --keyFile
+      - /etc/mongo-keyfile/keyfile
+
+    depends_on:
+      mongo-keyfile-init:
+        condition: service_completed_successfully
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mongosh 'mongodb://admin:admin123@localhost:27017/admin?authSource=admin&directConnection=true' --quiet --eval 'db.adminCommand({ ping: 1 }).ok' | grep 1"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 15s
+
+  mongo-init:
+    image: mongo:8
+    container_name: mongodb-replica-init
+    restart: "no"
+
+    depends_on:
+      compose-mongodb:
+        condition: service_healthy
+
+    entrypoint:
+      - /bin/bash
+      - -c
+
+    command:
+      - |
+        MONGO_URI="mongodb://admin:admin123@compose-mongodb:27017/admin?authSource=admin&directConnection=true"
+
+        mongosh "$$MONGO_URI" --quiet --eval '
+          try {
+            rs.status();
+            print("Replica set is already initialized.");
+          } catch (error) {
+            print("Initializing replica set...");
+
+            rs.initiate({
+              _id: "rs0",
+              members: [
+                {
+                  _id: 0,
+                  host: "compose-mongodb:27017"
+                }
+              ]
+            });
+          }
+        '
+
+        for attempt in {1..30}; do
+          IS_PRIMARY=$$(mongosh "$$MONGO_URI" --quiet --eval '
+            try {
+              print(db.hello().isWritablePrimary);
+            } catch (error) {
+              print(false);
+            }
+          ')
+
+          if [ "$$IS_PRIMARY" = "true" ]; then
+            echo "MongoDB replica set is ready."
+            exit 0
+          fi
+
+          echo "Waiting for MongoDB primary..."
+          sleep 2
+        done
+
+        echo "MongoDB replica set initialization failed."
+        exit 1
 
 volumes:
   mongo-data:
+  mongo-keyfile:

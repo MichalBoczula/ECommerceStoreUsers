@@ -34,7 +34,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminNotFound
             _externalId.ShouldNotBeNull();
 
             _apiContext.Response = await _apiContext.HttpClient.GetAsync(
-                $"/admins/{_externalId}");
+                $"/admins/external/{Uri.EscapeDataString(_externalId)}");
 
             var body = await _apiContext.Response.Content.ReadAsStringAsync();
             AllureJson.AttachRawJson($"Not Found Response JSON ({(int)_apiContext.Response.StatusCode})", body);

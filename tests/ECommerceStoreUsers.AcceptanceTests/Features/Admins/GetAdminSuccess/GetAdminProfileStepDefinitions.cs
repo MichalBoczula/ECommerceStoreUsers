@@ -60,7 +60,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminSuccess
             _externalId = GetRequiredValue(requestValues, "ExternalId");
 
             _apiContext.Response = await _apiContext.HttpClient.GetAsync(
-                $"/admins/{Uri.EscapeDataString(_externalId)}");
+                $"/admins/external/{Uri.EscapeDataString(_externalId)}");
 
             var body = await _apiContext.Response.Content.ReadAsStringAsync();
             AllureJson.AttachRawJson($"Get admin response JSON ({(int)_apiContext.Response.StatusCode})", body);

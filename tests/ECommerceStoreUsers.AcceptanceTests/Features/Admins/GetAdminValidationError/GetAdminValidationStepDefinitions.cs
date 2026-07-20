@@ -39,7 +39,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminValidation
             _externalId.ShouldNotBeNull();
 
             var encodedExternalId = Uri.EscapeDataString(_externalId!);
-            _apiContext.Response = await _apiContext.HttpClient.GetAsync($"/admins/{encodedExternalId}");
+            _apiContext.Response = await _apiContext.HttpClient.GetAsync($"/admins/external/{encodedExternalId}");
 
             var body = await _apiContext.Response.Content.ReadAsStringAsync();
             AllureJson.AttachRawJson($"Get Admin Validation Response JSON ({(int)_apiContext.Response.StatusCode})", body);

@@ -12,5 +12,5 @@ Feature: Get admin profile not found
       | Title      | Resource not found.                                                                                                                                   |
       | Detail     | Resource Admin identified by id auth-missing-404-admin cannot be found in database during action GetAdminByExternalId.                                 |
       | Type       | https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4                                                                                           |
-      | Instance   | /admins/auth-missing-404-admin                                                                                                                        |
+      | Instance   | /admins/external/auth-missing-404-admin                                                                                                                        |
       | HasTraceId | true                                                                                                                                                  |

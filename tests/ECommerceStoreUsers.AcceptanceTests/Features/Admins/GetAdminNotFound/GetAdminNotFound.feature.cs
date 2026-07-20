@@ -188,7 +188,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminNotFound
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4"});
                 table10.AddRow(new string[] {
                             "Instance",
-                            "/admins/auth-missing-404-admin"});
+                            "/admins/external/auth-missing-404-admin"});
                 table10.AddRow(new string[] {
                             "HasTraceId",
                             "true"});

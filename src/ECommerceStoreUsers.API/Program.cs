@@ -15,15 +15,9 @@ namespace ECommerceStoreUsers.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddOpenApiDocument(options =>
+            builder.Services.AddSwaggerGen(c =>
             {
-                options.PostProcess = document =>
-                {
-                    foreach (var schema in document.Components.Schemas.Values)
-                    {
-                        schema.FixGuidFormats();
-                    }
-                };
+                c.SupportNonNullableReferenceTypes();
             });
 
             builder.Services.AddHealthChecks();
@@ -42,8 +36,8 @@ namespace ECommerceStoreUsers.API
             await app.Services.InitializeInfrastructureAsync();
 
             app.UseExceptionHandler();
-            app.UseOpenApi();
-            app.UseSwaggerUi();
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.MapDocumentationEndpoints();
             app.MapCustomersEndpoints();
             app.MapAdminsEndpoints();

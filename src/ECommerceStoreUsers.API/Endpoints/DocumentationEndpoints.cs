@@ -11,7 +11,7 @@ namespace ECommerceStoreUsers.API.Endpoints
     {
         public static IEndpointRouteBuilder MapDocumentationEndpoints(this IEndpointRouteBuilder app)
         {
-            var group = app.MapGroup("/documentation").WithTags("Documentation");
+            var group = app.MapGroup("/users-documentation").WithTags("Documentation");
 
             MapFlowDocumentation(group);
             MapValidationDocumentation(group);

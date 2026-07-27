@@ -12,7 +12,7 @@ services:
       ASPNETCORE_HTTP_PORTS: 8080
       ASPNETCORE_HTTPS_PORTS: 8081
 
-      MongoDbSettings__ConnectionString: >-
+      MongoDbSettings__ConnectionString:
         mongodb://admin:admin123@compose-mongodb:27017/admin?authSource=admin&replicaSet=rs0
 
     ports:

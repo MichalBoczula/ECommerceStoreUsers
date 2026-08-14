@@ -1,11 +1,14 @@
 ﻿using ECommerceStoreUsers.Application.Common.RequestsDto.Admins;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
+using ECommerceStoreUsers.Application.Common.RequestsDto.Favorites;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
+using ECommerceStoreUsers.Application.Common.ResponsesDto.Favorites;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
+using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 
 namespace ECommerceStoreUsers.Application.Mapping;
 
@@ -115,6 +118,22 @@ internal static class MappingConfig
             Email = admin.Email,
             IsActive = admin.IsActive,
             LastLoginAt = admin.LastLoginAt
+        };
+    }
+
+    internal static Favorite MapToDomain(Guid clientId, AddFavoriteRequestDto request)
+    {
+        return new Favorite(clientId, request.ProductId);
+    }
+
+    internal static FavoriteResponseDto MapToResponse(Favorite favorite)
+    {
+        return new FavoriteResponseDto
+        {
+            Id = favorite.Id,
+            ClientId = favorite.ClientId,
+            ProductId = favorite.ProductId,
+            AddedAt = favorite.AddedAt
         };
     }
 }

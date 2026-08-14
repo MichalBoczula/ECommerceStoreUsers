@@ -70,14 +70,10 @@ namespace ECommerceStoreUsers.Infrastructure.Repositories
             await _context.Favorites.DeleteOneAsync(filter, cancellationToken);
         }
 
-        public void Delete(Favorite favorite)
+        public async Task DeleteAllByClientIdAsync(Guid clientId, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+            var filter = Builders<FavoriteDocument>.Filter.Eq(x => x.ClientId, clientId);
+            await _context.Favorites.DeleteManyAsync(filter, cancellationToken);
         }
     }
 }

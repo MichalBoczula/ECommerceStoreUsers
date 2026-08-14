@@ -1,5 +1,4 @@
 using ECommerceStoreInvoice.API.Configuration;
-using ECommerceStoreInvoice.API.Configuration.Extensions;
 using ECommerceStoreUsers.API.Endpoints;
 using ECommerceStoreUsers.Application;
 using ECommerceStoreUsers.Domain;
@@ -41,6 +40,7 @@ namespace ECommerceStoreUsers.API
             app.MapDocumentationEndpoints();
             app.MapCustomersEndpoints();
             app.MapAdminsEndpoints();
+            app.MapFavoritesEndpoints();
             app.MapHealthChecks("/health");
 
             app.Run();

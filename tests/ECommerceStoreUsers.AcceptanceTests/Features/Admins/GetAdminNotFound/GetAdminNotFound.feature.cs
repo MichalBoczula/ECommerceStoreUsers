@@ -158,42 +158,42 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins.GetAdminNotFound
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table9.AddRow(new string[] {
+                table1.AddRow(new string[] {
                             "ExternalId",
                             "auth-missing-404-admin"});
 #line 5
-    await testRunner.GivenAsync("I have a missing admin external id", ((string)(null)), table9, "Given ");
+    await testRunner.GivenAsync("I have a missing admin external id", ((string)(null)), table1, "Given ");
 #line hidden
 #line 8
     await testRunner.WhenAsync("I request the admin profile by external id", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "Field",
                             "Value"});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "StatusCode",
                             "404"});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Title",
                             "Resource not found."});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Detail",
                             "Resource Admin identified by id auth-missing-404-admin cannot be found in databas" +
                                 "e during action GetAdminByExternalId."});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Type",
                             "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4"});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Instance",
                             "/admins/external/auth-missing-404-admin"});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "HasTraceId",
                             "true"});
 #line 9
-    await testRunner.ThenAsync("the admin profile request fails with a not found response", ((string)(null)), table10, "Then ");
+    await testRunner.ThenAsync("the admin profile request fails with a not found response", ((string)(null)), table2, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

@@ -9,5 +9,6 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
         public required string CustomersHistoryCollectionName { get; init; }
         public required string AdminCollectionName { get; init; }
         public required string AdminsHistoryCollectionName { get; init; }
+        public required string FavoriteCollectionName { get; init; }
     }
 }

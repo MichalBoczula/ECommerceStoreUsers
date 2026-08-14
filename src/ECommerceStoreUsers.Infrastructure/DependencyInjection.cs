@@ -1,5 +1,6 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
+using ECommerceStoreUsers.Domain.AggregatesModel.Favorites.Repositories;
 using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Repositories;
@@ -22,6 +23,7 @@ namespace ECommerceStoreUsers.Infrastructure
 
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();
+            services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 
             return services;
         }

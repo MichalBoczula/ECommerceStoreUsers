@@ -2,6 +2,7 @@
 using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
 using ECommerceStoreUsers.Infrastructure.Persistance.Admins.History;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
+using ECommerceStoreUsers.Infrastructure.Persistance.Favorites;
 using MongoDB.Driver;
 
 namespace ECommerceStoreUsers.Infrastructure.Configuration
@@ -21,6 +22,7 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
             await CreateCustomersHistoryIndexesAsync(cancellationToken);
             await CreateAdminIndexesAsync(cancellationToken);
             await CreateAdminHistoryIndexesAsync(cancellationToken);
+            await CreateFavoriteIndexesAsync(cancellationToken);
         }
 
         private async Task CreateCustomerIndexesAsync(CancellationToken cancellationToken)
@@ -41,7 +43,7 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
                 });
 
             await _context.Customers.Indexes.CreateManyAsync(
-                new[] { externalIdIndex, companyTaxIdIndex },
+                [externalIdIndex, companyTaxIdIndex],
                 cancellationToken: cancellationToken);
         }
 
@@ -85,6 +87,23 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
 
             await _context.AdminsHistory.Indexes.CreateOneAsync(
                 adminHistoryIdIndex,
+                cancellationToken: cancellationToken);
+        }
+
+        private async Task CreateFavoriteIndexesAsync(CancellationToken cancellationToken)
+        {
+            var uniqueClientProductIndex = new CreateIndexModel<FavoriteDocument>(
+                Builders<FavoriteDocument>.IndexKeys
+                    .Ascending(x => x.ClientId)
+                    .Ascending(x => x.ProductId),
+                new CreateIndexOptions
+                {
+                    Unique = true,
+                    Name = "UX_Favorite_ClientId_ProductId"
+                });
+
+            await _context.Favorites.Indexes.CreateOneAsync(
+                uniqueClientProductIndex,
                 cancellationToken: cancellationToken);
         }
     }

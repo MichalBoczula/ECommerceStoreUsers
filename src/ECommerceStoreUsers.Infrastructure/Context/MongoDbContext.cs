@@ -2,6 +2,7 @@ using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
 using ECommerceStoreUsers.Infrastructure.Persistance.Admins.History;
 using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
+using ECommerceStoreUsers.Infrastructure.Persistance.Favorites;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -31,9 +32,12 @@ namespace ECommerceStoreUsers.Infrastructure.Context
 
             if (string.IsNullOrWhiteSpace(_settings.AdminCollectionName))
                 throw new InvalidOperationException("MongoDbSettings.AdminCollectionName is not configured.");
-            
+
             if (string.IsNullOrWhiteSpace(_settings.AdminsHistoryCollectionName))
                 throw new InvalidOperationException("MongoDbSettings.AdminsHistoryCollectionName is not configured.");
+
+            if (string.IsNullOrWhiteSpace(_settings.FavoriteCollectionName))
+                throw new InvalidOperationException("MongoDbSettings.FavoriteCollectionName is not configured.");
 
             Client = new MongoClient(_settings.ConnectionString);
             _database = Client.GetDatabase(_settings.DatabaseName);
@@ -50,5 +54,8 @@ namespace ECommerceStoreUsers.Infrastructure.Context
 
         public IMongoCollection<AdminHistoryDocument> AdminsHistory =>
            _database.GetCollection<AdminHistoryDocument>(_settings.AdminsHistoryCollectionName);
+
+        public IMongoCollection<FavoriteDocument> Favorites =>
+           _database.GetCollection<FavoriteDocument>(_settings.FavoriteCollectionName);
     }
 }

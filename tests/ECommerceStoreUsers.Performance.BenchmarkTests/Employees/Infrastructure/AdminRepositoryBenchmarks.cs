@@ -50,7 +50,8 @@ namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructur
                 AdminCollectionName = AdminCollectionName,
                 CustomerCollectionName = "customers",
                 CustomersHistoryCollectionName = "customers-history",
-                AdminsHistoryCollectionName = "admin-history"
+                AdminsHistoryCollectionName = "admin-history",
+                FavoriteCollectionName = "favorites"
             };
 
             _context = new MongoDbContext(Options.Create(settings));

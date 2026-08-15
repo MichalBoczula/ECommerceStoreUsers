@@ -42,6 +42,25 @@ namespace ECommerceStoreUsers.Domain.UnitTests.AggregatesModel.Entities
             company.ShippingAddress.ShouldBe(newShipping);
         }
 
+        [Fact]
+        public void Rehydrate_ShouldRebuildCompanyWithGivenValues()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var billing = CreateAddress(city: "Warsaw");
+            var shipping = CreateAddress(city: "Krakow");
+
+            // Act
+            var company = CompanyData.Rehydrate(id, "1234567890", "Contoso", billing, shipping);
+
+            // Assert
+            company.Id.ShouldBe(id);
+            company.TaxId.ShouldBe("1234567890");
+            company.CompanyName.ShouldBe("Contoso");
+            company.BillingAddress.ShouldBe(billing);
+            company.ShippingAddress.ShouldBe(shipping);
+        }
+
         private static Address CreateAddress(
             string postalCode = "00-001",
             string city = "Warsaw",

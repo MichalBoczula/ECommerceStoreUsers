@@ -15,7 +15,8 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration
                     ["MongoDbSettings:CustomerCollectionName"] = "customers",
                     ["MongoDbSettings:CustomersHistoryCollectionName"] = "customers-history",
                     ["MongoDbSettings:AdminCollectionName"] = "admins",
-                    ["MongoDbSettings:AdminsHistoryCollectionName"] = "admins-history"
+                    ["MongoDbSettings:AdminsHistoryCollectionName"] = "admins-history",
+                    ["MongoDbSettings:FavoriteCollectionName"] = "favorites"
                 })
                 .Build();
 

@@ -1,10 +1,12 @@
 using ECommerceStoreUsers.Application.Common.RequestsDto.Admins;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
+using ECommerceStoreUsers.Application.Common.RequestsDto.Favorites;
 using ECommerceStoreUsers.Application.Mapping;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
+using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Application.UnitTests.Mapping
@@ -283,6 +285,46 @@ namespace ECommerceStoreUsers.Application.UnitTests.Mapping
             result.Email.ShouldBe(admin.Email);
             result.IsActive.ShouldBe(admin.IsActive);
             result.LastLoginAt.ShouldBe(admin.LastLoginAt);
+        }
+
+        [Fact]
+        public void MapToDomain_AddFavoriteRequestDto_ShouldMapFavoriteFields()
+        {
+            // Arrange
+            var clientId = Guid.NewGuid();
+            var request = new AddFavoriteRequestDto
+            {
+                ProductId = Guid.NewGuid()
+            };
+
+            // Act
+            var result = MappingConfig.MapToDomain(clientId, request);
+
+            // Assert
+            result.Id.ShouldNotBe(Guid.Empty);
+            result.ClientId.ShouldBe(clientId);
+            result.ProductId.ShouldBe(request.ProductId);
+            result.AddedAt.ShouldBeLessThanOrEqualTo(DateTime.UtcNow);
+        }
+
+        [Fact]
+        public void MapToResponse_Favorite_ShouldMapAllFields()
+        {
+            // Arrange
+            var favorite = Favorite.Rehydrate(
+                id: Guid.NewGuid(),
+                clientId: Guid.NewGuid(),
+                productId: Guid.NewGuid(),
+                addedAt: DateTime.UtcNow.AddDays(-2));
+
+            // Act
+            var result = MappingConfig.MapToResponse(favorite);
+
+            // Assert
+            result.Id.ShouldBe(favorite.Id);
+            result.ClientId.ShouldBe(favorite.ClientId);
+            result.ProductId.ShouldBe(favorite.ProductId);
+            result.AddedAt.ShouldBe(favorite.AddedAt);
         }
 
         private static IndividualDataRequestDto CreateIndividualRequestDto()

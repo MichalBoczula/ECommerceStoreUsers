@@ -273,8 +273,8 @@ jobs:
               $errorMessage = $result.Output.ErrorInfo.Message
             }
 
-            $testName = $testName -replace '\\|', '/' -replace '[\r\n]+', ' '
-            $errorMessage = $errorMessage -replace '\\|', '/' -replace '[\r\n]+', ' '
+            $testName = $testName -replace '\|', '/' -replace '[\r\n]+', ' '
+            $errorMessage = $errorMessage -replace '\|', '/' -replace '[\r\n]+', ' '
 
             Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
           }

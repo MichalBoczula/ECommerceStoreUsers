@@ -205,6 +205,97 @@ jobs:
             throw "$failed application unit test(s) failed."
           }
 
+
+  infrastructure-integration-tests:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.100
+
+      - name: Restore dependencies
+        run: dotnet restore ECommerceStoreUsers.slnx
+
+      - name: Run infrastructure integration tests
+        continue-on-error: true
+        run: >
+          dotnet test ./tests/ECommerceStoreUsers.Infrastructure.UnitTests/ECommerceStoreUsers.Infrastructure.UnitTests.csproj
+          --configuration Release
+          --no-restore
+          --verbosity normal
+          --logger "trx;LogFileName=infrastructure-integration-tests.trx"
+          --results-directory ./TestResults/Infrastructure
+
+      - name: Add infrastructure integration tests summary
+        if: always()
+        shell: pwsh
+        run: |
+          $trx = Get-ChildItem ./TestResults/Infrastructure -Filter *.trx -Recurse | Select-Object -First 1
+
+          Add-Content $env:GITHUB_STEP_SUMMARY "## Infrastructure integration tests"
+          Add-Content $env:GITHUB_STEP_SUMMARY ""
+
+          if (-not $trx) {
+            Add-Content $env:GITHUB_STEP_SUMMARY "No TRX file found."
+            exit 0
+          }
+
+          [xml]$xml = Get-Content $trx.FullName
+          $counters = $xml.TestRun.ResultSummary.Counters
+          $failedResults = @($xml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "Failed" })
+
+          Add-Content $env:GITHUB_STEP_SUMMARY "| Total | Passed | Failed | Skipped |"
+          Add-Content $env:GITHUB_STEP_SUMMARY "|-------|--------|--------|---------|"
+          Add-Content $env:GITHUB_STEP_SUMMARY "| $($counters.total) | $($counters.passed) | $($counters.failed) | $($counters.notExecuted) |"
+          Add-Content $env:GITHUB_STEP_SUMMARY ""
+
+          if ($failedResults.Count -eq 0) {
+            Add-Content $env:GITHUB_STEP_SUMMARY "All infrastructure integration tests passed."
+            exit 0
+          }
+
+          Add-Content $env:GITHUB_STEP_SUMMARY "### Failed tests"
+          Add-Content $env:GITHUB_STEP_SUMMARY ""
+          Add-Content $env:GITHUB_STEP_SUMMARY "| Test | Error |"
+          Add-Content $env:GITHUB_STEP_SUMMARY "|------|-------|"
+
+          foreach ($result in $failedResults) {
+            $testName = $result.testName
+            $errorMessage = ""
+
+            if ($result.Output -and $result.Output.ErrorInfo -and $result.Output.ErrorInfo.Message) {
+              $errorMessage = $result.Output.ErrorInfo.Message
+            }
+
+            $testName = $testName -replace '\\|', '/' -replace '[\r\n]+', ' '
+            $errorMessage = $errorMessage -replace '\\|', '/' -replace '[\r\n]+', ' '
+
+            Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
+          }
+
+      - name: Fail job if infrastructure integration tests failed
+        if: always()
+        shell: pwsh
+        run: |
+          $trx = Get-ChildItem ./TestResults/Infrastructure -Filter *.trx -Recurse | Select-Object -First 1
+
+          if (-not $trx) {
+            throw "Infrastructure integration tests TRX file not found."
+          }
+
+          [xml]$xml = Get-Content $trx.FullName
+          $failed = [int]$xml.TestRun.ResultSummary.Counters.failed
+
+          if ($failed -gt 0) {
+            throw "$failed infrastructure integration test(s) failed."
+          }
+
   acceptance-tests:
     runs-on: ubuntu-latest
     needs: build

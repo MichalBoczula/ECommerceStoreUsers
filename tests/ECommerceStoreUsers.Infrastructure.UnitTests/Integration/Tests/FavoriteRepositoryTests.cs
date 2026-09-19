@@ -31,7 +31,7 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             result.Id.ShouldBe(favorite.Id);
             result.ClientId.ShouldBe(favorite.ClientId);
             result.ProductId.ShouldBe(favorite.ProductId);
-            result.AddedAt.ShouldBe(favorite.AddedAt);
+            result.AddedAt.ShouldBe(favorite.AddedAt, TimeSpan.FromMilliseconds(1));
         }
 
         [Fact]

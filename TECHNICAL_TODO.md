@@ -64,7 +64,7 @@ This backlog tracks cross-cutting and production-readiness work that should be i
 ### CI/CD
 
 - [x] Add formatting and static-analysis checks.
-- [ ] Add Docker image build validation.
+- [x] Add Docker image build validation.
 - [ ] Add container image vulnerability scanning.
 - [ ] Add a deployment workflow with environment approvals.
 - [ ] Add an automated smoke test after deployment.

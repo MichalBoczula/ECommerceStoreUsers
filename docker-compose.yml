@@ -11,9 +11,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: 8080
       ASPNETCORE_HTTPS_PORTS: 8081
-
-      MongoDbSettings__ConnectionString:
-        mongodb://admin:admin123@compose-mongodb:27017/admin?authSource=admin&replicaSet=rs0
+      MongoDbSettings__ConnectionString: "mongodb://${MONGODB_USERNAME:?Set MONGODB_USERNAME in .env}:${MONGODB_PASSWORD:?Set MONGODB_PASSWORD in .env}@compose-mongodb:27017/admin?authSource=admin&replicaSet=rs0"
 
     ports:
       - "8080:8080"
@@ -58,8 +56,8 @@ services:
       - "27018:27017"
 
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_ROOT_USERNAME: "${MONGODB_USERNAME:?Set MONGODB_USERNAME in .env}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGODB_PASSWORD:?Set MONGODB_PASSWORD in .env}"
 
     volumes:
       - mongo-data:/data/db
@@ -81,7 +79,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "mongosh 'mongodb://admin:admin123@localhost:27017/admin?authSource=admin&directConnection=true' --quiet --eval 'db.adminCommand({ ping: 1 }).ok' | grep 1"
+          "mongosh \"mongodb://$$${MONGO_INITDB_ROOT_USERNAME}:$$${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/admin?authSource=admin&directConnection=true\" --quiet --eval 'db.adminCommand({ ping: 1 }).ok' | grep 1"
         ]
       interval: 5s
       timeout: 5s
@@ -93,6 +91,10 @@ services:
     container_name: mongodb-replica-init
     restart: "no"
 
+    environment:
+      MONGODB_USERNAME: "${MONGODB_USERNAME:?Set MONGODB_USERNAME in .env}"
+      MONGODB_PASSWORD: "${MONGODB_PASSWORD:?Set MONGODB_PASSWORD in .env}"
+
     depends_on:
       compose-mongodb:
         condition: service_healthy
@@ -103,7 +105,7 @@ services:
 
     command:
       - |
-        MONGO_URI="mongodb://admin:admin123@compose-mongodb:27017/admin?authSource=admin&directConnection=true"
+        MONGO_URI="mongodb://$$${MONGODB_USERNAME}:$$${MONGODB_PASSWORD}@compose-mongodb:27017/admin?authSource=admin&directConnection=true"
 
         mongosh "$$MONGO_URI" --quiet --eval '
           try {

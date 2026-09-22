@@ -124,6 +124,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
             problem.ShouldNotBeNull();
             problem.Status.ShouldBe(StatusCodes.Status400BadRequest);
             problem.Title.ShouldBe("Validation failed.");
+            problem.Code.ShouldBe("validation_failed");
             problem.Instance.ShouldBe(_apiContext.Response!.RequestMessage!.RequestUri!.AbsolutePath);
             problem.TraceId.ShouldNotBeNullOrWhiteSpace();
 
@@ -147,6 +148,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
             problem.ShouldNotBeNull();
             problem.Status.ShouldBe(StatusCodes.Status400BadRequest);
             problem.Title.ShouldBe("Invalid JSON payload.");
+            problem.Code.ShouldBe("invalid_json");
             problem.Instance.ShouldBe($"/favorites/clients/{_clientId}");
             problem.TraceId.ShouldNotBeNullOrWhiteSpace();
             problem.MissingProperties.ShouldContain("productId");
@@ -157,10 +159,11 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
         {
             RequireResponse(HttpStatusCode.Conflict, "application/problem+json");
 
-            var problem = await Deserialize<ConflictProblemDetails>();
+            var problem = await Deserialize<ApiProblemDetails>();
             problem.ShouldNotBeNull();
             problem.Status.ShouldBe(StatusCodes.Status409Conflict);
             problem.Title.ShouldBe("Conflict.");
+            problem.Code.ShouldBe("resource_conflict");
             problem.Instance.ShouldBe($"/favorites/clients/{_clientId}");
             problem.TraceId.ShouldNotBeNullOrWhiteSpace();
             problem.Detail.ShouldNotBeNull();
@@ -187,10 +190,11 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
         {
             RequireResponse(HttpStatusCode.NotFound, "application/problem+json");
 
-            var problem = await Deserialize<NotFoundProblemDetails>();
+            var problem = await Deserialize<ApiProblemDetails>();
             problem.ShouldNotBeNull();
             problem.Status.ShouldBe(StatusCodes.Status404NotFound);
             problem.Title.ShouldBe("Resource not found.");
+            problem.Code.ShouldBe("resource_not_found");
             problem.Instance.ShouldBe($"/favorites/clients/{_clientId}/products/{_productId}");
             problem.TraceId.ShouldNotBeNullOrWhiteSpace();
             problem.Detail.ShouldNotBeNull();

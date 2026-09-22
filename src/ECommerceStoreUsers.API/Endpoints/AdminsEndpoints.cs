@@ -33,9 +33,9 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Creates a new administrator workspace account profile.")
             .WithName("CreateAdmin")
             .Produces<AdminResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
 
             group.MapPut("/{adminId:guid}", async (
                 Guid adminId,
@@ -51,9 +51,9 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Modifies existing administrator workspace identity details including name parameters and personal mail references.")
             .WithName("UpdateAdminProfile")
             .Produces<AdminResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
         }
 
         private static void MapAdminsQueries(IEndpointRouteBuilder group)
@@ -71,9 +71,9 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Returns a flat administrative account overview context assigned beneath a specific identity engine reference string token context.")
             .WithName("GetAdminByExternalId")
             .Produces<AdminResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
         }
     }
 }

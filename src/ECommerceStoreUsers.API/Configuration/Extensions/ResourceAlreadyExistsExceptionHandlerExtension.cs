@@ -19,20 +19,12 @@ namespace ECommerceStoreUsers.API.Configuration.Extensions
                 context.Request.Path,
                 context.TraceIdentifier);
 
-            context.Response.StatusCode = StatusCodes.Status409Conflict;
-
-            await context.Response.WriteAsJsonAsync(
-                new ConflictProblemDetails
-                {
-                    Status = StatusCodes.Status409Conflict,
-                    Title = "Conflict.",
-                    Detail = $"Resource {exception.ResourceType} identified by id {exception.ResourceId} already exists in db. Error in action {exception.ActionName}.",
-                    Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8",
-                    Instance = context.Request.Path,
-                    TraceId = context.TraceIdentifier
-                },
-                options: null,
-                contentType: "application/problem+json",
+            await ApiProblemResponse.WriteAsync(
+                context,
+                StatusCodes.Status409Conflict,
+                "resource_conflict",
+                "Conflict.",
+                $"Resource {exception.ResourceType} identified by id {exception.ResourceId} already exists in db. Error in action {exception.ActionName}.",
                 cancellationToken);
         }
     }

@@ -17,20 +17,12 @@ namespace ECommerceStoreUsers.API.Configuration.Extensions
                 context.Request.Path,
                 context.TraceIdentifier);
 
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
-            await context.Response.WriteAsJsonAsync(
-                new InternalServerErrorProblemDetails
-                {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Title = "Server error.",
-                    Detail = "An unexpected error occurred.",
-                    Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
-                    Instance = context.Request.Path,
-                    TraceId = context.TraceIdentifier
-                },
-                options: null,
-                contentType: "application/problem+json",
+            await ApiProblemResponse.WriteAsync(
+                context,
+                StatusCodes.Status500InternalServerError,
+                "internal_error",
+                "Server error.",
+                "An unexpected error occurred.",
                 cancellationToken);
         }
     }

@@ -10,20 +10,12 @@ namespace ECommerceStoreUsers.API.Configuration.Extensions
             ResourceNotFoundException exception,
             CancellationToken cancellationToken)
         {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-
-            await context.Response.WriteAsJsonAsync(
-                new NotFoundProblemDetails
-                {
-                    Status = StatusCodes.Status404NotFound,
-                    Title = "Resource not found.",
-                    Detail = $"Resource {exception.ResourceType} identified by id {exception.ResourceId} cannot be found in database during action {exception.ActionName}.",
-                    Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4",
-                    Instance = context.Request.Path,
-                    TraceId = context.TraceIdentifier
-                },
-                options: null,
-                contentType: "application/problem+json",
+            await ApiProblemResponse.WriteAsync(
+                context,
+                StatusCodes.Status404NotFound,
+                "resource_not_found",
+                "Resource not found.",
+                $"Resource {exception.ResourceType} identified by id {exception.ResourceId} cannot be found in database during action {exception.ActionName}.",
                 cancellationToken);
         }
     }

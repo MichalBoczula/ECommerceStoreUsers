@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.API.Configuration.Extensions;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.API.Configuration.Extensions;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using Microsoft.AspNetCore.Diagnostics;
@@ -36,11 +36,23 @@ namespace ECommerceStoreUsers.API.Configuration
 
                 BadHttpRequestException badHttpRequestException when badHttpRequestException.InnerException is JsonException =>
                     JsonDeserializationExceptionHandlerExtension.HandleJsonDeserializationException(
-                        context, badHttpRequestException, cancellationToken),
+                        context, cancellationToken),
 
                 JsonException jsonException =>
                     JsonDeserializationExceptionHandlerExtension.HandleJsonDeserializationException(
-                        context, jsonException, cancellationToken),
+                        context, cancellationToken),
+
+                BadHttpRequestException badHttpRequestException =>
+                    ApiProblemResponse.WriteAsync(
+                        context,
+                        badHttpRequestException.StatusCode == StatusCodes.Status415UnsupportedMediaType
+                            ? StatusCodes.Status415UnsupportedMediaType
+                            : StatusCodes.Status400BadRequest,
+                        badHttpRequestException.StatusCode == StatusCodes.Status415UnsupportedMediaType
+                            ? "unsupported_media_type" : "invalid_request",
+                        "Invalid request.",
+                        "The request could not be processed.",
+                        cancellationToken),
 
                 _ => DefaultExceptionHandlerExtension.HandleDefaultException(context, exception, _logger, cancellationToken)
             });

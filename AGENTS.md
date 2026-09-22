@@ -14,7 +14,7 @@ Read this file and [the definition of done](docs/definition-of-done.md) before e
 - For an endpoint change, review request/response DTOs, validation, safe error status/content type, `.Produces` metadata, generated OpenAPI, flow descriptors, validation-policy descriptors, and the affected acceptance scenarios together. Generated clients belong to consumer repositories.
 - Test pure rules in Domain, use cases in Application, actual MongoDB behavior in Infrastructure, and HTTP outcomes in Reqnroll acceptance tests. Use Testcontainers when MongoDB behavior, indexes, transactions, or concurrency matter. Verify both current and history documents after writes and absence of partial writes on failures.
 - Do not hand-edit generated `.feature.cs`; edit `.feature` and step definitions. Do not skip failing tests, hide failures with `continue-on-error`, or lower the 70% Domain/Application line-coverage thresholds to get a green PR.
-- Ordinary compiler warnings are permitted and remain visible. Build, format, tests, coverage, agreed vulnerability checks (including NuGet high/critical), secret scanning, contracts, and image scanning are separate gates. REF-02/03 will correct existing CI gaps; do not claim those corrections are already complete.
+- Ordinary compiler warnings are permitted and remain visible. Build, format, tests, coverage, agreed vulnerability checks (including NuGet high/critical), secret scanning, contracts, and image scanning are separate gates. REF-03 still tracks reproducible tooling and diagnostic artifacts.
 
 ## Local verification
 

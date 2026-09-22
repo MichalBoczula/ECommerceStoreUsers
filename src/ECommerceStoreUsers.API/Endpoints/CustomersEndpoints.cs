@@ -35,7 +35,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
 
             group.MapPut("/{id:guid}/individual", async (
                 Guid id,
@@ -53,7 +53,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
 
             group.MapPost("/{customerId:guid}/companies", async (
                 Guid customerId,
@@ -72,7 +72,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
 
             group.MapPut("/{customerId:guid}/companies/{companyId:guid}", async (
                 Guid customerId,
@@ -92,7 +92,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
         }
 
         private static void MapCustomersQueries(IEndpointRouteBuilder group)
@@ -112,7 +112,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using ECommerceStoreInvoice.API.Configuration.Common;
 
 namespace ECommerceStoreInvoice.API.Configuration.Extensions
 {
@@ -10,31 +10,24 @@ namespace ECommerceStoreInvoice.API.Configuration.Extensions
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var title = exception.GetType().Name;
-            var detail = string.IsNullOrWhiteSpace(exception.Message)
-                ? "An unexpected error occurred."
-                : exception.Message;
-
             logger.LogError(
                 exception,
-                "Unhandled exception: {ExceptionTitle}. Message: {ExceptionMessage}",
-                title,
-                detail);
+                "Unhandled exception while processing {RequestMethod} {RequestPath}. TraceId: {TraceId}",
+                context.Request.Method,
+                context.Request.Path,
+                context.TraceIdentifier);
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/problem+json";
 
-            await context.Response.WriteAsJsonAsync(new ProblemDetails
+            await context.Response.WriteAsJsonAsync(new InternalServerErrorProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = title,
-                Detail = detail,
+                Title = "Server error.",
+                Detail = "An unexpected error occurred.",
                 Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
                 Instance = context.Request.Path,
-                Extensions =
-                {
-                    ["traceId"] = context.TraceIdentifier
-                }
+                TraceId = context.TraceIdentifier
             }, cancellationToken);
         }
     }

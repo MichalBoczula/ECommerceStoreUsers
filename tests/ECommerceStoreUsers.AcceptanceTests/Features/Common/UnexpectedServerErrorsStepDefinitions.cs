@@ -23,7 +23,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         private const string SensitiveDetail = "INTERNAL_FAILURE_MARKER_DO_NOT_EXPOSE";
 
         private readonly ScenarioApiContext _apiContext;
-        private WebApplicationFactory<API.Program>? _factory;
+        private WebApplicationFactory<ECommerceStoreUsers.API.Program>? _factory;
         private HttpClient? _client;
         private IFailureProbe? _failureProbe;
         private string? _area;

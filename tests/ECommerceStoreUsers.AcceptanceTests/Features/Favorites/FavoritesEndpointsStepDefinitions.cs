@@ -2,6 +2,7 @@ using ECommerceStoreInvoice.API.Configuration.Common;
 using ECommerceStoreUsers.AcceptanceTests.Features.Common;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Favorites;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Favorites;
+using Microsoft.AspNetCore.Http;
 using Reqnroll;
 using Shouldly;
 using System.Net;

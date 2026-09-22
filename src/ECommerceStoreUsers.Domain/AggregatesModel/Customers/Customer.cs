@@ -6,7 +6,7 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers
     public sealed class Customer
     {
         public Guid Id { get; init; }
-        public string ExternalId { get; init; } 
+        public string ExternalId { get; init; }
         public IndividualData Individual { get; private set; }
         private readonly List<CompanyData> _companies = new();
         public IReadOnlyCollection<CompanyData> Companies => _companies.AsReadOnly();

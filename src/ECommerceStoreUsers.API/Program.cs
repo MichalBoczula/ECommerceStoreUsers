@@ -1,4 +1,4 @@
-using ECommerceStoreInvoice.API.Configuration;
+using ECommerceStoreUsers.API.Configuration;
 using ECommerceStoreUsers.API.Endpoints;
 using ECommerceStoreUsers.Application;
 using ECommerceStoreUsers.Domain;

@@ -1,8 +1,8 @@
 ﻿using ECommerceStoreUsers.Infrastructure.Context;
-using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
-using ECommerceStoreUsers.Infrastructure.Persistance.Admins.History;
-using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
-using ECommerceStoreUsers.Infrastructure.Persistance.Favorites;
+using ECommerceStoreUsers.Infrastructure.Persistence.Admins;
+using ECommerceStoreUsers.Infrastructure.Persistence.Admins.History;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers;
+using ECommerceStoreUsers.Infrastructure.Persistence.Favorites;
 using MongoDB.Driver;
 
 namespace ECommerceStoreUsers.Infrastructure.Configuration

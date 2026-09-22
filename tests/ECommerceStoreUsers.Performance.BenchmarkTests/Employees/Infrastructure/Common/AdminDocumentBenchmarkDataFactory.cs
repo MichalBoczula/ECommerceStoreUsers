@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
+﻿using ECommerceStoreUsers.Infrastructure.Persistence.Admins;
 
 namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructure.Common
 {

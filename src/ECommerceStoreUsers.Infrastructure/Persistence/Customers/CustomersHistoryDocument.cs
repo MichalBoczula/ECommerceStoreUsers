@@ -1,9 +1,9 @@
 ﻿using ECommerceStoreUsers.Domain.Common.Enums;
-using ECommerceStoreUsers.Infrastructure.Persistance.Customers.Entities;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers.Entities;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ECommerceStoreUsers.Infrastructure.Persistance.Customers
+namespace ECommerceStoreUsers.Infrastructure.Persistence.Customers
 {
     internal sealed class CustomersHistoryDocument
     {

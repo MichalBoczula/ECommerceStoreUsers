@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace ECommerceStoreInvoice.API.Configuration.Common
+namespace ECommerceStoreUsers.API.Configuration.Common
 {
     public sealed class InternalServerErrorProblemDetails : ProblemDetails
     {

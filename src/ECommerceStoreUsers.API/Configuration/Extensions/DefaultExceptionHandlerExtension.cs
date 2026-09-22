@@ -1,6 +1,6 @@
-using ECommerceStoreInvoice.API.Configuration.Common;
+using ECommerceStoreUsers.API.Configuration.Common;
 
-namespace ECommerceStoreInvoice.API.Configuration.Extensions
+namespace ECommerceStoreUsers.API.Configuration.Extensions
 {
     internal static class DefaultExceptionHandlerExtension
     {

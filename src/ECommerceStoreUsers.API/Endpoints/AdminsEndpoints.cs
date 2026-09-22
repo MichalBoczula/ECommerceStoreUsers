@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ECommerceStoreInvoice.API.Configuration.Common;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
 using ECommerceStoreUsers.Application.Services.Abstract.Admins;

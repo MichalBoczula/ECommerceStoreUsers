@@ -1,4 +1,4 @@
-using ECommerceStoreInvoice.API.Configuration.Common;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.API.Configuration.Extensions

@@ -1,7 +1,7 @@
-using ECommerceStoreInvoice.API.Configuration.Common;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
-namespace ECommerceStoreInvoice.API.Configuration.Extensions
+namespace ECommerceStoreUsers.API.Configuration.Extensions
 {
     public static class NotFoundExceptionHandlerExtension
     {

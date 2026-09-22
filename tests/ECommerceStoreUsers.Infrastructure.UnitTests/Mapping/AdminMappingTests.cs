@@ -1,7 +1,7 @@
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Common.Enums;
 using ECommerceStoreUsers.Infrastructure.Mapping;
-using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
+using ECommerceStoreUsers.Infrastructure.Persistence.Admins;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Mapping;

@@ -1,6 +1,6 @@
-﻿using ECommerceStoreUsers.Infrastructure.Persistance.Customers.ValueObjects;
+﻿using ECommerceStoreUsers.Infrastructure.Persistence.Customers.ValueObjects;
 
-namespace ECommerceStoreUsers.Infrastructure.Persistance.Customers.Entities
+namespace ECommerceStoreUsers.Infrastructure.Persistence.Customers.Entities
 {
     internal sealed record IndividualDataDocument
     {

@@ -1,10 +1,10 @@
-﻿using ECommerceStoreInvoice.API.Configuration.Extensions;
+﻿using ECommerceStoreUsers.API.Configuration.Extensions;
 using ECommerceStoreUsers.API.Configuration.Extensions;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using Microsoft.AspNetCore.Diagnostics;
 using System.Text.Json;
 
-namespace ECommerceStoreInvoice.API.Configuration
+namespace ECommerceStoreUsers.API.Configuration
 {
     public sealed class ExceptionHandler : IExceptionHandler
     {

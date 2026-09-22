@@ -1,4 +1,4 @@
-using ECommerceStoreInvoice.API.Configuration.Common;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.Application.Common.FlowDescriptors;
 using ECommerceStoreUsers.Application.Services.Abstract.Favorites;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers;

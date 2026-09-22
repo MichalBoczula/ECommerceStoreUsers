@@ -1,5 +1,5 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
-using ECommerceStoreUsers.Infrastructure.Persistance.Favorites;
+using ECommerceStoreUsers.Infrastructure.Persistence.Favorites;
 
 namespace ECommerceStoreUsers.Infrastructure.Mapping
 {

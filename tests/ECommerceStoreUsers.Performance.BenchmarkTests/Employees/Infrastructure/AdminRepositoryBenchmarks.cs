@@ -4,7 +4,7 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
-using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
+using ECommerceStoreUsers.Infrastructure.Persistence.Admins;
 using ECommerceStoreUsers.Infrastructure.Repositories;
 using ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructure.Common;
 using Microsoft.Extensions.Options;

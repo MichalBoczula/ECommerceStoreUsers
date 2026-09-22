@@ -6,7 +6,7 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
-using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers;
 using ECommerceStoreUsers.Infrastructure.Repositories;
 using ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Infrastructure.Common;
 using Microsoft.Extensions.Options;

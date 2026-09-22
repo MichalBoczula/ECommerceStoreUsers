@@ -53,6 +53,10 @@ jobs:
           --verbosity normal
           --logger "trx;LogFileName=domain-unit-tests.trx"
           --results-directory ./TestResults/Domain
+          --collect "XPlat Code Coverage"
+          --
+          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura"
+          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include=[ECommerceStoreUsers.Domain]*"
 
       - name: Add domain unit tests summary
         if: always()
@@ -101,6 +105,40 @@ jobs:
             Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
           }
 
+      - name: Check domain line coverage
+        if: always()
+        shell: pwsh
+        run: |
+          $coverageFile = Get-ChildItem ./TestResults/Domain -Filter coverage.cobertura.xml -Recurse | Select-Object -First 1
+
+          if (-not $coverageFile) {
+            throw "Domain coverage report not found."
+          }
+
+          [xml]$coverage = Get-Content $coverageFile.FullName
+          $lineRate = [double]::Parse(
+            $coverage.coverage.'line-rate',
+            [System.Globalization.CultureInfo]::InvariantCulture)
+          $lineCoverage = [math]::Round($lineRate * 100, 2)
+
+          Add-Content $env:GITHUB_STEP_SUMMARY "## Domain coverage"
+          Add-Content $env:GITHUB_STEP_SUMMARY ""
+          Add-Content $env:GITHUB_STEP_SUMMARY "| Metric | Result | Required |"
+          Add-Content $env:GITHUB_STEP_SUMMARY "|--------|--------|----------|"
+          Add-Content $env:GITHUB_STEP_SUMMARY "| Line coverage | $lineCoverage% | 70% |"
+
+          if ($lineCoverage -lt 70) {
+            throw "Domain line coverage is $lineCoverage%; required minimum is 70%."
+          }
+
+      - name: Upload domain coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: domain-coverage
+          path: ./TestResults/Domain/**/coverage.cobertura.xml
+          if-no-files-found: error
+
       - name: Fail job if domain unit tests failed
         if: always()
         shell: pwsh
@@ -143,6 +181,10 @@ jobs:
           --verbosity normal
           --logger "trx;LogFileName=application-unit-tests.trx"
           --results-directory ./TestResults/Application
+          --collect "XPlat Code Coverage"
+          --
+          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura"
+          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include=[ECommerceStoreUsers.Application]*"
 
       - name: Add application unit tests summary
         if: always()
@@ -190,6 +232,40 @@ jobs:
 
             Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
           }
+
+      - name: Check application line coverage
+        if: always()
+        shell: pwsh
+        run: |
+          $coverageFile = Get-ChildItem ./TestResults/Application -Filter coverage.cobertura.xml -Recurse | Select-Object -First 1
+
+          if (-not $coverageFile) {
+            throw "Application coverage report not found."
+          }
+
+          [xml]$coverage = Get-Content $coverageFile.FullName
+          $lineRate = [double]::Parse(
+            $coverage.coverage.'line-rate',
+            [System.Globalization.CultureInfo]::InvariantCulture)
+          $lineCoverage = [math]::Round($lineRate * 100, 2)
+
+          Add-Content $env:GITHUB_STEP_SUMMARY "## Application coverage"
+          Add-Content $env:GITHUB_STEP_SUMMARY ""
+          Add-Content $env:GITHUB_STEP_SUMMARY "| Metric | Result | Required |"
+          Add-Content $env:GITHUB_STEP_SUMMARY "|--------|--------|----------|"
+          Add-Content $env:GITHUB_STEP_SUMMARY "| Line coverage | $lineCoverage% | 70% |"
+
+          if ($lineCoverage -lt 70) {
+            throw "Application line coverage is $lineCoverage%; required minimum is 70%."
+          }
+
+      - name: Upload application coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-coverage
+          path: ./TestResults/Application/**/coverage.cobertura.xml
+          if-no-files-found: error
 
       - name: Fail job if application unit tests failed
         if: always()

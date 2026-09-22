@@ -51,8 +51,8 @@ This backlog tracks cross-cutting and production-readiness work that should be i
 
 ### Testing
 
-- [ ] Generate code coverage reports in CI.
-- [ ] Introduce minimum coverage thresholds for Domain and Application.
+- [x] Generate code coverage reports in CI.
+- [x] Introduce minimum coverage thresholds for Domain and Application.
 - [x] Run Infrastructure integration tests in CI.
 - [ ] Optimize acceptance tests to reuse a MongoDB container while isolating scenario data.
 - [ ] Add architecture tests that enforce layer dependencies.

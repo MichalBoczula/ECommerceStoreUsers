@@ -5,6 +5,8 @@ using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
 using MongoDB.Driver;
 
+namespace ECommerceStoreUsers.Infrastructure.Repositories;
+
 internal sealed class CustomerRepository : ICustomerRepository
 {
     private readonly MongoDbContext _context;

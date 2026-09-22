@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ECommerceStoreUsers.Infrastructure.Persistance.Favorites
+namespace ECommerceStoreUsers.Infrastructure.Persistence.Favorites
 {
     internal sealed record FavoriteDocument
     {

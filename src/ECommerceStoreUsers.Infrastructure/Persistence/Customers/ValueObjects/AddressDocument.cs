@@ -1,4 +1,4 @@
-﻿namespace ECommerceStoreUsers.Infrastructure.Persistance.Customers.ValueObjects
+﻿namespace ECommerceStoreUsers.Infrastructure.Persistence.Customers.ValueObjects
 {
     internal sealed record AddressDocument
     {

@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Infrastructure.Mapping;
-using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
+using ECommerceStoreUsers.Infrastructure.Persistence.Admins;
 using ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructure.Common;
 
 namespace ECommerceStoreUsers.Performance.BenchmarkTests.Employees.Infrastructure

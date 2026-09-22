@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ECommerceStoreUsers.Infrastructure.Persistance.Admins
+namespace ECommerceStoreUsers.Infrastructure.Persistence.Admins
 {
     internal sealed record AdminDocument
     {

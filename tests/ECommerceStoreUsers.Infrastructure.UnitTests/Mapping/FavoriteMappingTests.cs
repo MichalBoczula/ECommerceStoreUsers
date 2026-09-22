@@ -1,6 +1,6 @@
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using ECommerceStoreUsers.Infrastructure.Mapping;
-using ECommerceStoreUsers.Infrastructure.Persistance.Favorites;
+using ECommerceStoreUsers.Infrastructure.Persistence.Favorites;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Mapping;

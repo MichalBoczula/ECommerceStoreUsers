@@ -1,6 +1,6 @@
-﻿using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
-using ECommerceStoreUsers.Infrastructure.Persistance.Customers.Entities;
-using ECommerceStoreUsers.Infrastructure.Persistance.Customers.ValueObjects;
+﻿using ECommerceStoreUsers.Infrastructure.Persistence.Customers;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers.Entities;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers.ValueObjects;
 
 namespace ECommerceStoreUsers.Performance.BenchmarkTests.Customers.Infrastructure.Common
 {

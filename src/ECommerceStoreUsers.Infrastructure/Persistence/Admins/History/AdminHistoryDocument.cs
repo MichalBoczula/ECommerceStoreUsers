@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ECommerceStoreUsers.Infrastructure.Persistance.Admins.History
+namespace ECommerceStoreUsers.Infrastructure.Persistence.Admins.History
 {
     internal sealed class AdminHistoryDocument
     {

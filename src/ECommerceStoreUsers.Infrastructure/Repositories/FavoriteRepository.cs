@@ -2,7 +2,7 @@
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites.Repositories;
 using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
-using ECommerceStoreUsers.Infrastructure.Persistance.Favorites;
+using ECommerceStoreUsers.Infrastructure.Persistence.Favorites;
 using MongoDB.Driver;
 
 namespace ECommerceStoreUsers.Infrastructure.Repositories

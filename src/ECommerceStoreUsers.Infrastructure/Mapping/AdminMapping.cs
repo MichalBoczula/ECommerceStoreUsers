@@ -1,7 +1,7 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Common.Enums;
-using ECommerceStoreUsers.Infrastructure.Persistance.Admins;
-using ECommerceStoreUsers.Infrastructure.Persistance.Admins.History;
+using ECommerceStoreUsers.Infrastructure.Persistence.Admins;
+using ECommerceStoreUsers.Infrastructure.Persistence.Admins.History;
 
 namespace ECommerceStoreUsers.Infrastructure.Mapping
 {

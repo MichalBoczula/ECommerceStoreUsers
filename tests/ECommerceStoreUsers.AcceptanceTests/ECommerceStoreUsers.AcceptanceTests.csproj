@@ -9,11 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ReqnrollFeatureFile Remove="Features\Admins\CreateAdminSuccess.feature" />
-    <ReqnrollFeatureFile Remove="Features\Customers\CreateCustomerSuccess\CreateCustomerSuccess.feature" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="allureConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

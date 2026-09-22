@@ -2,9 +2,9 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Customers;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Infrastructure.Mapping;
-using ECommerceStoreUsers.Infrastructure.Persistance.Customers;
-using ECommerceStoreUsers.Infrastructure.Persistance.Customers.Entities;
-using ECommerceStoreUsers.Infrastructure.Persistance.Customers.ValueObjects;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers.Entities;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers.ValueObjects;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Mapping;
 

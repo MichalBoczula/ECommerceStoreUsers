@@ -1,4 +1,4 @@
-using ECommerceStoreInvoice.API.Configuration.Common;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.AcceptanceTests.Features.Common;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Favorites;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Favorites;

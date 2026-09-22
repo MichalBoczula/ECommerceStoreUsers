@@ -1,4 +1,4 @@
-﻿using ECommerceStoreInvoice.API.Configuration.Common;
+﻿using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Application.Services.Abstract.Customers;

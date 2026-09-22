@@ -6,35 +6,49 @@ namespace ECommerceStoreInvoice.API.Configuration.Extensions
 {
     public static class JsonDeserializationExceptionHandlerExtension
     {
-        public static async Task HandleJsonDeserializationException(this HttpContext context, Exception exception, CancellationToken cancellationToken)
+        public static async Task HandleJsonDeserializationException(
+            this HttpContext context,
+            Exception exception,
+            CancellationToken cancellationToken)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            context.Response.ContentType = "application/problem+json";
 
             var jsonException = exception as JsonException ?? exception.InnerException as JsonException;
             var (typeName, missingProperties) = ExtractMissingInformation(jsonException?.Message);
-            var detail = BuildDetail(typeName, missingProperties, jsonException?.Message ?? exception.Message);
+            var detail = BuildDetail(
+                typeName,
+                missingProperties,
+                jsonException?.Message ?? exception.Message);
 
-            await context.Response.WriteAsJsonAsync(new ApiProblemDetails
-            {
-                Status = StatusCodes.Status400BadRequest,
-                Title = "Invalid JSON payload.",
-                Detail = detail,
-                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
-                Instance = context.Request.Path,
-                TraceId = context.TraceIdentifier,
-                MissingProperties = missingProperties
-            }, cancellationToken);
+            await context.Response.WriteAsJsonAsync(
+                new ApiProblemDetails
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Invalid JSON payload.",
+                    Detail = detail,
+                    Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
+                    Instance = context.Request.Path,
+                    TraceId = context.TraceIdentifier,
+                    MissingProperties = missingProperties
+                },
+                options: null,
+                contentType: "application/problem+json",
+                cancellationToken);
         }
 
-        private static (string TypeName, IReadOnlyCollection<string> MissingProperties) ExtractMissingInformation(string? message)
+        private static (
+            string TypeName,
+            IReadOnlyCollection<string> MissingProperties) ExtractMissingInformation(string? message)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
                 return (string.Empty, Array.Empty<string>());
             }
 
-            var match = Regex.Match(message, @"type '([^']+)' was missing required properties including:(.+)", RegexOptions.IgnoreCase);
+            var match = Regex.Match(
+                message,
+                @"type '([^']+)' was missing required properties including:(.+)",
+                RegexOptions.IgnoreCase);
             if (!match.Success)
             {
                 return (string.Empty, Array.Empty<string>());
@@ -44,14 +58,19 @@ namespace ECommerceStoreInvoice.API.Configuration.Extensions
             var missingRaw = match.Groups[2].Value;
             var missingProperties = missingRaw
                 .Split(';', StringSplitOptions.RemoveEmptyEntries)
-                .Select(p => p.Replace("'", string.Empty, StringComparison.Ordinal).Trim(' ', '.', ';'))
-                .Where(p => !string.IsNullOrWhiteSpace(p))
+                .Select(property => property
+                    .Replace("'", string.Empty, StringComparison.Ordinal)
+                    .Trim(' ', '.', ';'))
+                .Where(property => !string.IsNullOrWhiteSpace(property))
                 .ToArray();
 
             return (typeName, missingProperties);
         }
 
-        private static string BuildDetail(string typeName, IReadOnlyCollection<string> missingProperties, string fallbackMessage)
+        private static string BuildDetail(
+            string typeName,
+            IReadOnlyCollection<string> missingProperties,
+            string fallbackMessage)
         {
             if (missingProperties.Count == 0)
             {

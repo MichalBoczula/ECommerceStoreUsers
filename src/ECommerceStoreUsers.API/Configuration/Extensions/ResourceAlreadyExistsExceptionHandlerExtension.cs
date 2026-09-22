@@ -1,4 +1,4 @@
-﻿using ECommerceStoreInvoice.API.Configuration.Common;
+using ECommerceStoreInvoice.API.Configuration.Common;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.API.Configuration.Extensions
@@ -20,17 +20,20 @@ namespace ECommerceStoreUsers.API.Configuration.Extensions
                 context.TraceIdentifier);
 
             context.Response.StatusCode = StatusCodes.Status409Conflict;
-            context.Response.ContentType = "application/problem+json";
 
-            await context.Response.WriteAsJsonAsync(new ConflictProblemDetails
-            {
-                Status = StatusCodes.Status409Conflict,
-                Title = "Conflict.",
-                Detail = $"Resource {exception.ResourceType} identified by id {exception.ResourceId} already exists in db. Error in action {exception.ActionName}.",
-                Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8",
-                Instance = context.Request.Path,
-                TraceId = context.TraceIdentifier
-            }, cancellationToken);
+            await context.Response.WriteAsJsonAsync(
+                new ConflictProblemDetails
+                {
+                    Status = StatusCodes.Status409Conflict,
+                    Title = "Conflict.",
+                    Detail = $"Resource {exception.ResourceType} identified by id {exception.ResourceId} already exists in db. Error in action {exception.ActionName}.",
+                    Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8",
+                    Instance = context.Request.Path,
+                    TraceId = context.TraceIdentifier
+                },
+                options: null,
+                contentType: "application/problem+json",
+                cancellationToken);
         }
     }
 }

@@ -49,6 +49,11 @@ internal static class RequiredJsonProperties
             // Malformed JSON has no reliable set of missing members.
             return new MissingJsonFields(string.Empty, []);
         }
+        catch (Exception exception) when (exception is NotSupportedException or InvalidOperationException or IOException)
+        {
+            // Metadata or buffering failures must never replace the original request error.
+            return new MissingJsonFields(string.Empty, []);
+        }
         finally
         {
             context.Request.Body.Position = originalPosition;
@@ -65,10 +70,21 @@ internal static class RequiredJsonProperties
         var missing = new List<string>();
         foreach (var property in type.Properties)
         {
-            var found = element.EnumerateObject().FirstOrDefault(
-                value => string.Equals(value.Name, property.Name, StringComparison.OrdinalIgnoreCase));
+            var found = false;
+            JsonElement value = default;
+            foreach (var member in element.EnumerateObject())
+            {
+                if (!string.Equals(member.Name, property.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
 
-            if (found.Name is null)
+                found = true;
+                value = member.Value;
+                break;
+            }
+
+            if (!found)
             {
                 if (property.IsRequired)
                 {
@@ -78,9 +94,9 @@ internal static class RequiredJsonProperties
                 continue;
             }
 
-            if (found.Value.ValueKind == JsonValueKind.Object)
+            if (value.ValueKind == JsonValueKind.Object)
             {
-                var nested = CollectMissing(found.Value, JsonOptions.GetTypeInfo(property.PropertyType));
+                var nested = CollectMissing(value, JsonOptions.GetTypeInfo(property.PropertyType));
                 if (nested.Names.Count > 0)
                 {
                     return nested;

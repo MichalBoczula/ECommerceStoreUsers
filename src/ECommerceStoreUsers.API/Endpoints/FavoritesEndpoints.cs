@@ -32,8 +32,8 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Retrieves all favorited product entries for a specified client identifier.")
             .WithName("GetFavoritesByClientId")
             .Produces<IReadOnlyList<FavoriteResponseDto>>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
         }
 
         private static void MapFavoritesCommands(IEndpointRouteBuilder group)
@@ -51,9 +51,9 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Adds a product reference to the customer's favorites list.")
             .WithName("AddProductToFavorites")
             .Produces<FavoriteResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
 
             group.MapDelete("/clients/{clientId:guid}/products/{productId:guid}", async (
                 Guid clientId,
@@ -68,9 +68,9 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Removes a specific product from the client's favorites.")
             .WithName("RemoveProductFromFavorites")
             .Produces(StatusCodes.Status204NoContent)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
 
             group.MapDelete("/clients/{clientId:guid}", async (
                 Guid clientId,
@@ -84,8 +84,8 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Removes all saved product favorites for a specific client.")
             .WithName("ClearClientFavorites")
             .Produces(StatusCodes.Status204NoContent)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
         }
     }
 }

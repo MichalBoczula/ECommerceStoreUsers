@@ -150,6 +150,10 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
             problem.Type.ShouldBe("https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1");
             problem.Instance.ShouldBe(_requestPath);
             problem.TraceId.ShouldNotBeNullOrWhiteSpace();
+            using (var json = JsonDocument.Parse(body))
+            {
+                json.RootElement.GetProperty("code").GetString().ShouldBe("internal_error");
+            }
 
             body.ShouldNotContain(SensitiveDetail);
             body.ShouldNotContain(nameof(InvalidOperationException));

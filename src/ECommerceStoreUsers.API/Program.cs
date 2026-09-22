@@ -1,4 +1,5 @@
 using ECommerceStoreUsers.API.Configuration;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.API.Endpoints;
 using ECommerceStoreUsers.Application;
 using ECommerceStoreUsers.Domain;
@@ -35,6 +36,13 @@ namespace ECommerceStoreUsers.API
             await app.Services.InitializeInfrastructureAsync();
 
             app.UseExceptionHandler();
+            app.UseStatusCodePages(status => ApiProblemResponse.WriteEmptyStatusAsync(status.HttpContext));
+            app.UseRouting();
+            app.Use(async (context, next) =>
+            {
+                RequiredJsonProperties.EnableInspection(context);
+                await next(context);
+            });
             app.UseSwagger();
             app.UseSwaggerUI();
             app.MapDocumentationEndpoints();

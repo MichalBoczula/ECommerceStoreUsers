@@ -33,9 +33,9 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Creates a new customer aggregate record complete with individual user data details and optional company metadata.")
             .WithName("CreateCustomer")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
 
             group.MapPut("/{id:guid}/individual", async (
                 Guid id,
@@ -51,9 +51,9 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Modifies existing core individual metrics (names, contact info, billing/shipping directions) for the target customer profile identifier.")
             .WithName("UpdateIndividualData")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
 
             group.MapPost("/{customerId:guid}/companies", async (
                 Guid customerId,
@@ -69,10 +69,10 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Appends a newly structured commercial corporate tax record entity into the internal collection profile context.")
             .WithName("AddCompany")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
 
             group.MapPut("/{customerId:guid}/companies/{companyId:guid}", async (
                 Guid customerId,
@@ -89,10 +89,10 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Modifies naming, tax id registration credentials, and billing/shipping information records assigned onto a specific tracking sub-company context component block.")
             .WithName("UpdateCompany")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
         }
 
         private static void MapCustomersQueries(IEndpointRouteBuilder group)
@@ -110,9 +110,9 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Returns a flattened clean data view context assigned underneath a specific global external account provider identification hash sequence format block.")
             .WithName("GetCustomerByExternalId")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
-            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
         }
     }
 }

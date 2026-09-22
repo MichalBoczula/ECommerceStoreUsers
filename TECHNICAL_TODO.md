@@ -10,7 +10,7 @@ This backlog tracks cross-cutting and production-readiness work that should be i
 - [ ] Add policy-based authorization for customer and administrator operations.
 - [ ] Define the required scopes, application roles, and authorization failure contract.
 - [x] Move development credentials out of committed configuration.
-- [ ] Add secret scanning and dependency vulnerability scanning to CI.
+- [x] Add secret scanning and dependency vulnerability scanning to CI.
 - [ ] Define rules for masking personal data and secrets in logs.
 
 ### Configuration and startup
@@ -65,7 +65,7 @@ This backlog tracks cross-cutting and production-readiness work that should be i
 
 - [x] Add formatting and static-analysis checks.
 - [x] Add Docker image build validation.
-- [ ] Add container image vulnerability scanning.
+- [x] Add container image vulnerability scanning.
 - [ ] Add a deployment workflow with environment approvals.
 - [ ] Add an automated smoke test after deployment.
 - [ ] Add dependency update automation.

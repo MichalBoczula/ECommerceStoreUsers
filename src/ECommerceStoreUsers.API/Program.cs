@@ -37,6 +37,7 @@ namespace ECommerceStoreUsers.API
 
             app.UseExceptionHandler();
             app.UseStatusCodePages(status => ApiProblemResponse.WriteEmptyStatusAsync(status.HttpContext));
+            app.UseRouting();
             app.Use(async (context, next) =>
             {
                 RequiredJsonProperties.EnableInspection(context);

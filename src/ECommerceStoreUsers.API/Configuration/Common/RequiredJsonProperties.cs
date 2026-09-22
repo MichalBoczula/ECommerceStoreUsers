@@ -7,6 +7,7 @@ namespace ECommerceStoreUsers.API.Configuration.Common;
 internal static class RequiredJsonProperties
 {
     private const long MaxInspectableBytes = 64 * 1024;
+    private const string RequestTypeKey = "Ref06.JsonRequestType";
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
         TypeInfoResolver = new DefaultJsonTypeInfoResolver()
@@ -14,22 +15,26 @@ internal static class RequiredJsonProperties
 
     public static void EnableInspection(HttpContext context)
     {
-        if (context.Request.ContentLength is > 0 and <= MaxInspectableBytes &&
-            context.Request.HasJsonContentType())
+        context.Items[RequestTypeKey] =
+            context.GetEndpoint()?.Metadata.GetMetadata<IAcceptsMetadata>()?.RequestType;
+
+        if (context.Request.HasJsonContentType() &&
+            (context.Request.ContentLength is null or <= MaxInspectableBytes))
         {
             context.Request.EnableBuffering();
         }
     }
 
-    public static async Task<IReadOnlyCollection<string>> FindMissingAsync(
+    public static async Task<MissingJsonFields> FindMissingAsync(
         HttpContext context,
         CancellationToken cancellationToken)
     {
-        var requestType = context.GetEndpoint()?.Metadata.GetMetadata<IAcceptsMetadata>()?.RequestType;
+        context.Items.TryGetValue(RequestTypeKey, out var requestTypeValue);
+        var requestType = requestTypeValue as Type;
         if (requestType is null || !context.Request.Body.CanSeek ||
             context.Request.Body.Length > MaxInspectableBytes)
         {
-            return [];
+            return new MissingJsonFields(string.Empty, []);
         }
 
         var originalPosition = context.Request.Body.Position;
@@ -37,14 +42,12 @@ internal static class RequiredJsonProperties
         {
             context.Request.Body.Position = 0;
             using var document = await JsonDocument.ParseAsync(context.Request.Body, cancellationToken: cancellationToken);
-            var missing = new HashSet<string>(StringComparer.Ordinal);
-            CollectMissing(document.RootElement, JsonOptions.GetTypeInfo(requestType), missing);
-            return missing.ToArray();
+            return CollectMissing(document.RootElement, JsonOptions.GetTypeInfo(requestType));
         }
         catch (JsonException)
         {
             // Malformed JSON has no reliable set of missing members.
-            return [];
+            return new MissingJsonFields(string.Empty, []);
         }
         finally
         {
@@ -52,13 +55,14 @@ internal static class RequiredJsonProperties
         }
     }
 
-    private static void CollectMissing(JsonElement element, JsonTypeInfo type, HashSet<string> missing)
+    private static MissingJsonFields CollectMissing(JsonElement element, JsonTypeInfo type)
     {
         if (element.ValueKind != JsonValueKind.Object || type.Kind != JsonTypeInfoKind.Object)
         {
-            return;
+            return new MissingJsonFields(string.Empty, []);
         }
 
+        var missing = new List<string>();
         foreach (var property in type.Properties)
         {
             var found = element.EnumerateObject().FirstOrDefault(
@@ -76,8 +80,16 @@ internal static class RequiredJsonProperties
 
             if (found.Value.ValueKind == JsonValueKind.Object)
             {
-                CollectMissing(found.Value, JsonOptions.GetTypeInfo(property.PropertyType), missing);
+                var nested = CollectMissing(found.Value, JsonOptions.GetTypeInfo(property.PropertyType));
+                if (nested.Names.Count > 0)
+                {
+                    return nested;
+                }
             }
         }
+
+        return new MissingJsonFields(type.Type.Name, missing);
     }
 }
+
+internal sealed record MissingJsonFields(string TypeName, IReadOnlyCollection<string> Names);

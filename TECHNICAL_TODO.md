@@ -9,13 +9,13 @@ This backlog tracks cross-cutting and production-readiness work that should be i
 - [ ] Add authentication using OpenID Connect and JWT bearer tokens.
 - [ ] Add policy-based authorization for customer and administrator operations.
 - [ ] Define the required scopes, application roles, and authorization failure contract.
-- [ ] Move development credentials out of committed configuration.
+- [x] Move development credentials out of committed configuration.
 - [ ] Add secret scanning and dependency vulnerability scanning to CI.
 - [ ] Define rules for masking personal data and secrets in logs.
 
 ### Configuration and startup
 
-- [ ] Validate all application settings during startup and fail fast on invalid configuration.
+- [x] Validate all MongoDB application settings during startup and fail fast on invalid configuration.
 - [ ] Add environment-specific configuration documentation.
 - [ ] Make MongoDB index initialization safe for concurrent application startup.
 - [ ] Define an explicit strategy for MongoDB index and document-schema evolution.

@@ -15,8 +15,37 @@ namespace ECommerceStoreUsers.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<MongoDbSettings>(
-                configuration.GetSection(MongoDbSettings.SectionName));
+            services
+                .AddOptions<MongoDbSettings>()
+                .Bind(configuration.GetSection(MongoDbSettings.SectionName))
+                .Validate(
+                    settings => !string.IsNullOrWhiteSpace(settings.ConnectionString),
+                    "MongoDbSettings:ConnectionString must be configured.")
+                .Validate(
+                    settings =>
+                        string.IsNullOrWhiteSpace(settings.ConnectionString)
+                        || settings.ConnectionString.StartsWith("mongodb://", StringComparison.OrdinalIgnoreCase)
+                        || settings.ConnectionString.StartsWith("mongodb+srv://", StringComparison.OrdinalIgnoreCase),
+                    "MongoDbSettings:ConnectionString must use the mongodb:// or mongodb+srv:// scheme.")
+                .Validate(
+                    settings => !string.IsNullOrWhiteSpace(settings.DatabaseName),
+                    "MongoDbSettings:DatabaseName must be configured.")
+                .Validate(
+                    settings => !string.IsNullOrWhiteSpace(settings.CustomerCollectionName),
+                    "MongoDbSettings:CustomerCollectionName must be configured.")
+                .Validate(
+                    settings => !string.IsNullOrWhiteSpace(settings.CustomersHistoryCollectionName),
+                    "MongoDbSettings:CustomersHistoryCollectionName must be configured.")
+                .Validate(
+                    settings => !string.IsNullOrWhiteSpace(settings.AdminCollectionName),
+                    "MongoDbSettings:AdminCollectionName must be configured.")
+                .Validate(
+                    settings => !string.IsNullOrWhiteSpace(settings.AdminsHistoryCollectionName),
+                    "MongoDbSettings:AdminsHistoryCollectionName must be configured.")
+                .Validate(
+                    settings => !string.IsNullOrWhiteSpace(settings.FavoriteCollectionName),
+                    "MongoDbSettings:FavoriteCollectionName must be configured.")
+                .ValidateOnStart();
 
             services.AddSingleton<MongoDbContext>();
             services.AddScoped<MongoInitializer>();

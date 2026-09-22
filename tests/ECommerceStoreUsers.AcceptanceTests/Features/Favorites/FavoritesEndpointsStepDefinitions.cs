@@ -149,7 +149,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
             problem.Title.ShouldBe("Invalid JSON payload.");
             problem.Instance.ShouldBe($"/favorites/clients/{_clientId}");
             problem.TraceId.ShouldNotBeNullOrWhiteSpace();
-            problem.MissingProperties.ShouldContain("ProductId");
+            problem.MissingProperties.ShouldContain("productId");
         }
 
         [Then("adding the duplicate favorite fails with status 409")]
@@ -163,6 +163,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
             problem.Title.ShouldBe("Conflict.");
             problem.Instance.ShouldBe($"/favorites/clients/{_clientId}");
             problem.TraceId.ShouldNotBeNullOrWhiteSpace();
+            problem.Detail.ShouldNotBeNull();
             problem.Detail.ShouldContain($"{_clientId}:{_productId}");
         }
 

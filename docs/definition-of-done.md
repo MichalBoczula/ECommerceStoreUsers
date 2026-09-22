@@ -10,4 +10,4 @@ This checklist is the review standard for a change, not a claim that all existin
 - Ordinary compiler warnings are allowed; material warnings are reported. Vulnerabilities have a separate agreed severity gate. Tests, coverage and security checks are not weakened to make a PR pass.
 - Update README/ADR or source documentation when behavior or decisions change. The PR records actual commands/results, unavailable checks with reasons, and any follow-up. Update backlog status only after verifying the criterion.
 
-OpenAPI CI validation and CI correctness changes scheduled for REF-02/03 must not be presented as implemented by this document.
+OpenAPI CI validation remains in REF-11; toolchain and artifact improvements remain in REF-03. This checklist alone does not implement either gate.

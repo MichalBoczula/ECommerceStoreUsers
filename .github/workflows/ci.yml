@@ -112,6 +112,9 @@ jobs:
           fi
 
   build-docker-image:
+    # Dependency Review is intentionally skipped on push; only the successful
+    # quality gate permits image work through that skipped ancestor.
+    if: ${{ always() && !cancelled() && needs.quality-gate.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:

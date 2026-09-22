@@ -1,4 +1,4 @@
-﻿using Reqnroll;
+using Reqnroll;
 
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
 {
@@ -7,17 +7,27 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
     {
         private readonly ScenarioApiContext _apiContext;
         private ApplicationFactory? _factory;
+        private string? _databaseName;
 
         public TestHooks(ScenarioApiContext apiContext)
         {
             _apiContext = apiContext;
         }
 
-        [BeforeScenario]
-        public async Task BeforeScenario()
+        [BeforeTestRun]
+        public static Task BeforeTestRun()
         {
-            _factory = new ApplicationFactory();
-            await _factory.InitializeAsync();
+            return AcceptanceMongoDb.StartAsync();
+        }
+
+        [BeforeScenario]
+        public void BeforeScenario()
+        {
+            _databaseName = $"acceptance-{Guid.NewGuid():N}";
+            _factory = new ApplicationFactory(
+                AcceptanceMongoDb.ConnectionString,
+                _databaseName);
+
             _apiContext.Factory = _factory;
             _apiContext.HttpClient = _factory.CreateClient();
         }
@@ -25,12 +35,29 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         [AfterScenario]
         public async Task AfterScenario()
         {
-            _apiContext.HttpClient?.Dispose();
-
-            if (_factory is not null)
+            try
             {
-                await _factory.DisposeAsync();
+                _apiContext.Response?.Dispose();
+                _apiContext.HttpClient?.Dispose();
+
+                if (_factory is not null)
+                {
+                    await _factory.DisposeAsync();
+                }
             }
+            finally
+            {
+                if (_databaseName is not null)
+                {
+                    await AcceptanceMongoDb.DropDatabaseAsync(_databaseName);
+                }
+            }
+        }
+
+        [AfterTestRun]
+        public static Task AfterTestRun()
+        {
+            return AcceptanceMongoDb.DisposeAsync();
         }
     }
 }

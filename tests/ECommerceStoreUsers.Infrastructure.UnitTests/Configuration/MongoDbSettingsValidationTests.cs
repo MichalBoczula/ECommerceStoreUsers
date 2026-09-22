@@ -11,7 +11,7 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Configuration
         [Fact]
         public void AddInfrastructure_WithValidSettings_BindsMongoDbConfiguration()
         {
-            var configuration = CreateConfiguration("mongodb://localhost:27017");
+            var configuration = CreateConfiguration();
             var services = new ServiceCollection();
 
             services.AddInfrastructure(configuration);
@@ -24,10 +24,33 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Configuration
             settings.FavoriteCollectionName.ShouldBe("favorites");
         }
 
-        [Fact]
-        public void AddInfrastructure_WithoutConnectionString_FailsValidation()
+        [Theory]
+        [InlineData(
+            "MongoDbSettings:ConnectionString",
+            "MongoDbSettings:ConnectionString must be configured.")]
+        [InlineData(
+            "MongoDbSettings:DatabaseName",
+            "MongoDbSettings:DatabaseName must be configured.")]
+        [InlineData(
+            "MongoDbSettings:CustomerCollectionName",
+            "MongoDbSettings:CustomerCollectionName must be configured.")]
+        [InlineData(
+            "MongoDbSettings:CustomersHistoryCollectionName",
+            "MongoDbSettings:CustomersHistoryCollectionName must be configured.")]
+        [InlineData(
+            "MongoDbSettings:AdminCollectionName",
+            "MongoDbSettings:AdminCollectionName must be configured.")]
+        [InlineData(
+            "MongoDbSettings:AdminsHistoryCollectionName",
+            "MongoDbSettings:AdminsHistoryCollectionName must be configured.")]
+        [InlineData(
+            "MongoDbSettings:FavoriteCollectionName",
+            "MongoDbSettings:FavoriteCollectionName must be configured.")]
+        public void AddInfrastructure_WithoutRequiredSetting_FailsValidation(
+            string missingSetting,
+            string expectedFailure)
         {
-            var configuration = CreateConfiguration(connectionString: null);
+            var configuration = CreateConfiguration(excludedSetting: missingSetting);
             var services = new ServiceCollection();
 
             services.AddInfrastructure(configuration);
@@ -36,8 +59,7 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Configuration
             var options = serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>();
 
             var exception = Should.Throw<OptionsValidationException>(() => _ = options.Value);
-            exception.Failures.ShouldContain(
-                "MongoDbSettings:ConnectionString must be configured.");
+            exception.Failures.ShouldContain(expectedFailure);
         }
 
         [Theory]
@@ -59,10 +81,13 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Configuration
                 "MongoDbSettings:ConnectionString must use the mongodb:// or mongodb+srv:// scheme.");
         }
 
-        private static IConfiguration CreateConfiguration(string? connectionString)
+        private static IConfiguration CreateConfiguration(
+            string connectionString = "mongodb://localhost:27017",
+            string? excludedSetting = null)
         {
             var values = new Dictionary<string, string?>
             {
+                ["MongoDbSettings:ConnectionString"] = connectionString,
                 ["MongoDbSettings:DatabaseName"] = "ecommerce-store-users-db-test",
                 ["MongoDbSettings:CustomerCollectionName"] = "customers",
                 ["MongoDbSettings:CustomersHistoryCollectionName"] = "customers-history",
@@ -71,9 +96,9 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Configuration
                 ["MongoDbSettings:FavoriteCollectionName"] = "favorites"
             };
 
-            if (connectionString is not null)
+            if (excludedSetting is not null)
             {
-                values["MongoDbSettings:ConnectionString"] = connectionString;
+                values.Remove(excludedSetting);
             }
 
             return new ConfigurationBuilder()

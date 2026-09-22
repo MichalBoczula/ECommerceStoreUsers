@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using ECommerceStoreInvoice.API.Configuration.Common;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -15,17 +15,15 @@ namespace ECommerceStoreInvoice.API.Configuration.Extensions
             var (typeName, missingProperties) = ExtractMissingInformation(jsonException?.Message);
             var detail = BuildDetail(typeName, missingProperties, jsonException?.Message ?? exception.Message);
 
-            await context.Response.WriteAsJsonAsync(new ProblemDetails
+            await context.Response.WriteAsJsonAsync(new ApiProblemDetails
             {
                 Status = StatusCodes.Status400BadRequest,
                 Title = "Invalid JSON payload.",
                 Detail = detail,
                 Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1",
                 Instance = context.Request.Path,
-                Extensions =
-                {
-                    ["traceId"] = context.TraceIdentifier
-                }
+                TraceId = context.TraceIdentifier,
+                MissingProperties = missingProperties
             }, cancellationToken);
         }
 

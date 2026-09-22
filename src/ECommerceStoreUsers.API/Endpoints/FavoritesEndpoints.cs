@@ -33,7 +33,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithName("GetFavoritesByClientId")
             .Produces<IReadOnlyList<FavoriteResponseDto>>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
         }
 
         private static void MapFavoritesCommands(IEndpointRouteBuilder group)
@@ -53,7 +53,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .Produces<FavoriteResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<ConflictProblemDetails>(StatusCodes.Status409Conflict)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
 
             group.MapDelete("/clients/{clientId:guid}/products/{productId:guid}", async (
                 Guid clientId,
@@ -70,7 +70,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .Produces(StatusCodes.Status204NoContent)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces<NotFoundProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
 
             group.MapDelete("/clients/{clientId:guid}", async (
                 Guid clientId,
@@ -85,7 +85,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithName("ClearClientFavorites")
             .Produces(StatusCodes.Status204NoContent)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
         }
     }
 }

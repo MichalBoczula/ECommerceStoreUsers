@@ -1,9 +1,10 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
 {
     public sealed class ScenarioApiContext
     {
+        public ApplicationFactory Factory { get; set; } = default!;
         public HttpClient HttpClient { get; set; } = default!;
         public HttpResponseMessage? Response { get; set; }
 

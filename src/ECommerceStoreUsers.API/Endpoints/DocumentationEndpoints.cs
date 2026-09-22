@@ -1,4 +1,5 @@
-﻿using ECommerceStoreUsers.Application.Common.FlowDescriptors;
+using ECommerceStoreInvoice.API.Configuration.Common;
+using ECommerceStoreUsers.Application.Common.FlowDescriptors;
 using ECommerceStoreUsers.Application.Common.ResponsesDto;
 using ECommerceStoreUsers.Application.Services.Abstract.Admins;
 using ECommerceStoreUsers.Application.Services.Abstract.Customers;
@@ -61,7 +62,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Returns flow descriptors mapped by descriptor name, including customer, admin, and favorite workflows.")
             .WithName("GetFlowDocumentation")
             .Produces<FlowDescriptorsResponseDto>(StatusCodes.Status200OK)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
         }
 
         private static void MapValidationDocumentation(IEndpointRouteBuilder group)
@@ -87,7 +88,7 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithDescription("Returns validation descriptors mapped by policy name.")
             .WithName("GetValidationDocumentation")
             .Produces<ValidationDescriptorsResponseDto>(StatusCodes.Status200OK)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+            .Produces<InternalServerErrorProblemDetails>(StatusCodes.Status500InternalServerError);
         }
     }
 }

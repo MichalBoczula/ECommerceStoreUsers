@@ -193,6 +193,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
             problem.Title.ShouldBe("Resource not found.");
             problem.Instance.ShouldBe($"/favorites/clients/{_clientId}/products/{_productId}");
             problem.TraceId.ShouldNotBeNullOrWhiteSpace();
+            problem.Detail.ShouldNotBeNull();
             problem.Detail.ShouldContain($"{_clientId}:{_productId}");
         }
 

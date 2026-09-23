@@ -49,11 +49,11 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
                 {
                     // Only the read-only connection probe is safe to repeat.
                 }
-                catch (MongoServerSelectionException) when (!cancellationToken.IsCancellationRequested && attempt < 3)
+                catch (MongoException) when (!cancellationToken.IsCancellationRequested && attempt < 3)
                 {
                     // No index operation has started yet.
                 }
-                catch (MongoServerSelectionException) when (!cancellationToken.IsCancellationRequested)
+                catch (MongoException) when (!cancellationToken.IsCancellationRequested)
                 {
                     throw new TimeoutException("MongoDB startup connection probe timed out.");
                 }

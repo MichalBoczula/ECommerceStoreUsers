@@ -54,9 +54,21 @@ namespace ECommerceStoreUsers.Application.Descriptors.Favorites
         }
 
         [FlowStep(order: 5, bpmnId: "DeleteFavorite")]
-        public async Task Delete(Guid clientId, Guid productId, IFavoriteRepository favoriteRepository, CancellationToken cancellationToken)
+        public async Task<bool> Delete(Guid clientId, Guid productId, IFavoriteRepository favoriteRepository, CancellationToken cancellationToken)
         {
-            await favoriteRepository.DeleteAsync(clientId, productId, cancellationToken);
+            return await favoriteRepository.DeleteAsync(clientId, productId, cancellationToken);
+        }
+
+        [FlowStep(order: 6, bpmnId: "VerifyFavoriteWasDeleted")]
+        public void ThrowNotFoundExceptionIfDeleteMissed(Guid clientId, Guid productId, bool deleted)
+        {
+            if (!deleted)
+            {
+                throw new ResourceNotFoundException(
+                    nameof(RemoveProductFromFavorites),
+                    $"{clientId}:{productId}",
+                    nameof(Favorite));
+            }
         }
     }
 }

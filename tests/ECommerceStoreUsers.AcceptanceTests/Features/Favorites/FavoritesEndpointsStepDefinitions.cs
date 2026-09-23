@@ -30,6 +30,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
             var values = table.Rows.ToDictionary(row => row["Field"], row => row["Value"]);
             _clientId = Guid.Parse(values["ClientId"]);
             _productId = Guid.Parse(values["ProductId"]);
+            _apiContext.FavoriteClientId = _clientId;
+            _apiContext.FavoriteProductId = _productId;
         }
 
         [Given("the product is already in favorites")]

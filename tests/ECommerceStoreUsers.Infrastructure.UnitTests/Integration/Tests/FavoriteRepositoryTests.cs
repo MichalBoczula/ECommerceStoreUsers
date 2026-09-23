@@ -1,7 +1,10 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites.Repositories;
+using ECommerceStoreUsers.Domain.Validation.Common;
+using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
@@ -128,8 +131,9 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             await repository.AddAsync(favoriteToDelete, CancellationToken.None);
             await repository.AddAsync(favoriteToKeep, CancellationToken.None);
 
-            await repository.DeleteAsync(clientId, favoriteToDelete.ProductId, CancellationToken.None);
+            var deleted = await repository.DeleteAsync(clientId, favoriteToDelete.ProductId, CancellationToken.None);
 
+            deleted.ShouldBeTrue();
             (await repository.ExistsAsync(clientId, favoriteToDelete.ProductId, CancellationToken.None)).ShouldBeFalse();
             (await repository.ExistsAsync(clientId, favoriteToKeep.ProductId, CancellationToken.None)).ShouldBeTrue();
         }
@@ -142,8 +146,9 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             var favorite = new Favorite(Guid.NewGuid(), Guid.NewGuid());
             await repository.AddAsync(favorite, CancellationToken.None);
 
-            await repository.DeleteAsync(favorite.ClientId, Guid.NewGuid(), CancellationToken.None);
+            var deleted = await repository.DeleteAsync(favorite.ClientId, Guid.NewGuid(), CancellationToken.None);
 
+            deleted.ShouldBeFalse();
             (await repository.ExistsAsync(favorite.ClientId, favorite.ProductId, CancellationToken.None)).ShouldBeTrue();
         }
 
@@ -165,6 +170,81 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             (await repository.GetByClientIdAsync(clientId, CancellationToken.None)).ShouldBeEmpty();
             (await repository.ExistsAsync(
                 otherClientFavorite.ClientId, otherClientFavorite.ProductId, CancellationToken.None)).ShouldBeTrue();
+        }
+
+        [Fact]
+        public async Task ConcurrentAddsOfSamePair_ShouldPersistOneAndReportOneConflict()
+        {
+            await using var serviceProvider = CreateServiceProvider();
+            await serviceProvider.InitializeInfrastructureAsync();
+            var repository = serviceProvider.GetRequiredService<IFavoriteRepository>();
+            var clientId = Guid.NewGuid();
+            var productId = Guid.NewGuid();
+
+            async Task<Exception?> TryAddAsync()
+            {
+                try
+                {
+                    await repository.AddAsync(new Favorite(clientId, productId), CancellationToken.None);
+                    return null;
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+
+            var outcomes = await Task.WhenAll(TryAddAsync(), TryAddAsync());
+
+            outcomes.Count(x => x is null).ShouldBe(1);
+            outcomes.Count(x => x is ResourceAlreadyExistsException).ShouldBe(1);
+            (await repository.GetByClientIdAsync(clientId, CancellationToken.None)).Count.ShouldBe(1);
+        }
+
+        [Fact]
+        public async Task DuplicateIdForDifferentPair_ShouldRemainMongoWriteException()
+        {
+            await using var serviceProvider = CreateServiceProvider();
+            await serviceProvider.InitializeInfrastructureAsync();
+            var repository = serviceProvider.GetRequiredService<IFavoriteRepository>();
+            var first = new Favorite(Guid.NewGuid(), Guid.NewGuid());
+            await repository.AddAsync(first, CancellationToken.None);
+            var second = Favorite.Rehydrate(first.Id, Guid.NewGuid(), Guid.NewGuid(), DateTime.UtcNow);
+
+            var error = await Should.ThrowAsync<MongoWriteException>(() =>
+                repository.AddAsync(second, CancellationToken.None));
+
+            error.WriteError.Code.ShouldBe(11000);
+            (await repository.GetByClientIdAsync(second.ClientId, CancellationToken.None)).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public async Task ConcurrentDeletes_ShouldReportExactlyOneDeletedFavorite()
+        {
+            await using var serviceProvider = CreateServiceProvider();
+            var repository = serviceProvider.GetRequiredService<IFavoriteRepository>();
+            var favorite = new Favorite(Guid.NewGuid(), Guid.NewGuid());
+            await repository.AddAsync(favorite, CancellationToken.None);
+
+            var outcomes = await Task.WhenAll(
+                repository.DeleteAsync(favorite.ClientId, favorite.ProductId, CancellationToken.None),
+                repository.DeleteAsync(favorite.ClientId, favorite.ProductId, CancellationToken.None));
+
+            outcomes.Count(deleted => deleted).ShouldBe(1);
+            outcomes.Count(deleted => !deleted).ShouldBe(1);
+            (await repository.GetByClientIdAsync(favorite.ClientId, CancellationToken.None)).ShouldBeEmpty();
+        }
+
+        [Fact]
+        public async Task ClearEmptyFavorites_ShouldRemainSuccessfulNoOp()
+        {
+            await using var serviceProvider = CreateServiceProvider();
+            var repository = serviceProvider.GetRequiredService<IFavoriteRepository>();
+            var clientId = Guid.NewGuid();
+
+            await repository.DeleteAllByClientIdAsync(clientId, CancellationToken.None);
+
+            (await repository.GetByClientIdAsync(clientId, CancellationToken.None)).ShouldBeEmpty();
         }
 
         private ServiceProvider CreateServiceProvider()

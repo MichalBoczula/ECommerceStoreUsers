@@ -1,4 +1,4 @@
-# REF-07: acceptance matrix
+# Acceptance matrix
 
 [`acceptance-matrix.tsv`](acceptance-matrix.tsv) links each exposed, named HTTP operation
 to observed status, cause and a Reqnroll scenario. `scenarioId` is a stable key for
@@ -12,4 +12,5 @@ the matrix with all named endpoint registrations and declared response statuses,
 checks unique IDs, and confirms the referenced feature/scenario and outline
 example exist. For a new distinct response cause, add a scenario and matrix row.
 The matrix is a navigation aid; the HTTP and database assertions are in the
-linked acceptance tests. Concurrency and transactional failures remain REF-08.
+linked acceptance tests. REF-08 adds race cases as their behavior is implemented;
+the remaining concurrency and transactional cases are still tracked there.

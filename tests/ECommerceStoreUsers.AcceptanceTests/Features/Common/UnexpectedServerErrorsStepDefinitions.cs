@@ -288,7 +288,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
                 CancellationToken cancellationToken = default)
                 => throw new NotSupportedException();
 
-            public Task DeleteAsync(
+            public Task<bool> DeleteAsync(
                 Guid clientId,
                 Guid productId,
                 CancellationToken cancellationToken = default)

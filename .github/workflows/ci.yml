@@ -58,6 +58,9 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Verify acceptance operation matrix
+        run: python3 scripts/check-acceptance-matrix.py
+
       - name: Restore dependencies
         run: dotnet restore ECommerceStoreUsers.slnx
 

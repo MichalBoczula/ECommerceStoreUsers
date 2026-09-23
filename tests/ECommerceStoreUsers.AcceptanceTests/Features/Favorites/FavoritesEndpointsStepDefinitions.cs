@@ -174,6 +174,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
         public async Task ThenTheFavoriteIsRemovedWithStatus204()
         {
             RequireResponse(HttpStatusCode.NoContent);
+            (await _apiContext.Response!.Content.ReadAsStringAsync()).ShouldBeEmpty();
 
             using var verificationResponse = await _apiContext.HttpClient.GetAsync(
                 $"/favorites/clients/{_clientId}");
@@ -205,6 +206,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
         public async Task ThenAllFavoritesAreRemovedWithStatus204()
         {
             RequireResponse(HttpStatusCode.NoContent);
+            (await _apiContext.Response!.Content.ReadAsStringAsync()).ShouldBeEmpty();
 
             using var verificationResponse = await _apiContext.HttpClient.GetAsync(
                 $"/favorites/clients/{_clientId}");

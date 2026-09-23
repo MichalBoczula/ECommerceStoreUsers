@@ -96,6 +96,14 @@ Feature: Favorites endpoints
     When I clear the client's favorites
     Then all favorites are removed with status 204
 
+  Scenario: Clear favorites for a client with no products is a successful no-op
+    Given I use favorite identifiers
+      | Field     | Value                                |
+      | ClientId  | 88888888-8888-8888-8888-888888888888 |
+      | ProductId | 99999999-9999-9999-9999-999999999999 |
+    When I clear the client's favorites
+    Then all favorites are removed with status 204
+
   Scenario: Clear favorites with an empty client identifier
     Given I use favorite identifiers
       | Field     | Value                                |

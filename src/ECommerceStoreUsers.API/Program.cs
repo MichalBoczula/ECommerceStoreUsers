@@ -33,10 +33,9 @@ namespace ECommerceStoreUsers.API
             builder.Services.AddDomain();
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication();
+            builder.Services.AddHostedService<MongoInitializationHostedService>();
 
             var app = builder.Build();
-
-            await app.Services.InitializeInfrastructureAsync();
 
             app.UseExceptionHandler();
             app.UseStatusCodePages(status => ApiProblemResponse.WriteEmptyStatusAsync(status.HttpContext));
@@ -63,7 +62,7 @@ namespace ECommerceStoreUsers.API
                 Predicate = registration => registration.Tags.Contains("ready")
             });
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

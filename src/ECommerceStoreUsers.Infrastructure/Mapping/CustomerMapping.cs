@@ -17,12 +17,13 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
                 Id = customer.Id,
                 ExternalId = customer.ExternalId,
                 UpdatedAt = customer.UpdatedAt,
+                Version = customer.Version,
                 Individual = MapIndividualToDocument(customer.Individual),
                 Companies = customer.Companies.Select(MapCompanyToDocument).ToList()
             };
         }
 
-        internal static CustomersHistoryDocument MapToHistoryDocument(Customer customer, ActionType action)
+        internal static CustomersHistoryDocument MapToHistoryDocument(Customer customer, ActionType action, long? version = null)
         {
             return new CustomersHistoryDocument
             {
@@ -32,6 +33,7 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
                 Individual = MapIndividualToDocument(customer.Individual),
                 Companies = customer.Companies.Select(MapCompanyToDocument).ToList(),
                 UpdatedAt = customer.UpdatedAt,
+                Version = version ?? customer.Version,
                 ChangedAt = DateTime.UtcNow,
                 Action = action
             };
@@ -61,7 +63,9 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
                 customerDocument.Id,
                 customerDocument.ExternalId,
                 individual,
-                companies);
+                companies,
+                customerDocument.UpdatedAt,
+                customerDocument.Version);
         }
 
         internal static IndividualDataDocument MapIndividualToDocument(IndividualData individual)

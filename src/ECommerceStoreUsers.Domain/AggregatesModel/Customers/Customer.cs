@@ -11,6 +11,7 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers
         private readonly List<CompanyData> _companies = new();
         public IReadOnlyCollection<CompanyData> Companies => _companies.AsReadOnly();
         public DateTime UpdatedAt { get; private set; }
+        public long Version { get; private set; }
 
         public Customer(string externalId, IndividualData individual)
         {
@@ -32,10 +33,15 @@ namespace ECommerceStoreUsers.Domain.AggregatesModel.Customers
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public static Customer Rehydrate(Guid id, string externalId, IndividualData individual, List<CompanyData> companies)
+        public void MarkPersisted() => Version++;
+
+        public static Customer Rehydrate(Guid id, string externalId, IndividualData individual, List<CompanyData> companies,
+            DateTime? updatedAt = null, long version = 0)
         {
             var customer = new Customer(externalId, individual) { Id = id };
             customer._companies.AddRange(companies);
+            customer.UpdatedAt = updatedAt ?? customer.UpdatedAt;
+            customer.Version = version;
             return customer;
         }
     }

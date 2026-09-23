@@ -34,6 +34,10 @@ namespace ECommerceStoreUsers.API.Configuration
                     ResourceAlreadyExistsExceptionHandlerExtension.HandleResourceAlreadyExistsException(
                         context, resourceAlreadyExistsException, _logger, cancellationToken),
 
+                ConcurrencyConflictException => ApiProblemResponse.WriteAsync(
+                    context, StatusCodes.Status409Conflict, "concurrency_conflict", "Conflict.",
+                    "The customer was changed by another request. Reload it and retry.", cancellationToken),
+
                 BadHttpRequestException badHttpRequestException when badHttpRequestException.InnerException is JsonException =>
                     JsonDeserializationExceptionHandlerExtension.HandleJsonDeserializationException(
                         context, cancellationToken),

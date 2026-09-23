@@ -18,5 +18,6 @@ namespace ECommerceStoreUsers.Infrastructure.Persistence.Customers
         public required IReadOnlyCollection<CompanyDataDocument> Companies { get; init; }
 
         public required DateTime UpdatedAt { get; init; }
+        public long Version { get; init; }
     }
 }

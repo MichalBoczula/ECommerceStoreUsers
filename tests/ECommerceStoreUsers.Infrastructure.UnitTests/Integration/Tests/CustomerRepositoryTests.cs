@@ -3,7 +3,9 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.Common.Enums;
+using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Persistence.Customers;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -296,6 +298,116 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             historyRecords[0].Individual.Email.ShouldBe(customer.Individual.Email);
             historyRecords[1].Action.ShouldBe(ActionType.Update);
             historyRecords[1].Individual.Email.ShouldBe("anna.nowak@test.pl");
+            historyRecords[1].Version.ShouldBe(1);
+        }
+
+        [Fact]
+        public async Task UpdateCustomer_WithStaleVersion_ShouldPreserveFirstWriteAndHistory()
+        {
+            await using var serviceProvider = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"user-tests-{Guid.NewGuid():N}");
+            var repository = serviceProvider.GetRequiredService<ICustomerRepository>();
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+            var original = CreateTestCustomer();
+            await repository.CreateCustomer(original, CancellationToken.None);
+
+            var first = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            var second = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            first.ShouldNotBeNull();
+            second.ShouldNotBeNull();
+            first.UpdatedAt.ShouldBe(original.UpdatedAt, TimeSpan.FromMilliseconds(1));
+            first.Version.ShouldBe(0);
+            first.UpdateIndividualData(new IndividualData("First", "Name", "first@test.pl", "+48111222333",
+                CreateDefaultAddress("00-001"), CreateDefaultAddress("00-001")));
+            second.UpdateIndividualData(new IndividualData("Second", "Name", "second@test.pl", "+48111222333",
+                CreateDefaultAddress("00-001"), CreateDefaultAddress("00-001")));
+
+            await repository.UpdateCustomer(first, CancellationToken.None);
+            await Should.ThrowAsync<ConcurrencyConflictException>(() =>
+                repository.UpdateCustomer(second, CancellationToken.None));
+
+            first.Version.ShouldBe(1);
+            second.Version.ShouldBe(0);
+            var persisted = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            persisted.ShouldNotBeNull();
+            persisted.Version.ShouldBe(1);
+            persisted.Individual.FirstName.ShouldBe("First");
+            var history = await context.CustomersHistory.Find(x => x.CustomerId == original.Id)
+                .ToListAsync(CancellationToken.None);
+            history.Count.ShouldBe(2);
+            history.Count(x => x.Action == ActionType.Update && x.Version == 1).ShouldBe(1);
+        }
+
+        [Fact]
+        public async Task UpdateCustomer_WhenDocumentWasDeleted_ShouldNotCreateHistory()
+        {
+            await using var serviceProvider = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"user-tests-{Guid.NewGuid():N}");
+            var repository = serviceProvider.GetRequiredService<ICustomerRepository>();
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+            var original = CreateTestCustomer();
+            await repository.CreateCustomer(original, CancellationToken.None);
+            var loaded = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            loaded.ShouldNotBeNull();
+            await context.Customers.DeleteOneAsync(x => x.Id == original.Id);
+
+            await Should.ThrowAsync<ResourceNotFoundException>(() =>
+                repository.UpdateCustomer(loaded, CancellationToken.None));
+
+            (await context.CustomersHistory.CountDocumentsAsync(x => x.CustomerId == original.Id)).ShouldBe(1);
+        }
+
+        [Fact]
+        public async Task ConcurrentCustomerUpdates_ShouldCommitOnlyOneVersionAndOneHistoryEntry()
+        {
+            await using var serviceProvider = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"user-tests-{Guid.NewGuid():N}");
+            var repository = serviceProvider.GetRequiredService<ICustomerRepository>();
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+            var original = CreateTestCustomer();
+            await repository.CreateCustomer(original, CancellationToken.None);
+            var first = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            var second = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            first.ShouldNotBeNull();
+            second.ShouldNotBeNull();
+            first.AddCompany("First", "TAX-1", CreateDefaultAddress("00-001"), CreateDefaultAddress("00-001"));
+            second.AddCompany("Second", "TAX-2", CreateDefaultAddress("00-002"), CreateDefaultAddress("00-002"));
+
+            async Task<Exception?> Attempt(Customer customer)
+            {
+                try { await repository.UpdateCustomer(customer, CancellationToken.None); return null; }
+                catch (Exception exception) { return exception; }
+            }
+
+            var outcomes = await Task.WhenAll(Attempt(first), Attempt(second));
+            outcomes.Count(x => x is null).ShouldBe(1);
+            outcomes.Count(x => x is ConcurrencyConflictException).ShouldBe(1);
+            var persisted = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            persisted.ShouldNotBeNull();
+            persisted.Version.ShouldBe(1);
+            persisted.Companies.Count.ShouldBe(1);
+            (await context.CustomersHistory.CountDocumentsAsync(x => x.CustomerId == original.Id)).ShouldBe(2);
+        }
+
+        [Fact]
+        public async Task UpdateCustomer_LegacyDocumentWithoutVersion_ShouldUpgradeOnFirstWrite()
+        {
+            await using var serviceProvider = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"user-tests-{Guid.NewGuid():N}");
+            var repository = serviceProvider.GetRequiredService<ICustomerRepository>();
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+            var original = CreateTestCustomer();
+            await repository.CreateCustomer(original, CancellationToken.None);
+            await context.Customers.UpdateOneAsync(x => x.Id == original.Id,
+                Builders<CustomerDocument>.Update.Unset(x => x.Version));
+
+            var loaded = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            loaded.ShouldNotBeNull();
+            loaded.Version.ShouldBe(0);
+            await repository.UpdateCustomer(loaded, CancellationToken.None);
+
+            (await repository.GetByIdAsync(original.Id, CancellationToken.None))!.Version.ShouldBe(1);
+            (await context.CustomersHistory.CountDocumentsAsync(x => x.CustomerId == original.Id)).ShouldBe(2);
         }
 
         private static Address CreateDefaultAddress(string postalCode) =>

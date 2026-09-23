@@ -1,4 +1,4 @@
-using ECommerceStoreUsers.Infrastructure.Configuration;
+﻿using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;

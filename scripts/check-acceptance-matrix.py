@@ -45,7 +45,7 @@ def verify():
         name = row["operationId"]
         method, path, _ = actual[name]
         assert (row["method"], row["path"]) == (method, path), row
-        assert re.fullmatch(r"REF07_[A-Za-z0-9_]+", row["scenarioId"]), row
+        assert re.fullmatch(r"REF\d{2}_[A-Za-z0-9_]+", row["scenarioId"]), row
         assert row["cause"].strip(), row
         assert row["status"] in {"200", "201", "204", "400", "404", "409", "500"}, row
         feature = FEATURES / row["feature"]

@@ -1,5 +1,6 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites.Repositories;
+using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
 using ECommerceStoreUsers.Infrastructure.Persistence.Favorites;
@@ -57,17 +58,34 @@ namespace ECommerceStoreUsers.Infrastructure.Repositories
         public async Task AddAsync(Favorite favorite, CancellationToken cancellationToken = default)
         {
             var document = FavoriteMapping.MapToDocument(favorite);
-            await _context.Favorites.InsertOneAsync(document, cancellationToken: cancellationToken);
+            try
+            {
+                await _context.Favorites.InsertOneAsync(document, cancellationToken: cancellationToken);
+            }
+            catch (MongoWriteException exception) when (exception.WriteError.Code == 11000)
+            {
+                // Confirm the conflicting pair rather than mapping every duplicate key (including _id) to 409.
+                if (await ExistsAsync(favorite.ClientId, favorite.ProductId, cancellationToken))
+                {
+                    throw new ResourceAlreadyExistsException(
+                        "AddProductToFavorites",
+                        $"{favorite.ClientId}:{favorite.ProductId}",
+                        nameof(Favorite));
+                }
+
+                throw;
+            }
         }
 
-        public async Task DeleteAsync(Guid clientId, Guid productId, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteAsync(Guid clientId, Guid productId, CancellationToken cancellationToken = default)
         {
             var filter = Builders<FavoriteDocument>.Filter.And(
                 Builders<FavoriteDocument>.Filter.Eq(x => x.ClientId, clientId),
                 Builders<FavoriteDocument>.Filter.Eq(x => x.ProductId, productId)
             );
 
-            await _context.Favorites.DeleteOneAsync(filter, cancellationToken);
+            var result = await _context.Favorites.DeleteOneAsync(filter, cancellationToken);
+            return result.DeletedCount == 1;
         }
 
         public async Task DeleteAllByClientIdAsync(Guid clientId, CancellationToken cancellationToken = default)

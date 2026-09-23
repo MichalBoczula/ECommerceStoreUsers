@@ -8,6 +8,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         public ApplicationFactory Factory { get; set; } = default!;
         public HttpClient HttpClient { get; set; } = default!;
         public HttpResponseMessage? Response { get; set; }
+        public Guid FavoriteClientId { get; set; }
+        public Guid FavoriteProductId { get; set; }
 
         public JsonSerializerOptions JsonOptions { get; } = new()
         {

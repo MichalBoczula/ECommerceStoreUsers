@@ -48,7 +48,7 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(favorite);
             })
             .WithSummary("Add product to favorites.")
-            .WithDescription("Adds a product reference to the customer's favorites list.")
+            .WithDescription("Adds a product reference to the customer's favorites list; returns 409 if the pair already exists, including concurrent inserts.")
             .WithName("AddProductToFavorites")
             .Produces<FavoriteResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
@@ -65,7 +65,7 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.NoContent();
             })
             .WithSummary("Remove product from favorites.")
-            .WithDescription("Removes a specific product from the client's favorites.")
+            .WithDescription("Removes a specific product from the client's favorites; returns 404 if it is missing when the delete executes.")
             .WithName("RemoveProductFromFavorites")
             .Produces(StatusCodes.Status204NoContent)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")

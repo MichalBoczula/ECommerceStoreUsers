@@ -125,7 +125,7 @@ public sealed class FavoriteServiceTests
         guidPolicyMock.Setup(policy => policy.Validate(clientId)).ReturnsAsync(new ValidationResult());
         guidPolicyMock.Setup(policy => policy.Validate(productId)).ReturnsAsync(new ValidationResult());
         repositoryMock.Setup(repository => repository.GetByClientAndProductIdAsync(clientId, productId, cancellationToken)).ReturnsAsync(favorite);
-        repositoryMock.Setup(repository => repository.DeleteAsync(clientId, productId, cancellationToken)).Returns(Task.CompletedTask);
+        repositoryMock.Setup(repository => repository.DeleteAsync(clientId, productId, cancellationToken)).ReturnsAsync(true);
 
         await sut.RemoveProductFromFavorites(clientId, productId, cancellationToken);
 
@@ -134,6 +134,25 @@ public sealed class FavoriteServiceTests
         repositoryMock.Verify(repository => repository.GetByClientAndProductIdAsync(clientId, productId, cancellationToken), Times.Once);
         repositoryMock.Verify(repository => repository.DeleteAsync(clientId, productId, cancellationToken), Times.Once);
         favoritePolicyMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task RemoveProductFromFavorites_WhenFavoriteDisappearsAfterRead_ShouldThrowResourceNotFoundException()
+    {
+        var clientId = Guid.NewGuid();
+        var productId = Guid.NewGuid();
+        var cancellationToken = CancellationToken.None;
+        var (repositoryMock, _, guidPolicyMock, sut) = CreateSut();
+        guidPolicyMock.Setup(policy => policy.Validate(clientId)).ReturnsAsync(new ValidationResult());
+        guidPolicyMock.Setup(policy => policy.Validate(productId)).ReturnsAsync(new ValidationResult());
+        repositoryMock.Setup(repository => repository.GetByClientAndProductIdAsync(clientId, productId, cancellationToken))
+            .ReturnsAsync(new Favorite(clientId, productId));
+        repositoryMock.Setup(repository => repository.DeleteAsync(clientId, productId, cancellationToken)).ReturnsAsync(false);
+
+        await Should.ThrowAsync<ResourceNotFoundException>(() =>
+            sut.RemoveProductFromFavorites(clientId, productId, cancellationToken));
+
+        repositoryMock.Verify(repository => repository.DeleteAsync(clientId, productId, cancellationToken), Times.Once);
     }
 
     [Fact]

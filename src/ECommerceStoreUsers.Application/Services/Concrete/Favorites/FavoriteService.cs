@@ -68,7 +68,8 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Favorites
             var favorite = await descriptor.LoadFavorite(clientId, productId, _favoriteRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfFavoriteMissing(clientId, productId, favorite);
 
-            await descriptor.Delete(clientId, productId, _favoriteRepository, cancellationToken);
+            var deleted = await descriptor.Delete(clientId, productId, _favoriteRepository, cancellationToken);
+            descriptor.ThrowNotFoundExceptionIfDeleteMissed(clientId, productId, deleted);
 
             _logger.LogInformation("Successfully removed favorite for ClientId: {ClientId}, ProductId: {ProductId}", clientId, productId);
         }

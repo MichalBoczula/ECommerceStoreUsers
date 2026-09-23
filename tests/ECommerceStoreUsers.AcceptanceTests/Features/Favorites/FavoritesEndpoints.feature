@@ -37,6 +37,16 @@ Feature: Favorites endpoints
     When I add the same product to favorites twice
     Then adding the duplicate favorite fails with status 409
 
+  Scenario: Add a favorite inserted by another request after the existence check
+    Given I use favorite identifiers
+      | Field     | Value                                |
+      | ClientId  | 22222222-2222-2222-2222-222222222222 |
+      | ProductId | bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb |
+    And another request inserts the favorite after the existence check
+    When I add the product to favorites
+    Then adding the duplicate favorite fails with status 409
+    And exactly one matching favorite remains
+
   Scenario: Get a client's favorites
     Given I use favorite identifiers
       | Field     | Value                                |
@@ -83,6 +93,17 @@ Feature: Favorites endpoints
       | ProductId | eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee |
     When I remove the product from favorites
     Then the missing favorite fails with status 404
+
+  Scenario: Remove a favorite deleted by another request after loading it
+    Given I use favorite identifiers
+      | Field     | Value                                |
+      | ClientId  | 55555555-5555-5555-5555-555555555555 |
+      | ProductId | eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee |
+    And the product is already in favorites
+    And another request deletes the favorite after it is loaded
+    When I remove the product from favorites
+    Then the missing favorite fails with status 404
+    And no matching favorite remains
 
   Scenario: Clear all favorites for a client
     Given I use favorite identifiers

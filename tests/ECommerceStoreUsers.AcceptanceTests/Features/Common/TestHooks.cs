@@ -21,35 +21,58 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         }
 
         [BeforeScenario]
-        public void BeforeScenario()
+        public async Task BeforeScenario()
         {
             _databaseName = $"acceptance-{Guid.NewGuid():N}";
-            _factory = new ApplicationFactory(
-                AcceptanceMongoDb.ConnectionString,
-                _databaseName);
+            try
+            {
+                _factory = new ApplicationFactory(
+                    AcceptanceMongoDb.ConnectionString,
+                    _databaseName);
 
-            _apiContext.Factory = _factory;
-            _apiContext.HttpClient = _factory.CreateClient();
+                _apiContext.DatabaseName = _databaseName;
+                _apiContext.Factory = _factory;
+                _apiContext.HttpClient = _factory.CreateClient();
+            }
+            catch
+            {
+                await CleanupAsync();
+                throw;
+            }
         }
 
         [AfterScenario]
-        public async Task AfterScenario()
+        public Task AfterScenario() => CleanupAsync();
+
+        private async Task CleanupAsync()
         {
             try
             {
-                _apiContext.Response?.Dispose();
-                _apiContext.HttpClient?.Dispose();
-
-                if (_factory is not null)
+                try
                 {
-                    await _factory.DisposeAsync();
+                    _apiContext.Response?.Dispose();
+                    _apiContext.HttpClient?.Dispose();
+                }
+                finally
+                {
+                    if (_factory is not null)
+                    {
+                        await _factory.DisposeAsync();
+                    }
                 }
             }
             finally
             {
+                _factory = null;
+                _apiContext.Response = null;
+                _apiContext.HttpClient = default!;
+                _apiContext.Factory = default!;
+                _apiContext.DatabaseName = string.Empty;
                 if (_databaseName is not null)
                 {
-                    await AcceptanceMongoDb.DropDatabaseAsync(_databaseName);
+                    var databaseName = _databaseName;
+                    _databaseName = null;
+                    await AcceptanceMongoDb.DropDatabaseAsync(databaseName);
                 }
             }
         }

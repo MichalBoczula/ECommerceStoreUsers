@@ -19,7 +19,8 @@ times with a three-second limit per attempt and delays of 0.5 and 1 second.
 The whole probe plus index initialization has a 20-second deadline. Host stop
 or cancellation interrupts the probe, delay or index command. Once the probe
 passes, the named index initialization runs exactly once; conflicting index
-definitions, authentication errors and index failures stop startup. An
+definitions and index failures stop startup. Connection failures, including
+invalid credentials, remain bounded by the probe and startup deadlines. An
 interrupted index build may have completed in MongoDB; restarting safely
 checks/creates the same named definitions, as verified in REF-09/6.
 

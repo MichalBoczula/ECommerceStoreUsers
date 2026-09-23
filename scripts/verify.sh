@@ -56,5 +56,7 @@ dotnet test tests/ECommerceStoreUsers.AcceptanceTests/ECommerceStoreUsers.Accept
   --configuration Release --no-restore --logger 'trx;LogFileName=acceptance.trx' \
   --results-directory "$results_dir/acceptance"
 
+bash scripts/validate-openapi.sh "$results_dir/openapi.json"
+
 docker build -f src/ECommerceStoreUsers.API/Dockerfile -t ecommerce-store-users:verify .
 echo 'Local verification passed. CI also runs dependency, secret and image vulnerability checks.'

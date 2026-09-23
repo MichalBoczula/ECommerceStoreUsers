@@ -58,6 +58,11 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Verify acceptance operation matrix
         run: python3 scripts/check-acceptance-matrix.py
 
@@ -72,6 +77,9 @@ jobs:
 
       - name: Build solution
         run: dotnet build ECommerceStoreUsers.slnx --configuration Release --no-restore
+
+      - name: Validate generated OpenAPI document
+        run: bash scripts/validate-openapi.sh
 
   quality-gate:
     if: always()

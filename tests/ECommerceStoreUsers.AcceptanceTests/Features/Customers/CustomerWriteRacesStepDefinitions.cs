@@ -96,7 +96,11 @@ public sealed class CustomerWriteRacesStepDefinitions(ScenarioApiContext context
 
     private static AddressRequestDto Address() => new()
     {
-        PostalCode = "00-001", City = "Warsaw", Street = "Street", BuildingNumber = "10", ApartmentNumber = "2"
+        PostalCode = "00-001",
+        City = "Warsaw",
+        Street = "Street",
+        BuildingNumber = "10",
+        ApartmentNumber = "2"
     };
 
     private sealed class RacingRepository(CustomerRepository inner, MongoDbContext mongo, bool delete) : ICustomerRepository

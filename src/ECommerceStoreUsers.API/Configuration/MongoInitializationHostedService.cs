@@ -7,6 +7,8 @@ public sealed class MongoInitializationHostedService(
     IHostApplicationLifetime lifetime) : IHostedService, IDisposable
 {
     private readonly CancellationTokenSource _stop = new();
+    private readonly object _sync = new();
+    private bool _disposed;
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
@@ -17,9 +19,27 @@ public sealed class MongoInitializationHostedService(
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _stop.Cancel();
+        lock (_sync)
+        {
+            if (!_disposed)
+            {
+                _stop.Cancel();
+            }
+        }
         return Task.CompletedTask;
     }
 
-    public void Dispose() => _stop.Dispose();
+    public void Dispose()
+    {
+        lock (_sync)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+            _stop.Dispose();
+        }
+    }
 }

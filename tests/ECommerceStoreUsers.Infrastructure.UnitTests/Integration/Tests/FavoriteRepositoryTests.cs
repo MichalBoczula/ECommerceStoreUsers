@@ -1,7 +1,7 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites.Repositories;
 using ECommerceStoreUsers.Domain.Validation.Common;
-using ECommerceStoreUsers.Infrastructure;
+using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;

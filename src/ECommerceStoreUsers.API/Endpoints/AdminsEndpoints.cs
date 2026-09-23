@@ -48,11 +48,12 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(admin);
             })
             .WithSummary("Update admin profile metrics.")
-            .WithDescription("Modifies existing administrator workspace identity details including name parameters and personal mail references.")
+            .WithDescription("Updates administrator name and email. An unchanged profile is a successful no-op. A concurrent change returns 409; an administrator removed before saving returns 404.")
             .WithName("UpdateAdminProfile")
             .Produces<AdminResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
             .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")
             .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
         }
 

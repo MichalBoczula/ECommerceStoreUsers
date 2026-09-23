@@ -46,7 +46,7 @@ namespace ECommerceStoreUsers.Application.Descriptors.Admins
         [FlowStep(order: 5, bpmnId: "MapRequestToAggregate")]
         public Admin MapRequestToAggregate(Admin admin, UpdateAdminProfileRequestDto request)
         {
-            return Admin.Rehydrate(admin.Id, admin.ExternalId, request.FullName, request.Email, admin.IsActive, admin.LastLoginAt);
+            return Admin.Rehydrate(admin.Id, admin.ExternalId, request.FullName, request.Email, admin.IsActive, admin.LastLoginAt, admin.Version);
         }
 
         [FlowStep(order: 6, bpmnId: "ValidateAdminAggregate")]

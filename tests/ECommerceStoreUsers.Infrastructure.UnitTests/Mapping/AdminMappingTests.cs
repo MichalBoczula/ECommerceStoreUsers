@@ -21,6 +21,7 @@ public sealed class AdminMappingTests
         document.Email.ShouldBe(admin.Email);
         document.IsActive.ShouldBe(admin.IsActive);
         document.LastLoginAt.ShouldBe(admin.LastLoginAt);
+        document.Version.ShouldBe(admin.Version);
     }
 
     [Fact]
@@ -36,6 +37,7 @@ public sealed class AdminMappingTests
         admin.Email.ShouldBe(document.Email);
         admin.IsActive.ShouldBe(document.IsActive);
         admin.LastLoginAt.ShouldBe(document.LastLoginAt);
+        admin.Version.ShouldBe(document.Version);
     }
 
     [Fact]
@@ -54,6 +56,7 @@ public sealed class AdminMappingTests
         document.Email.ShouldBe(admin.Email);
         document.IsActive.ShouldBe(admin.IsActive);
         document.LastLoginAt.ShouldBe(admin.LastLoginAt);
+        document.Version.ShouldBe(admin.Version);
         document.ChangedAt.ShouldBeInRange(beforeMapping, afterMapping);
         document.Action.ShouldBe(ActionType.Update);
     }
@@ -64,7 +67,7 @@ public sealed class AdminMappingTests
         "Anna Nowak",
         "anna.nowak@example.com",
         false,
-        new DateTime(2026, 3, 15, 12, 0, 0, DateTimeKind.Utc));
+        new DateTime(2026, 3, 15, 12, 0, 0, DateTimeKind.Utc), version: 2);
 
     private static AdminDocument CreateAdminDocument() => new()
     {
@@ -73,6 +76,7 @@ public sealed class AdminMappingTests
         FullName = "Jan Kowalski",
         Email = "jan.kowalski@example.com",
         IsActive = true,
-        LastLoginAt = new DateTime(2026, 4, 20, 10, 30, 0, DateTimeKind.Utc)
+        LastLoginAt = new DateTime(2026, 4, 20, 10, 30, 0, DateTimeKind.Utc),
+        Version = 4
     };
 }

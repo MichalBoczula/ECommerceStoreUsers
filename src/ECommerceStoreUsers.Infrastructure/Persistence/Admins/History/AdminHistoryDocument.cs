@@ -16,6 +16,7 @@ namespace ECommerceStoreUsers.Infrastructure.Persistence.Admins.History
         public string Email { get; set; }
         public bool IsActive { get; set; }
         public DateTime LastLoginAt { get; set; }
+        public long Version { get; set; }
         public DateTime ChangedAt { get; set; }
         public ActionType Action { get; set; }
     }

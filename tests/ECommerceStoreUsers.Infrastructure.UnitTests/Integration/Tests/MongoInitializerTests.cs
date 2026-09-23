@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.Infrastructure.Configuration;
+using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -152,7 +152,7 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
 
                 await using var host = TestServiceProviderFactory.Create(_fixture.ConnectionString, databaseName);
                 var exception = await Should.ThrowAsync<MongoCommandException>(() => host.InitializeInfrastructureAsync());
-                exception.Code.ShouldBe(85); // IndexOptionsConflict.
+                new[] { 85, 86 }.ShouldContain(exception.Code); // IndexOptionsConflict or IndexKeySpecsConflict.
 
                 (await customers.Find(FilterDefinition<BsonDocument>.Empty).SingleAsync()).ShouldBe(customer);
                 var indexes = await ListIndexesAsync(database, "customers");

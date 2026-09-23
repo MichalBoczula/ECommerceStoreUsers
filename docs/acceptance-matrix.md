@@ -14,3 +14,11 @@ example exist. For a new distinct response cause, add a scenario and matrix row.
 The matrix is a navigation aid; the HTTP and database assertions are in the
 linked acceptance tests. REF-08 adds race cases as their behavior is implemented;
 the remaining concurrency and transactional cases are still tracked there.
+
+Customer updates now compare the server-side version loaded from MongoDB with
+the stored version before replacing the document. A changed version returns
+`concurrency_conflict` (409); a removed customer returns `resource_not_found`
+(404). Losing updates do not append history. The version is internal to the
+aggregate and is not a client-supplied HTTP precondition; clients can reload
+and retry a conflicting request. Existing documents without a version are
+treated as version zero and receive version one on their first successful update.

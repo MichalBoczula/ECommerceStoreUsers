@@ -48,11 +48,12 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(customer);
             })
             .WithSummary("Update individual personal data.")
-            .WithDescription("Modifies existing core individual metrics (names, contact info, billing/shipping directions) for the target customer profile identifier.")
+            .WithDescription("Updates individual details. A concurrent customer change returns 409; a customer removed before saving returns 404.")
             .WithName("UpdateIndividualData")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
             .Produces<ApiProblemDetails>(StatusCodes.Status404NotFound, "application/problem+json")
+            .Produces<ApiProblemDetails>(StatusCodes.Status409Conflict, "application/problem+json")
             .Produces<ApiProblemDetails>(StatusCodes.Status500InternalServerError, "application/problem+json");
 
             group.MapPost("/{customerId:guid}/companies", async (
@@ -66,7 +67,7 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(customer);
             })
             .WithSummary("Add company metadata.")
-            .WithDescription("Appends a newly structured commercial corporate tax record entity into the internal collection profile context.")
+            .WithDescription("Adds company data. Duplicate tax IDs and concurrent customer changes return 409; a customer removed before saving returns 404.")
             .WithName("AddCompany")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
@@ -86,7 +87,7 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(customer);
             })
             .WithSummary("Update specific corporate company elements.")
-            .WithDescription("Modifies naming, tax id registration credentials, and billing/shipping information records assigned onto a specific tracking sub-company context component block.")
+            .WithDescription("Updates company data. Duplicate tax IDs and concurrent customer changes return 409; a customer removed before saving returns 404.")
             .WithName("UpdateCompany")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")

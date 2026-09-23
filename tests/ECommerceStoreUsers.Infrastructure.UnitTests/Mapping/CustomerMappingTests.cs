@@ -20,6 +20,7 @@ public sealed class CustomerMappingTests
         Assert.Equal(customer.Id, document.Id);
         Assert.Equal(customer.ExternalId, document.ExternalId);
         Assert.Equal(customer.UpdatedAt, document.UpdatedAt);
+        Assert.Equal(customer.Version, document.Version);
         Assert.Equal(customer.Individual.FirstName, document.Individual.FirstName);
         Assert.Equal(customer.Individual.ShippingAddress.PostalCode, document.Individual.ShippingAddress.PostalCode);
         Assert.Single(document.Companies);
@@ -37,6 +38,8 @@ public sealed class CustomerMappingTests
 
         Assert.Equal(document.Id, domain.Id);
         Assert.Equal(document.ExternalId, domain.ExternalId);
+        Assert.Equal(document.UpdatedAt, domain.UpdatedAt);
+        Assert.Equal(document.Version, domain.Version);
         Assert.Equal(document.Individual.Email, domain.Individual.Email);
         Assert.Equal(document.Individual.BillingAddress.Street, domain.Individual.BillingAddress.Street);
         Assert.Single(domain.Companies);

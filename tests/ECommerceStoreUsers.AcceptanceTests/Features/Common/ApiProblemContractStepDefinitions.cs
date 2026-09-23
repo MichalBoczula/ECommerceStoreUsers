@@ -1,6 +1,8 @@
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using Reqnroll;
 using Shouldly;
 
@@ -26,6 +28,12 @@ public sealed class ApiProblemContractStepDefinitions(ScenarioApiContext apiCont
                 "/customers", new StringContent("{}", Encoding.UTF8, "text/plain"))),
             "json" => ("/customers", await client.PostAsync(
                 "/customers", new StringContent("{INTERNAL_FAILURE_MARKER", Encoding.UTF8, "application/json"))),
+            "type" => ("/favorites/clients/11111111-1111-1111-1111-111111111111", await client.PostAsync(
+                "/favorites/clients/11111111-1111-1111-1111-111111111111",
+                new StringContent("{\"productId\":\"not-a-guid\"}", Encoding.UTF8, "application/json"))),
+            "null" => ("/favorites/clients/11111111-1111-1111-1111-111111111111", await client.PostAsync(
+                "/favorites/clients/11111111-1111-1111-1111-111111111111",
+                new StringContent("{\"productId\":null}", Encoding.UTF8, "application/json"))),
             "missing" => ("/favorites/clients/11111111-1111-1111-1111-111111111111", await client.PostAsync(
                 "/favorites/clients/11111111-1111-1111-1111-111111111111",
                 new StringContent("{}", Encoding.UTF8, "application/json"))),
@@ -64,5 +72,14 @@ public sealed class ApiProblemContractStepDefinitions(ScenarioApiContext apiCont
         }
         body.ShouldNotContain("INTERNAL_FAILURE_MARKER");
         body.ShouldNotContain("stackTrace");
+        if (_errorCase is "json" or "type" or "null" or "missing" or "body")
+        {
+            var database = AcceptanceMongoDb.GetDatabase(apiContext.DatabaseName);
+            foreach (var name in new[] { "customers", "customers-history", "favorites" })
+            {
+                (await database.GetCollection<BsonDocument>(name)
+                    .CountDocumentsAsync(FilterDefinition<BsonDocument>.Empty)).ShouldBe(0);
+            }
+        }
     }
 }

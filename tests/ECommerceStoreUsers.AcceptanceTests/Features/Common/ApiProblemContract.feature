@@ -11,5 +11,7 @@ Feature: Public API error contract
       | method  | 405    | method_not_allowed     |
       | media   | 415    | unsupported_media_type |
       | json    | 400    | invalid_json           |
+      | type    | 400    | invalid_json           |
+      | null    | 400    | invalid_json           |
       | missing | 400    | invalid_json           |
       | body    | 400    | invalid_request        |

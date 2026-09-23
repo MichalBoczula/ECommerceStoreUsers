@@ -52,7 +52,7 @@ internal sealed class CustomerRepository : ICustomerRepository
         }
         catch
         {
-            await session.AbortTransactionAsync(cancellationToken);
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
             throw;
         }
     }
@@ -80,7 +80,7 @@ internal sealed class CustomerRepository : ICustomerRepository
         }
         catch
         {
-            await session.AbortTransactionAsync(cancellationToken);
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
             throw;
         }
     }

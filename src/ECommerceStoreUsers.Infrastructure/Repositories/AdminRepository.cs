@@ -58,7 +58,7 @@ internal sealed class AdminRepository : IAdminRepository
         }
         catch
         {
-            await session.AbortTransactionAsync(cancellationToken);
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
             throw;
         }
     }
@@ -86,7 +86,7 @@ internal sealed class AdminRepository : IAdminRepository
         }
         catch
         {
-            await session.AbortTransactionAsync(cancellationToken);
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
             throw;
         }
     }

@@ -4,6 +4,7 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 python3 scripts/check-acceptance-matrix.py
+python3 scripts/check-description-links.py
 results_dir="$PWD/artifacts/verification"
 mkdir -p "$results_dir"
 

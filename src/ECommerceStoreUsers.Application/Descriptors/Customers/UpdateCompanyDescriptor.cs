@@ -30,33 +30,33 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
             }
         }
 
-        [FlowStep(order: 3, bpmnId: "LoadCustomerProfile")]
-        public async Task<Customer?> LoadCustomer(Guid customerId, ICustomerRepository customerRepository, CancellationToken cancellationToken)
-        {
-            return await customerRepository.GetByIdAsync(customerId, cancellationToken);
-        }
-
-        [FlowStep(order: 4, bpmnId: "VerifyCustomerExists")]
-        public void ThrowNotFoundExceptionIfCustomerMissing(Guid customerId, Customer? customer)
-        {
-            if (customer is null)
-            {
-                throw new ResourceNotFoundException(nameof(UpdateCompany), customerId.ToString(), nameof(Customer));
-            }
-        }
-
-        [FlowStep(order: 5, bpmnId: "ValidateCompanyId")]
+        [FlowStep(order: 3, bpmnId: "ValidateCompanyId")]
         public async Task<ValidationResult> ValidateCompanyId(Guid companyId, IValidationPolicy<Guid> emptyGuidValidationPolicy)
         {
             return await emptyGuidValidationPolicy.Validate(companyId);
         }
 
-        [FlowStep(order: 6, bpmnId: "IsCompanyIdValid")]
+        [FlowStep(order: 4, bpmnId: "IsCompanyIdValid")]
         public void ThrowValidationExceptionIfCompanyIdInvalid(ValidationResult validationResult)
         {
             if (!validationResult.IsValid)
             {
                 throw new ValidationException(validationResult);
+            }
+        }
+
+        [FlowStep(order: 5, bpmnId: "LoadCustomerProfile")]
+        public async Task<Customer?> LoadCustomer(Guid customerId, ICustomerRepository customerRepository, CancellationToken cancellationToken)
+        {
+            return await customerRepository.GetByIdAsync(customerId, cancellationToken);
+        }
+
+        [FlowStep(order: 6, bpmnId: "VerifyCustomerExists")]
+        public void ThrowNotFoundExceptionIfCustomerMissing(Guid customerId, Customer? customer)
+        {
+            if (customer is null)
+            {
+                throw new ResourceNotFoundException(nameof(UpdateCompany), customerId.ToString(), nameof(Customer));
             }
         }
 

@@ -3,9 +3,11 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites.Repositories;
 using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Health;
 using ECommerceStoreUsers.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace ECommerceStoreUsers.Infrastructure
 {
@@ -49,6 +51,12 @@ namespace ECommerceStoreUsers.Infrastructure
 
             services.AddSingleton<MongoDbContext>();
             services.AddScoped<MongoInitializer>();
+
+            services.AddHealthChecks().AddCheck<MongoReadinessHealthCheck>(
+                "mongo-replica-set",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: ["ready"],
+                timeout: TimeSpan.FromSeconds(5));
 
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IAdminRepository, AdminRepository>();

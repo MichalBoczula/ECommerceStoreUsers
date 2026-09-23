@@ -5,6 +5,8 @@ using ECommerceStoreUsers.Application;
 using ECommerceStoreUsers.Domain;
 using ECommerceStoreUsers.Infrastructure;
 using ECommerceStoreUsers.Infrastructure.Configuration;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace ECommerceStoreUsers.API
 {
@@ -20,7 +22,8 @@ namespace ECommerceStoreUsers.API
                 c.SupportNonNullableReferenceTypes();
             });
 
-            builder.Services.AddHealthChecks();
+            builder.Services.AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy(), tags: ["live"]);
             builder.Services.Configure<RouteHandlerOptions>(options =>
             {
                 options.ThrowOnBadRequest = true;
@@ -49,7 +52,16 @@ namespace ECommerceStoreUsers.API
             app.MapCustomersEndpoints();
             app.MapAdminsEndpoints();
             app.MapFavoritesEndpoints();
-            app.MapHealthChecks("/health");
+            var liveOptions = new HealthCheckOptions
+            {
+                Predicate = registration => registration.Tags.Contains("live")
+            };
+            app.MapHealthChecks("/health", liveOptions);
+            app.MapHealthChecks("/health/live", liveOptions);
+            app.MapHealthChecks("/health/ready", new HealthCheckOptions
+            {
+                Predicate = registration => registration.Tags.Contains("ready")
+            });
 
             app.Run();
         }

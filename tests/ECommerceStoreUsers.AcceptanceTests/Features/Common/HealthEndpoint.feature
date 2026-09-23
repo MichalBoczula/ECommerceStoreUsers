@@ -5,3 +5,7 @@ Feature: Health endpoint
   Scenario: Health endpoint returns success
     When I request the service health endpoint
     Then the health response status is 200
+
+  Scenario: Replica set is ready for transactional writes
+    When I request the ready health endpoint
+    Then the health response status is 200

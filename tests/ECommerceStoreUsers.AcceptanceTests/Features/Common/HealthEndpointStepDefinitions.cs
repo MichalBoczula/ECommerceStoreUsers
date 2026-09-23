@@ -20,6 +20,12 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
             _apiContext.Response = await _apiContext.HttpClient.GetAsync("/health");
         }
 
+        [When("I request the ready health endpoint")]
+        public async Task WhenIRequestTheReadyHealthEndpoint()
+        {
+            _apiContext.Response = await _apiContext.HttpClient.GetAsync("/health/ready");
+        }
+
         [Then("the health response status is 200")]
         public void ThenTheHealthResponseStatusIs200()
         {

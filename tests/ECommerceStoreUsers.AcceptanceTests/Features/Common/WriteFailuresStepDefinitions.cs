@@ -111,8 +111,10 @@ public sealed class WriteFailuresStepDefinitions(ScenarioApiContext context) : I
             "AddCompany" => await _client.PostAsJsonAsync(_path, CompanyRequest(), context.JsonOptions),
             "UpdateCompany" => await _client.PutAsJsonAsync(_path, new UpdateCompanyRequestDto
             {
-                TaxId = "9876543210", CompanyName = "Updated Company",
-                BillingAddress = AddressRequest(), ShippingAddress = AddressRequest()
+                TaxId = "9876543210",
+                CompanyName = "Updated Company",
+                BillingAddress = AddressRequest(),
+                ShippingAddress = AddressRequest()
             }, context.JsonOptions),
             "CreateAdmin" => await _client.PostAsJsonAsync(_path, AdminRequest(), context.JsonOptions),
             "UpdateAdminProfile" => await _client.PutAsJsonAsync(_path,
@@ -162,25 +164,36 @@ public sealed class WriteFailuresStepDefinitions(ScenarioApiContext context) : I
 
     private static IndividualDataRequestDto IndividualRequest(string firstName) => new()
     {
-        FirstName = firstName, LastName = "Acceptance", Email = "ref07@example.com", Phone = "123456789",
-        BillingAddress = AddressRequest(), ShippingAddress = AddressRequest()
+        FirstName = firstName,
+        LastName = "Acceptance",
+        Email = "ref07@example.com",
+        Phone = "123456789",
+        BillingAddress = AddressRequest(),
+        ShippingAddress = AddressRequest()
     };
 
     private static AddressRequestDto AddressRequest() => new()
     {
-        PostalCode = "00-001", City = "Warsaw", Street = "Main Street",
-        BuildingNumber = "10", ApartmentNumber = "1"
+        PostalCode = "00-001",
+        City = "Warsaw",
+        Street = "Main Street",
+        BuildingNumber = "10",
+        ApartmentNumber = "1"
     };
 
     private static AddCompanyRequestDto CompanyRequest() => new()
     {
-        TaxId = "1234567890", CompanyName = "Acceptance Company",
-        BillingAddress = AddressRequest(), ShippingAddress = AddressRequest()
+        TaxId = "1234567890",
+        CompanyName = "Acceptance Company",
+        BillingAddress = AddressRequest(),
+        ShippingAddress = AddressRequest()
     };
 
     private CreateAdminRequestDto AdminRequest() => new()
     {
-        ExternalId = _externalId, FullName = "Acceptance Admin", Email = "ref07@example.com"
+        ExternalId = _externalId,
+        FullName = "Acceptance Admin",
+        Email = "ref07@example.com"
     };
 
     public void Dispose()

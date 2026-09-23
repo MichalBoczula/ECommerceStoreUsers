@@ -11,9 +11,10 @@ Health responses use ASP.NET Core's built-in plain-text format, including the
 Readiness has a five-second timeout; it returns to `200` when MongoDB recovers.
 The probe does not write data, open a business transaction, or rebuild indexes.
 
-An instance still initializes indexes before it begins serving requests. A new
-instance cannot start while MongoDB is unavailable; startup retry and index
-evolution belong to later REF-09 tasks. Use `/health/ready` for traffic routing
+An instance still initializes indexes before it begins serving requests. Startup
+retries only a read-only MongoDB connection probe; index creation runs once and
+the host stops if it fails. See [local startup](local-startup.md) for limits and
+recovery. Use `/health/ready` for traffic routing
 and `/health/live` for process liveness. Existing `/health` consumers retain
 their former process-only status; switch routing probes to `/health/ready` when
 database availability must determine whether traffic is sent to the instance.

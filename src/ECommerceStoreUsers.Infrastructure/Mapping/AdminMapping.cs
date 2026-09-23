@@ -16,7 +16,8 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
                 FullName = admin.FullName,
                 Email = admin.Email,
                 IsActive = admin.IsActive,
-                LastLoginAt = admin.LastLoginAt
+                LastLoginAt = admin.LastLoginAt,
+                Version = admin.Version
             };
         }
 
@@ -28,11 +29,12 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
                 adminDocument.FullName,
                 adminDocument.Email,
                 adminDocument.IsActive,
-                adminDocument.LastLoginAt
+                adminDocument.LastLoginAt,
+                adminDocument.Version
             );
         }
 
-        internal static AdminHistoryDocument MapToHistoryDocument(Admin admin, ActionType action)
+        internal static AdminHistoryDocument MapToHistoryDocument(Admin admin, ActionType action, long? version = null)
         {
             return new AdminHistoryDocument
             {
@@ -43,6 +45,7 @@ namespace ECommerceStoreUsers.Infrastructure.Mapping
                 Email = admin.Email,
                 IsActive = admin.IsActive,
                 LastLoginAt = admin.LastLoginAt,
+                Version = version ?? admin.Version,
                 ChangedAt = DateTime.UtcNow,
                 Action = action
             };

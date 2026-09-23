@@ -22,3 +22,11 @@ the stored version before replacing the document. A changed version returns
 aggregate and is not a client-supplied HTTP precondition; clients can reload
 and retry a conflicting request. Existing documents without a version are
 treated as version zero and receive version one on their first successful update.
+
+Admin profile updates follow the same internal version check. A stale update
+returns `concurrency_conflict` (409), and a removed administrator returns
+`resource_not_found` (404). Repeating an unchanged profile PUT returns 200
+without incrementing the version or adding history. This does not turn the
+HTTP DTO into a client-supplied precondition: a later sequential request
+based on stale client state remains a separate contract decision. Existing
+Admin documents without `Version` are treated as version zero on first write.

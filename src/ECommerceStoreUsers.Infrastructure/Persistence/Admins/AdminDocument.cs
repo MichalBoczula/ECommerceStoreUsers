@@ -19,5 +19,6 @@ namespace ECommerceStoreUsers.Infrastructure.Persistence.Admins
         public required bool IsActive { get; init; }
 
         public required DateTime LastLoginAt { get; init; }
+        public long Version { get; init; }
     }
 }

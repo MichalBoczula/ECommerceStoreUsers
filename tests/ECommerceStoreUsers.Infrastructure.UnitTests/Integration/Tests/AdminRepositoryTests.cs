@@ -1,7 +1,9 @@
 ﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
 using ECommerceStoreUsers.Domain.Common.Enums;
+using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Persistence.Admins;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
@@ -258,6 +260,126 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             var updatedRecord = historyRecords[1];
             updatedRecord.Action.ShouldBe(ActionType.Update);
             updatedRecord.IsActive.ShouldBeFalse();
+            updatedRecord.Version.ShouldBe(1);
+        }
+
+        [Fact]
+        public async Task UpdateAdmin_WithStaleVersion_ShouldPreserveFirstWriteAndHistory()
+        {
+            await using var services = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"admin-tests-{Guid.NewGuid():N}");
+            var repository = services.GetRequiredService<IAdminRepository>();
+            var context = services.GetRequiredService<MongoDbContext>();
+            var original = CreateTestAdmin();
+            await repository.CreateAdmin(original, CancellationToken.None);
+            var first = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            var second = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            first.ShouldNotBeNull();
+            second.ShouldNotBeNull();
+            first.Deactivate();
+            second.RecordLogin();
+
+            await repository.UpdateAdmin(first, CancellationToken.None);
+            await Should.ThrowAsync<ConcurrencyConflictException>(() =>
+                repository.UpdateAdmin(second, CancellationToken.None));
+
+            first.Version.ShouldBe(1);
+            second.Version.ShouldBe(0);
+            var saved = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            saved.ShouldNotBeNull();
+            saved.IsActive.ShouldBeFalse();
+            saved.Version.ShouldBe(1);
+            (await context.AdminsHistory.CountDocumentsAsync(x => x.AdminId == original.Id)).ShouldBe(2);
+        }
+
+        [Fact]
+        public async Task ConcurrentAdminUpdates_ShouldCommitOnlyOneVersionAndHistoryEvent()
+        {
+            await using var services = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"admin-tests-{Guid.NewGuid():N}");
+            var repository = services.GetRequiredService<IAdminRepository>();
+            var context = services.GetRequiredService<MongoDbContext>();
+            var original = CreateTestAdmin();
+            await repository.CreateAdmin(original, CancellationToken.None);
+            var first = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            var second = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            first.ShouldNotBeNull();
+            second.ShouldNotBeNull();
+            first.Deactivate();
+            second.RecordLogin();
+
+            async Task<Exception?> Attempt(Admin admin)
+            {
+                try { await repository.UpdateAdmin(admin, CancellationToken.None); return null; }
+                catch (Exception exception) { return exception; }
+            }
+
+            var outcomes = await Task.WhenAll(Attempt(first), Attempt(second));
+            outcomes.Count(x => x is null).ShouldBe(1);
+            outcomes.Count(x => x is ConcurrencyConflictException).ShouldBe(1);
+            (await repository.GetByIdAsync(original.Id, CancellationToken.None))!.Version.ShouldBe(1);
+            (await context.AdminsHistory.CountDocumentsAsync(x => x.AdminId == original.Id)).ShouldBe(2);
+        }
+
+        [Fact]
+        public async Task UpdateAdmin_WhenDeletedAfterRead_ShouldReturnNotFoundWithoutHistory()
+        {
+            await using var services = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"admin-tests-{Guid.NewGuid():N}");
+            var repository = services.GetRequiredService<IAdminRepository>();
+            var context = services.GetRequiredService<MongoDbContext>();
+            var original = CreateTestAdmin();
+            await repository.CreateAdmin(original, CancellationToken.None);
+            var loaded = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            loaded.ShouldNotBeNull();
+            loaded.Deactivate();
+            await context.Admins.DeleteOneAsync(x => x.Id == original.Id);
+
+            await Should.ThrowAsync<ResourceNotFoundException>(() =>
+                repository.UpdateAdmin(loaded, CancellationToken.None));
+            (await context.AdminsHistory.CountDocumentsAsync(x => x.AdminId == original.Id)).ShouldBe(1);
+        }
+
+        [Fact]
+        public async Task UpdateAdmin_UnchangedProfile_ShouldNotAdvanceVersionOrHistory()
+        {
+            await using var services = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"admin-tests-{Guid.NewGuid():N}");
+            var repository = services.GetRequiredService<IAdminRepository>();
+            var context = services.GetRequiredService<MongoDbContext>();
+            var original = CreateTestAdmin();
+            await repository.CreateAdmin(original, CancellationToken.None);
+            var loaded = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            loaded.ShouldNotBeNull();
+
+            await repository.UpdateAdmin(loaded, CancellationToken.None);
+            await repository.UpdateAdmin(loaded, CancellationToken.None);
+
+            loaded.Version.ShouldBe(0);
+            (await repository.GetByIdAsync(original.Id, CancellationToken.None))!.Version.ShouldBe(0);
+            (await context.AdminsHistory.CountDocumentsAsync(x => x.AdminId == original.Id)).ShouldBe(1);
+        }
+
+        [Fact]
+        public async Task UpdateAdmin_LegacyDocumentWithoutVersion_ShouldUpgradeOnWrite()
+        {
+            await using var services = TestServiceProviderFactory.Create(
+                _fixture.ConnectionString, $"admin-tests-{Guid.NewGuid():N}");
+            var repository = services.GetRequiredService<IAdminRepository>();
+            var context = services.GetRequiredService<MongoDbContext>();
+            var original = CreateTestAdmin();
+            await repository.CreateAdmin(original, CancellationToken.None);
+            await context.Admins.UpdateOneAsync(x => x.Id == original.Id,
+                Builders<AdminDocument>.Update.Unset(x => x.Version));
+            var loaded = await repository.GetByIdAsync(original.Id, CancellationToken.None);
+            loaded.ShouldNotBeNull();
+            loaded.Version.ShouldBe(0);
+            loaded.Deactivate();
+
+            await repository.UpdateAdmin(loaded, CancellationToken.None);
+
+            (await repository.GetByIdAsync(original.Id, CancellationToken.None))!.Version.ShouldBe(1);
+            (await context.AdminsHistory.CountDocumentsAsync(x => x.AdminId == original.Id)).ShouldBe(2);
         }
 
         private static Admin CreateTestAdmin() =>

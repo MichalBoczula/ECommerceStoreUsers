@@ -8,6 +8,7 @@
         public string Email { get; init; }
         public bool IsActive { get; private set; }
         public DateTime LastLoginAt { get; private set; }
+        public long Version { get; private set; }
 
         public Admin(string externalId, string fullName, string email)
         {
@@ -25,7 +26,8 @@
             string fullName,
             string email,
             bool isActive,
-            DateTime lastLoginAt)
+            DateTime lastLoginAt,
+            long version)
         {
             Id = id;
             ExternalId = externalId;
@@ -33,6 +35,7 @@
             Email = email;
             IsActive = isActive;
             LastLoginAt = lastLoginAt;
+            Version = version;
         }
 
         public void RecordLogin()
@@ -55,13 +58,16 @@
             IsActive = true;
         }
 
+        public void MarkPersisted() => Version++;
+
         public static Admin Rehydrate(
             Guid id,
             string externalId,
             string fullName,
             string email,
             bool isActive,
-            DateTime lastLoginAt)
+            DateTime lastLoginAt,
+            long version = 0)
         {
             return new Admin(
                 id,
@@ -69,7 +75,8 @@
                 fullName,
                 email,
                 isActive,
-                lastLoginAt);
+                lastLoginAt,
+                version);
         }
     }
 }

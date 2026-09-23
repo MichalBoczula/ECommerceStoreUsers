@@ -141,14 +141,14 @@ public sealed class AdminProfileServiceTests
 
         adminRepositoryMock
             .Setup(repo => repo.GetByIdAsync(adminId, cancellationToken))
-            .ReturnsAsync(Admin.Rehydrate(adminId, existingAdmin.ExternalId, existingAdmin.FullName, existingAdmin.Email, existingAdmin.IsActive, existingAdmin.LastLoginAt));
+            .ReturnsAsync(Admin.Rehydrate(adminId, existingAdmin.ExternalId, existingAdmin.FullName, existingAdmin.Email, existingAdmin.IsActive, existingAdmin.LastLoginAt, version: 3));
 
         adminValidationPolicyMock
             .Setup(policy => policy.Validate(It.Is<Admin>(a => a.Id == adminId && a.FullName == request.FullName && a.Email == request.Email)))
             .ReturnsAsync(validationResult);
 
         adminRepositoryMock
-            .Setup(repo => repo.UpdateAdmin(It.Is<Admin>(a => a.Id == adminId && a.FullName == request.FullName && a.Email == request.Email), cancellationToken))
+            .Setup(repo => repo.UpdateAdmin(It.Is<Admin>(a => a.Id == adminId && a.FullName == request.FullName && a.Email == request.Email && a.Version == 3), cancellationToken))
             .ReturnsAsync((Admin admin, CancellationToken _) => admin);
 
         var sut = new AdminProfileService(

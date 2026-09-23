@@ -4,6 +4,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
 {
     public sealed class ScenarioApiContext
     {
+        public string DatabaseName { get; set; } = string.Empty;
         public ApplicationFactory Factory { get; set; } = default!;
         public HttpClient HttpClient { get; set; } = default!;
         public HttpResponseMessage? Response { get; set; }

@@ -222,31 +222,49 @@ jobs:
             Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
           }
 
-      - name: Check domain line coverage
-        if: always()
-        shell: pwsh
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.7
+
+      - name: Create Domain coverage report
+        run: >
+          reportgenerator
+          -reports:"./TestResults/Domain/**/coverage.cobertura.xml"
+          -targetdir:"./TestResults/CoverageReport/Domain"
+          -reporttypes:"Html;TextSummary"
+          -assemblyfilters:"+ECommerceStoreUsers.Domain"
+
+      - name: Enforce Domain line coverage threshold
+        shell: bash
         run: |
-          $coverageFile = Get-ChildItem ./TestResults/Domain -Filter coverage.cobertura.xml -Recurse | Select-Object -First 1
-
-          if (-not $coverageFile) {
-            throw "Domain coverage report not found."
+          summary="./TestResults/CoverageReport/Domain/Summary.txt"
+          coverage="$(sed -n 's/^[[:space:]]*Line coverage:[[:space:]]*\([0-9.]*\)%.*/\1/p' "$summary" | head -n 1)"
+          if ! [[ "$coverage" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+            echo "Unable to read Domain line coverage from $summary." >&2
+            exit 1
+          fi
+          echo "Domain line coverage: $coverage% (required: 70%)"
+          awk -v coverage="$coverage" 'BEGIN { exit !(coverage + 0 >= 70) }' || {
+            echo "Domain line coverage $coverage% is below the required 70%." >&2
+            exit 1
           }
 
-          [xml]$coverage = Get-Content $coverageFile.FullName
-          $lineRate = [double]::Parse(
-            $coverage.coverage.'line-rate',
-            [System.Globalization.CultureInfo]::InvariantCulture)
-          $lineCoverage = [math]::Round($lineRate * 100, 2)
+      - name: Publish Domain coverage summary
+        if: always()
+        run: |
+          echo "## Domain coverage" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f ./TestResults/CoverageReport/Domain/Summary.txt ]]; then
+            cat ./TestResults/CoverageReport/Domain/Summary.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Domain coverage report unavailable." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
-          Add-Content $env:GITHUB_STEP_SUMMARY "## Domain coverage"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Metric | Result | Required |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|--------|--------|----------|"
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Line coverage | $lineCoverage% | 70% |"
-
-          if ($lineCoverage -lt 70) {
-            throw "Domain line coverage is $lineCoverage%; required minimum is 70%."
-          }
+      - name: Upload Domain coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: domain-coverage-report
+          path: ./TestResults/CoverageReport/Domain
+          if-no-files-found: warn
 
       - name: Upload domain coverage report
         if: always()
@@ -350,31 +368,49 @@ jobs:
             Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
           }
 
-      - name: Check application line coverage
-        if: always()
-        shell: pwsh
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.7
+
+      - name: Create Application coverage report
+        run: >
+          reportgenerator
+          -reports:"./TestResults/Application/**/coverage.cobertura.xml"
+          -targetdir:"./TestResults/CoverageReport/Application"
+          -reporttypes:"Html;TextSummary"
+          -assemblyfilters:"+ECommerceStoreUsers.Application"
+
+      - name: Enforce Application line coverage threshold
+        shell: bash
         run: |
-          $coverageFile = Get-ChildItem ./TestResults/Application -Filter coverage.cobertura.xml -Recurse | Select-Object -First 1
-
-          if (-not $coverageFile) {
-            throw "Application coverage report not found."
+          summary="./TestResults/CoverageReport/Application/Summary.txt"
+          coverage="$(sed -n 's/^[[:space:]]*Line coverage:[[:space:]]*\([0-9.]*\)%.*/\1/p' "$summary" | head -n 1)"
+          if ! [[ "$coverage" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+            echo "Unable to read Application line coverage from $summary." >&2
+            exit 1
+          fi
+          echo "Application line coverage: $coverage% (required: 70%)"
+          awk -v coverage="$coverage" 'BEGIN { exit !(coverage + 0 >= 70) }' || {
+            echo "Application line coverage $coverage% is below the required 70%." >&2
+            exit 1
           }
 
-          [xml]$coverage = Get-Content $coverageFile.FullName
-          $lineRate = [double]::Parse(
-            $coverage.coverage.'line-rate',
-            [System.Globalization.CultureInfo]::InvariantCulture)
-          $lineCoverage = [math]::Round($lineRate * 100, 2)
+      - name: Publish Application coverage summary
+        if: always()
+        run: |
+          echo "## Application coverage" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f ./TestResults/CoverageReport/Application/Summary.txt ]]; then
+            cat ./TestResults/CoverageReport/Application/Summary.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Application coverage report unavailable." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
-          Add-Content $env:GITHUB_STEP_SUMMARY "## Application coverage"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Metric | Result | Required |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|--------|--------|----------|"
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Line coverage | $lineCoverage% | 70% |"
-
-          if ($lineCoverage -lt 70) {
-            throw "Application line coverage is $lineCoverage%; required minimum is 70%."
-          }
+      - name: Upload Application coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-coverage-report
+          path: ./TestResults/CoverageReport/Application
+          if-no-files-found: warn
 
       - name: Upload application coverage report
         if: always()
@@ -427,6 +463,10 @@ jobs:
           --verbosity normal
           --logger "trx;LogFileName=infrastructure-integration-tests.trx"
           --results-directory ./TestResults/Infrastructure
+          --collect "XPlat Code Coverage"
+          --
+          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura"
+          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include=[ECommerceStoreUsers.Infrastructure]*"
 
       - name: Add infrastructure integration tests summary
         if: always()
@@ -474,6 +514,36 @@ jobs:
 
             Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
           }
+
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.7
+
+      - name: Create Infrastructure coverage report
+        run: |
+          reportgenerator \
+            -reports:"./TestResults/Infrastructure/**/coverage.cobertura.xml" \
+            -targetdir:"./TestResults/CoverageReport/Infrastructure" \
+            -reporttypes:"Html;TextSummary" \
+            -assemblyfilters:"+ECommerceStoreUsers.Infrastructure"
+          test -s ./TestResults/CoverageReport/Infrastructure/Summary.txt
+
+      - name: Publish Infrastructure coverage summary
+        if: always()
+        run: |
+          echo "## Infrastructure coverage (informational, no threshold)" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f ./TestResults/CoverageReport/Infrastructure/Summary.txt ]]; then
+            cat ./TestResults/CoverageReport/Infrastructure/Summary.txt >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Infrastructure coverage report unavailable." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload Infrastructure coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: infrastructure-coverage-report
+          path: ./TestResults/CoverageReport/Infrastructure
+          if-no-files-found: warn
 
       - name: Upload infrastructure test results
         if: always()

@@ -61,6 +61,9 @@ jobs:
       - name: Verify acceptance operation matrix
         run: python3 scripts/check-acceptance-matrix.py
 
+      - name: Verify generated description links
+        run: python3 scripts/check-description-links.py
+
       - name: Restore dependencies
         run: dotnet restore ECommerceStoreUsers.slnx
 

@@ -56,7 +56,7 @@ public sealed class FavoriteRacesStepDefinitions(ScenarioApiContext context) : I
         }));
 
         context.HttpClient.Dispose();
-        context.HttpClient = _factory.CreateClient();
+        context.HttpClient = _factory.CreateDefaultClient(new OpenApiResponseHandler(context.OpenApiDocument));
     }
 
     private async Task<List<FavoriteResponseDto>> LoadFavorites()

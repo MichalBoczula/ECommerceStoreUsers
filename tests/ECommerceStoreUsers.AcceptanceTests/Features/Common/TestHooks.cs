@@ -1,4 +1,5 @@
 using Reqnroll;
+using System.Text.Json;
 
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
 {
@@ -7,6 +8,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
     {
         private readonly ScenarioApiContext _apiContext;
         private ApplicationFactory? _factory;
+        private JsonDocument? _openApi;
         private string? _databaseName;
 
         public TestHooks(ScenarioApiContext apiContext)
@@ -32,7 +34,10 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
 
                 _apiContext.DatabaseName = _databaseName;
                 _apiContext.Factory = _factory;
-                _apiContext.HttpClient = _factory.CreateClient();
+                using (var swaggerClient = _factory.CreateClient())
+                    _openApi = JsonDocument.Parse(await swaggerClient.GetStringAsync("/swagger/v1/swagger.json"));
+                _apiContext.OpenApiDocument = _openApi;
+                _apiContext.HttpClient = _factory.CreateDefaultClient(new OpenApiResponseHandler(_openApi));
             }
             catch
             {
@@ -52,6 +57,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
                 {
                     _apiContext.Response?.Dispose();
                     _apiContext.HttpClient?.Dispose();
+                    _openApi?.Dispose();
+                    _openApi = null;
                 }
                 finally
                 {
@@ -66,6 +73,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
                 _factory = null;
                 _apiContext.Response = null;
                 _apiContext.HttpClient = default!;
+                _apiContext.OpenApiDocument = default!;
                 _apiContext.Factory = default!;
                 _apiContext.DatabaseName = string.Empty;
                 if (_databaseName is not null)

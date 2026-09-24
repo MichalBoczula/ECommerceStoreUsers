@@ -66,6 +66,11 @@ jobs:
       - name: Verify acceptance operation matrix
         run: python3 scripts/check-acceptance-matrix.py
 
+      - name: Verify architecture boundaries
+        run: |
+          python3 scripts/test-architecture.py
+          python3 scripts/check-architecture.py
+
       - name: Verify generated description links
         run: python3 scripts/check-description-links.py
 

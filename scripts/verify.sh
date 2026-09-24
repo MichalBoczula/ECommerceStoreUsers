@@ -7,6 +7,8 @@ python3 scripts/check-acceptance-matrix.py
 python3 scripts/check-description-links.py
 results_dir="$PWD/artifacts/verification"
 mkdir -p "$results_dir"
+python3 scripts/generate-operation-links.py --output "$results_dir/operation-links.json"
+python3 scripts/test-operation-links.py
 
 dotnet restore ECommerceStoreUsers.slnx
 dotnet build ECommerceStoreUsers.slnx --configuration Release --no-restore

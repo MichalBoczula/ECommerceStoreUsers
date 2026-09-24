@@ -69,6 +69,11 @@ jobs:
       - name: Verify generated description links
         run: python3 scripts/check-description-links.py
 
+      - name: Verify operation-to-flow links
+        run: |
+          python3 scripts/generate-operation-links.py --output artifacts/verification/operation-links.json
+          python3 scripts/test-operation-links.py
+
       - name: Restore dependencies
         run: dotnet restore ECommerceStoreUsers.slnx
 

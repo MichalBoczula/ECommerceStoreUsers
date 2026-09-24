@@ -6,6 +6,17 @@ writes maintain current and history collections; favorites have a separate
 collection. The repository includes Domain, Application, Infrastructure and
 Reqnroll HTTP acceptance tests.
 
+## Architecture and current scope
+
+The API owns routes and HTTP errors, Application owns service flows, Domain
+owns aggregates and repository contracts, and Infrastructure owns MongoDB
+documents, mappings, transactions and indexes. Customer/Admin current and
+history writes use MongoDB transactions with optimistic `Version` matching;
+Favorites use individual writes and a unique client/product index. See the
+[ADR index](docs/adr/README.md) for accepted decisions and
+[`TECHNICAL_TODO.md`](TECHNICAL_TODO.md) for completed, remaining and deferred
+work. No generated client or handwritten operation catalogue is stored here.
+
 ## Requirements
 
 - Docker with Compose for the local API and MongoDB replica set.
@@ -53,6 +64,9 @@ the repository does not maintain a second handwritten endpoint catalog.
 Acceptance scenarios are related to operation IDs in
 [`docs/acceptance-matrix.md`](docs/acceptance-matrix.md). The error response
 format is described in [`docs/api-problem-contract.md`](docs/api-problem-contract.md).
+CI derives operation-to-flow-to-policy-to-scenario links from source and
+compares actual acceptance HTTP responses to generated OpenAPI for exercised
+scenarios. Flow/policy descriptors stay next to the code that executes them.
 
 | Probe | Purpose |
 | --- | --- |
@@ -72,7 +86,14 @@ generated OpenAPI, and builds the Docker image. It requires a running Docker
 daemon; generated reports remain under the ignored `artifacts/verification`
 directory. See [local verification](docs/local-verification.md) and
 [`AGENTS.md`](AGENTS.md) for focused commands. CI also runs dependency, secret
-and container image checks; it does not publish a Users image.
+and container image checks after a quality gate; it does not publish a Users
+image. Domain/Application each have a 70% line-coverage minimum;
+Infrastructure coverage is reported without a threshold. Ordinary compiler
+warnings remain visible; high/critical NuGet advisories are a separate gate.
+
+Authentication, production secret delivery, backup/restore and deployment are
+still open. Hosted Allure/API reports and RAG ingestion are later work;
+generated source descriptions do not imply a deployed documentation portal.
 
 ## Troubleshooting
 

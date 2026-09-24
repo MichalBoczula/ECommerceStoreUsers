@@ -57,7 +57,7 @@ public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context) :
                     provider.GetRequiredService<MongoDbContext>(), race));
         }));
         context.HttpClient.Dispose();
-        context.HttpClient = _factory.CreateClient();
+        context.HttpClient = _factory.CreateDefaultClient(new OpenApiResponseHandler(context.OpenApiDocument));
     }
 
     [When("the raced admin profile update is submitted")]

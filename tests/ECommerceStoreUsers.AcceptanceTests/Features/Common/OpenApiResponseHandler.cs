@@ -18,12 +18,28 @@ internal sealed class OpenApiResponseHandler(JsonDocument document) : Delegating
             .OrderByDescending(item => item.Name.Split('/').Count(part => !part.StartsWith('{')))
             .FirstOrDefault(item => item.Value.TryGetProperty(request.Method.Method.ToLowerInvariant(), out _));
         if (route.Value.ValueKind == JsonValueKind.Undefined)
+        {
+            // No named operation exists for routing 404 and method 405.
+            if ((int)response.StatusCode is 404 or 405)
+            {
+                await ValidateFrameworkProblem(response, cancellationToken);
+                return response;
+            }
             throw new InvalidOperationException($"HTTP operation absent from OpenAPI: {request.Method} {path}");
+        }
 
         var operation = route.Value.GetProperty(request.Method.Method.ToLowerInvariant());
         var status = ((int)response.StatusCode).ToString(System.Globalization.CultureInfo.InvariantCulture);
         if (!operation.GetProperty("responses").TryGetProperty(status, out var declared))
+        {
+            // Unsupported request media is rejected before the endpoint executes.
+            if ((int)response.StatusCode == 415)
+            {
+                await ValidateFrameworkProblem(response, cancellationToken);
+                return response;
+            }
             throw new InvalidOperationException($"Undeclared runtime status: {operation.GetProperty("operationId").GetString()} {status}");
+        }
 
         var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
         if ((int)response.StatusCode == 204)
@@ -46,6 +62,19 @@ internal sealed class OpenApiResponseHandler(JsonDocument document) : Delegating
         using var body = JsonDocument.Parse(bytes);
         Validate(schema, body.RootElement, document.RootElement.GetProperty("components").GetProperty("schemas"), path, 0);
         return response;
+    }
+
+    private static async Task ValidateFrameworkProblem(HttpResponseMessage response, CancellationToken cancellationToken)
+    {
+        if (response.Content.Headers.ContentType?.MediaType != "application/problem+json")
+            throw new InvalidOperationException($"Framework error has unexpected media type: {(int)response.StatusCode}");
+        using var body = JsonDocument.Parse(await response.Content.ReadAsByteArrayAsync(cancellationToken));
+        var problem = body.RootElement;
+        if (!problem.TryGetProperty("status", out var status) || status.GetInt32() != (int)response.StatusCode ||
+            !problem.TryGetProperty("code", out var code) || string.IsNullOrWhiteSpace(code.GetString()) ||
+            !problem.TryGetProperty("title", out var title) || string.IsNullOrWhiteSpace(title.GetString()) ||
+            !problem.TryGetProperty("type", out var type) || string.IsNullOrWhiteSpace(type.GetString()))
+            throw new InvalidOperationException($"Framework problem body is incomplete: {(int)response.StatusCode}");
     }
 
     private static bool Matches(string template, string path)

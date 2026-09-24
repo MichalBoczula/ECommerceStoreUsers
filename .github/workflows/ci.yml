@@ -73,6 +73,7 @@ jobs:
         run: |
           python3 scripts/generate-operation-links.py --output artifacts/verification/operation-links.json
           python3 scripts/test-operation-links.py
+          python3 scripts/test-openapi-contract.py
 
       - name: Restore dependencies
         run: dotnet restore ECommerceStoreUsers.slnx

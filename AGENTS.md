@@ -18,7 +18,7 @@ Read this file and [the definition of done](docs/definition-of-done.md) before e
 
 ## Local verification
 
-From the repository root, with SDK 10.0.100, Docker and Bash available, run the full local check:
+From the repository root, with SDK 10.0.100 or a newer .NET 10 feature band (selected by `global.json`), Docker and Bash available, run the full local check:
 
 ```bash
 bash scripts/verify.sh

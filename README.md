@@ -125,8 +125,8 @@ TECHNICAL_TODO.md
 ## Prerequisites
 
 - Docker with Compose for the local API and MongoDB replica set.
-- Bash, Python 3, Node.js 22 and .NET SDK `10.0.100` (pinned in
-  [`global.json`](global.json)) for the full
+- Bash, Python 3, Node.js 22 and .NET SDK `10.0.100` or a newer .NET 10
+  feature band (selected by [`global.json`](global.json)) for the full
   [`scripts/verify.sh`](scripts/verify.sh) check.
 - For Windows Compose, `APPDATA` must point to the usual Windows profile folder
   because [`docker-compose.yml`](docker-compose.yml) mounts UserSecrets and HTTPS

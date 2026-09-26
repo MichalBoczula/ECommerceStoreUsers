@@ -24,6 +24,11 @@ From the repository root, with SDK 10.0.100 or a newer .NET 10 feature band (sel
 bash scripts/verify.sh
 ```
 
+For a focused CI-equivalent check, run `bash scripts/ci.sh source` (or
+`build`, `format`, `contract`) and `bash scripts/ci.sh test <suite>`. The workflow
+calls these entry points.
+
+
 For focused work, use the individual commands below (they do not include all coverage checks):
 
 ```bash
@@ -41,3 +46,4 @@ CI additionally scans secrets, dependency changes on PRs and the image. `.github
 ## Handoff
 
 Use `.github/pull_request_template.md`. Report changed behavior, linked backlog ID, commands and tests run, what could not be verified and why, and remaining data/contract risks. A shared REF item is complete only after its criteria have been met in both repositories.
+

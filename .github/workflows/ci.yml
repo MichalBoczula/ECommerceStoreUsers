@@ -30,6 +30,7 @@ jobs:
         with:
           fail-on-severity: high
 
+
   secret-scan:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -45,52 +46,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Verify acceptance operation matrix
-        run: python3 scripts/check-acceptance-matrix.py
-
-      - name: Verify architecture boundaries
-        run: |
-          python3 scripts/test-architecture.py
-          python3 scripts/check-architecture.py
-
-      - name: Verify generated description links
-        run: python3 scripts/check-description-links.py
-
-      - name: Verify operation-to-flow links
-        run: |
-          python3 scripts/generate-operation-links.py --output artifacts/verification/operation-links.json
-          python3 scripts/test-operation-links.py
-          python3 scripts/test-openapi-contract.py
-
-      - name: Restore dependencies
-        run: dotnet restore ECommerceStoreUsers.slnx
-
-      - name: Verify formatting and static analysis
-        run: dotnet format ECommerceStoreUsers.slnx --verify-no-changes --no-restore
-
-      - name: Build solution
-        run: dotnet build ECommerceStoreUsers.slnx --configuration Release --no-restore
-
-      - name: Validate generated OpenAPI document
-        run: bash scripts/validate-openapi.sh
+      - name: Verify source contracts and boundaries
+        run: bash scripts/ci.sh source
+      - name: Restore and build
+        run: bash scripts/ci.sh build
+      - name: Verify formatting
+        run: bash scripts/ci.sh format
+      - name: Validate generated OpenAPI
+        run: bash scripts/ci.sh contract
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generated-contract
+          path: |
+            artifacts/verification/openapi.json
+            artifacts/verification/operation-links.json
+          if-no-files-found: warn
 
   quality-gate:
     if: always()
@@ -136,6 +119,7 @@ jobs:
             exit 1
           fi
 
+
   build-docker-image:
     # Dependency Review is intentionally skipped on push; only the successful
     # quality gate permits image work through that skipped ancestor.
@@ -170,525 +154,93 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL,HIGH
 
+
   domain-unit-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
-
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Restore dependencies
-        run: dotnet restore ECommerceStoreUsers.slnx
-
-      - name: Run domain unit tests
-        run: >
-          dotnet test ./tests/ECommerceStoreUsers.Domain.UnitTests/ECommerceStoreUsers.Domain.UnitTests.csproj
-          --configuration Release
-          --no-restore
-          --verbosity normal
-          --logger "trx;LogFileName=domain-unit-tests.trx"
-          --results-directory ./TestResults/Domain
-          --collect "XPlat Code Coverage"
-          --
-          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura"
-          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include=[ECommerceStoreUsers.Domain]*"
-
-      - name: Add domain unit tests summary
+      - name: Verify domain suite and coverage
+        run: VERIFY_SUMMARY_FILE="$GITHUB_STEP_SUMMARY" bash scripts/ci.sh test domain
+      - uses: actions/upload-artifact@v4
         if: always()
-        shell: pwsh
-        run: |
-          $trx = Get-ChildItem ./TestResults/Domain -Filter *.trx -Recurse | Select-Object -First 1
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "## Domain unit tests"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-
-          if (-not $trx) {
-            Add-Content $env:GITHUB_STEP_SUMMARY "No TRX file found."
-            exit 0
-          }
-
-          [xml]$xml = Get-Content $trx.FullName
-          $counters = $xml.TestRun.ResultSummary.Counters
-          $failedResults = @($xml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "Failed" })
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Total | Passed | Failed | Skipped |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|-------|--------|--------|---------|"
-          Add-Content $env:GITHUB_STEP_SUMMARY "| $($counters.total) | $($counters.passed) | $($counters.failed) | $($counters.notExecuted) |"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-
-          if ($failedResults.Count -eq 0) {
-            Add-Content $env:GITHUB_STEP_SUMMARY "All domain unit tests passed."
-            exit 0
-          }
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "### Failed tests"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Test | Error |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|------|-------|"
-
-          foreach ($result in $failedResults) {
-            $testName = $result.testName
-            $errorMessage = ""
-
-            if ($result.Output -and $result.Output.ErrorInfo -and $result.Output.ErrorInfo.Message) {
-              $errorMessage = $result.Output.ErrorInfo.Message
-            }
-
-            $testName = $testName -replace '\|', '/' -replace "`r", ' ' -replace "`n", ' '
-            $errorMessage = $errorMessage -replace '\|', '/' -replace "`r", ' ' -replace "`n", ' '
-
-            Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
-          }
-
-      - name: Install ReportGenerator
-        run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.7
-
-      - name: Create Domain coverage report
-        run: >
-          reportgenerator
-          -reports:"./TestResults/Domain/**/coverage.cobertura.xml"
-          -targetdir:"./TestResults/CoverageReport/Domain"
-          -reporttypes:"Html;TextSummary"
-          -assemblyfilters:"+ECommerceStoreUsers.Domain"
-
-      - name: Enforce Domain line coverage threshold
-        shell: bash
-        run: |
-          summary="./TestResults/CoverageReport/Domain/Summary.txt"
-          coverage="$(sed -n 's/^[[:space:]]*Line coverage:[[:space:]]*\([0-9.]*\)%.*/\1/p' "$summary" | head -n 1)"
-          if ! [[ "$coverage" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
-            echo "Unable to read Domain line coverage from $summary." >&2
-            exit 1
-          fi
-          echo "Domain line coverage: $coverage% (required: 70%)"
-          awk -v coverage="$coverage" 'BEGIN { exit !(coverage + 0 >= 70) }' || {
-            echo "Domain line coverage $coverage% is below the required 70%." >&2
-            exit 1
-          }
-
-      - name: Publish Domain coverage summary
+        with:
+          name: domain-test-results
+          path: artifacts/verification/domain/
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
         if: always()
-        run: |
-          echo "## Domain coverage" >> "$GITHUB_STEP_SUMMARY"
-          if [[ -f ./TestResults/CoverageReport/Domain/Summary.txt ]]; then
-            cat ./TestResults/CoverageReport/Domain/Summary.txt >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "Domain coverage report unavailable." >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Upload Domain coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
         with:
           name: domain-coverage-report
-          path: ./TestResults/CoverageReport/Domain
+          path: artifacts/verification/domain-coverage/
           if-no-files-found: warn
-
-      - name: Upload domain coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: domain-coverage
-          path: ./TestResults/Domain/
-          if-no-files-found: warn
-
-      - name: Fail job if domain unit tests failed
-        if: always()
-        shell: pwsh
-        run: |
-          $trx = Get-ChildItem ./TestResults/Domain -Filter *.trx -Recurse | Select-Object -First 1
-
-          if (-not $trx) {
-            throw "Domain unit tests TRX file not found."
-          }
-
-          [xml]$xml = Get-Content $trx.FullName
-          $failed = [int]$xml.TestRun.ResultSummary.Counters.failed
-
-          if ($failed -gt 0) {
-            throw "$failed domain unit test(s) failed."
-          }
 
   application-unit-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
-
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Restore dependencies
-        run: dotnet restore ECommerceStoreUsers.slnx
-
-      - name: Run application unit tests
-        run: >
-          dotnet test ./tests/ECommerceStoreUsers.Application.UnitTests/ECommerceStoreUsers.Application.UnitTests.csproj
-          --configuration Release
-          --no-restore
-          --verbosity normal
-          --logger "trx;LogFileName=application-unit-tests.trx"
-          --results-directory ./TestResults/Application
-          --collect "XPlat Code Coverage"
-          --
-          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura"
-          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include=[ECommerceStoreUsers.Application]*"
-
-      - name: Add application unit tests summary
+      - name: Verify application suite and coverage
+        run: VERIFY_SUMMARY_FILE="$GITHUB_STEP_SUMMARY" bash scripts/ci.sh test application
+      - uses: actions/upload-artifact@v4
         if: always()
-        shell: pwsh
-        run: |
-          $trx = Get-ChildItem ./TestResults/Application -Filter *.trx -Recurse | Select-Object -First 1
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "## Application unit tests"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-
-          if (-not $trx) {
-            Add-Content $env:GITHUB_STEP_SUMMARY "No TRX file found."
-            exit 0
-          }
-
-          [xml]$xml = Get-Content $trx.FullName
-          $counters = $xml.TestRun.ResultSummary.Counters
-          $failedResults = @($xml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "Failed" })
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Total | Passed | Failed | Skipped |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|-------|--------|--------|---------|"
-          Add-Content $env:GITHUB_STEP_SUMMARY "| $($counters.total) | $($counters.passed) | $($counters.failed) | $($counters.notExecuted) |"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-
-          if ($failedResults.Count -eq 0) {
-            Add-Content $env:GITHUB_STEP_SUMMARY "All application unit tests passed."
-            exit 0
-          }
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "### Failed tests"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Test | Error |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|------|-------|"
-
-          foreach ($result in $failedResults) {
-            $testName = $result.testName
-            $errorMessage = ""
-
-            if ($result.Output -and $result.Output.ErrorInfo -and $result.Output.ErrorInfo.Message) {
-              $errorMessage = $result.Output.ErrorInfo.Message
-            }
-
-            $testName = $testName -replace '\|', '/' -replace "`r", ' ' -replace "`n", ' '
-            $errorMessage = $errorMessage -replace '\|', '/' -replace "`r", ' ' -replace "`n", ' '
-
-            Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
-          }
-
-      - name: Install ReportGenerator
-        run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.7
-
-      - name: Create Application coverage report
-        run: >
-          reportgenerator
-          -reports:"./TestResults/Application/**/coverage.cobertura.xml"
-          -targetdir:"./TestResults/CoverageReport/Application"
-          -reporttypes:"Html;TextSummary"
-          -assemblyfilters:"+ECommerceStoreUsers.Application"
-
-      - name: Enforce Application line coverage threshold
-        shell: bash
-        run: |
-          summary="./TestResults/CoverageReport/Application/Summary.txt"
-          coverage="$(sed -n 's/^[[:space:]]*Line coverage:[[:space:]]*\([0-9.]*\)%.*/\1/p' "$summary" | head -n 1)"
-          if ! [[ "$coverage" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
-            echo "Unable to read Application line coverage from $summary." >&2
-            exit 1
-          fi
-          echo "Application line coverage: $coverage% (required: 70%)"
-          awk -v coverage="$coverage" 'BEGIN { exit !(coverage + 0 >= 70) }' || {
-            echo "Application line coverage $coverage% is below the required 70%." >&2
-            exit 1
-          }
-
-      - name: Publish Application coverage summary
+        with:
+          name: application-test-results
+          path: artifacts/verification/application/
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
         if: always()
-        run: |
-          echo "## Application coverage" >> "$GITHUB_STEP_SUMMARY"
-          if [[ -f ./TestResults/CoverageReport/Application/Summary.txt ]]; then
-            cat ./TestResults/CoverageReport/Application/Summary.txt >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "Application coverage report unavailable." >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Upload Application coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
         with:
           name: application-coverage-report
-          path: ./TestResults/CoverageReport/Application
+          path: artifacts/verification/application-coverage/
           if-no-files-found: warn
-
-      - name: Upload application coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: application-coverage
-          path: ./TestResults/Application/
-          if-no-files-found: warn
-
-      - name: Fail job if application unit tests failed
-        if: always()
-        shell: pwsh
-        run: |
-          $trx = Get-ChildItem ./TestResults/Application -Filter *.trx -Recurse | Select-Object -First 1
-
-          if (-not $trx) {
-            throw "Application unit tests TRX file not found."
-          }
-
-          [xml]$xml = Get-Content $trx.FullName
-          $failed = [int]$xml.TestRun.ResultSummary.Counters.failed
-
-          if ($failed -gt 0) {
-            throw "$failed application unit test(s) failed."
-          }
-
 
   infrastructure-integration-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
-
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Restore dependencies
-        run: dotnet restore ECommerceStoreUsers.slnx
-
-      - name: Run infrastructure integration tests
-        run: >
-          dotnet test ./tests/ECommerceStoreUsers.Infrastructure.UnitTests/ECommerceStoreUsers.Infrastructure.UnitTests.csproj
-          --configuration Release
-          --no-restore
-          --verbosity normal
-          --logger "trx;LogFileName=infrastructure-integration-tests.trx"
-          --results-directory ./TestResults/Infrastructure
-          --collect "XPlat Code Coverage"
-          --
-          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura"
-          "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Include=[ECommerceStoreUsers.Infrastructure]*"
-
-      - name: Add infrastructure integration tests summary
+      - name: Verify infrastructure suite and coverage
+        run: VERIFY_SUMMARY_FILE="$GITHUB_STEP_SUMMARY" bash scripts/ci.sh test infrastructure
+      - uses: actions/upload-artifact@v4
         if: always()
-        shell: pwsh
-        run: |
-          $trx = Get-ChildItem ./TestResults/Infrastructure -Filter *.trx -Recurse | Select-Object -First 1
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "## Infrastructure integration tests"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-
-          if (-not $trx) {
-            Add-Content $env:GITHUB_STEP_SUMMARY "No TRX file found."
-            exit 0
-          }
-
-          [xml]$xml = Get-Content $trx.FullName
-          $counters = $xml.TestRun.ResultSummary.Counters
-          $failedResults = @($xml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "Failed" })
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Total | Passed | Failed | Skipped |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|-------|--------|--------|---------|"
-          Add-Content $env:GITHUB_STEP_SUMMARY "| $($counters.total) | $($counters.passed) | $($counters.failed) | $($counters.notExecuted) |"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-
-          if ($failedResults.Count -eq 0) {
-            Add-Content $env:GITHUB_STEP_SUMMARY "All infrastructure integration tests passed."
-            exit 0
-          }
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "### Failed tests"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Test | Error |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|------|-------|"
-
-          foreach ($result in $failedResults) {
-            $testName = $result.testName
-            $errorMessage = ""
-
-            if ($result.Output -and $result.Output.ErrorInfo -and $result.Output.ErrorInfo.Message) {
-              $errorMessage = $result.Output.ErrorInfo.Message
-            }
-
-            $testName = $testName -replace '\|', '/' -replace '[\r\n]+', ' '
-            $errorMessage = $errorMessage -replace '\|', '/' -replace '[\r\n]+', ' '
-
-            Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
-          }
-
-      - name: Install ReportGenerator
-        run: dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.7
-
-      - name: Create Infrastructure coverage report
-        run: |
-          reportgenerator \
-            -reports:"./TestResults/Infrastructure/**/coverage.cobertura.xml" \
-            -targetdir:"./TestResults/CoverageReport/Infrastructure" \
-            -reporttypes:"Html;TextSummary" \
-            -assemblyfilters:"+ECommerceStoreUsers.Infrastructure"
-          test -s ./TestResults/CoverageReport/Infrastructure/Summary.txt
-
-      - name: Publish Infrastructure coverage summary
-        if: always()
-        run: |
-          echo "## Infrastructure coverage (informational, no threshold)" >> "$GITHUB_STEP_SUMMARY"
-          if [[ -f ./TestResults/CoverageReport/Infrastructure/Summary.txt ]]; then
-            cat ./TestResults/CoverageReport/Infrastructure/Summary.txt >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "Infrastructure coverage report unavailable." >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Upload Infrastructure coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: infrastructure-coverage-report
-          path: ./TestResults/CoverageReport/Infrastructure
-          if-no-files-found: warn
-
-      - name: Upload infrastructure test results
-        if: always()
-        uses: actions/upload-artifact@v4
         with:
           name: infrastructure-test-results
-          path: ./TestResults/Infrastructure/
+          path: artifacts/verification/infrastructure/
           if-no-files-found: warn
-
-      - name: Fail job if infrastructure integration tests failed
+      - uses: actions/upload-artifact@v4
         if: always()
-        shell: pwsh
-        run: |
-          $trx = Get-ChildItem ./TestResults/Infrastructure -Filter *.trx -Recurse | Select-Object -First 1
-
-          if (-not $trx) {
-            throw "Infrastructure integration tests TRX file not found."
-          }
-
-          [xml]$xml = Get-Content $trx.FullName
-          $failed = [int]$xml.TestRun.ResultSummary.Counters.failed
-
-          if ($failed -gt 0) {
-            throw "$failed infrastructure integration test(s) failed."
-          }
+        with:
+          name: infrastructure-coverage-report
+          path: artifacts/verification/infrastructure-coverage/
+          if-no-files-found: warn
 
   acceptance-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
-
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Restore dependencies
-        run: dotnet restore ECommerceStoreUsers.slnx
-
-      - name: Run acceptance tests
-        run: >
-          dotnet test ./tests/ECommerceStoreUsers.AcceptanceTests/ECommerceStoreUsers.AcceptanceTests.csproj
-          --configuration Release
-          --no-restore
-          --verbosity normal
-          --logger "trx;LogFileName=acceptance-tests.trx"
-          --results-directory ./TestResults/Acceptance
-
-      - name: Add acceptance tests summary
+      - name: Verify acceptance suite
+        run: VERIFY_SUMMARY_FILE="$GITHUB_STEP_SUMMARY" bash scripts/ci.sh test acceptance
+      - uses: actions/upload-artifact@v4
         if: always()
-        shell: pwsh
-        run: |
-          $trx = Get-ChildItem ./TestResults/Acceptance -Filter *.trx -Recurse | Select-Object -First 1
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "## Acceptance tests"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-
-          if (-not $trx) {
-            Add-Content $env:GITHUB_STEP_SUMMARY "No TRX file found."
-            exit 0
-          }
-
-          [xml]$xml = Get-Content $trx.FullName
-          $counters = $xml.TestRun.ResultSummary.Counters
-          $failedResults = @($xml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "Failed" })
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Total | Passed | Failed | Skipped |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|-------|--------|--------|---------|"
-          Add-Content $env:GITHUB_STEP_SUMMARY "| $($counters.total) | $($counters.passed) | $($counters.failed) | $($counters.notExecuted) |"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-
-          if ($failedResults.Count -eq 0) {
-            Add-Content $env:GITHUB_STEP_SUMMARY "All acceptance tests passed."
-            exit 0
-          }
-
-          Add-Content $env:GITHUB_STEP_SUMMARY "### Failed tests"
-          Add-Content $env:GITHUB_STEP_SUMMARY ""
-          Add-Content $env:GITHUB_STEP_SUMMARY "| Test | Error |"
-          Add-Content $env:GITHUB_STEP_SUMMARY "|------|-------|"
-
-          foreach ($result in $failedResults) {
-            $testName = $result.testName
-            $errorMessage = ""
-
-            if ($result.Output -and $result.Output.ErrorInfo -and $result.Output.ErrorInfo.Message) {
-              $errorMessage = $result.Output.ErrorInfo.Message
-            }
-
-            $testName = $testName -replace '\|', '/' -replace "`r", ' ' -replace "`n", ' '
-            $errorMessage = $errorMessage -replace '\|', '/' -replace "`r", ' ' -replace "`n", ' '
-
-            Add-Content $env:GITHUB_STEP_SUMMARY "| $testName | $errorMessage |"
-          }
-
-      - name: Upload acceptance test results
-        if: always()
-        uses: actions/upload-artifact@v4
         with:
           name: acceptance-test-results
-          path: ./TestResults/Acceptance/
+          path: artifacts/verification/acceptance/
           if-no-files-found: warn
-
-      - name: Fail job if acceptance tests failed
-        if: always()
-        shell: pwsh
-        run: |
-          $trx = Get-ChildItem ./TestResults/Acceptance -Filter *.trx -Recurse | Select-Object -First 1
-
-          if (-not $trx) {
-            throw "Acceptance tests TRX file not found."
-          }
-
-          [xml]$xml = Get-Content $trx.FullName
-          $failed = [int]$xml.TestRun.ResultSummary.Counters.failed
-
-          if ($failed -gt 0) {
-            throw "$failed acceptance test(s) failed."
-          }

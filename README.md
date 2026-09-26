@@ -1,5 +1,7 @@
 # ECommerceStoreUsers
 
+## Purpose
+
 .NET 10 Minimal API for customer profiles, admin profiles, and client favorites.
 The API uses application services and a MongoDB replica set. Customer and admin
 writes maintain current and history collections; favorites have a separate
@@ -63,7 +65,7 @@ services and Infrastructure implements Domain repository contracts. Users does
 not copy ProductsCatalog's CQRS/MediatR and SQL read/write split. CI checks
 dependency and persistence boundaries.
 
-## Why MongoDB and how history works
+### Why MongoDB and how history works
 
 A Customer has individual data and embedded companies; an Admin is a separate
 profile aggregate. MongoDB stores current Customers, Admins and Favorites in
@@ -99,7 +101,7 @@ startup instead of rebuilding existing indexes. See
 | Containers | Docker, Docker Compose |
 | CI | GitHub Actions, NuGet Audit, Dependency Review, Gitleaks, Trivy |
 
-## Repository structure
+### Repository structure
 
 ```text
 src/
@@ -122,7 +124,9 @@ docs/
 TECHNICAL_TODO.md
 ```
 
-## Prerequisites
+## Local startup
+
+### Prerequisites
 
 - Docker with Compose for the local API and MongoDB replica set.
 - Bash, Python 3, Node.js 22 and .NET SDK `10.0.100` or a newer .NET 10
@@ -133,7 +137,7 @@ TECHNICAL_TODO.md
   certificate paths from it. On another host, set `APPDATA` to an appropriate
   local folder before starting Compose. HTTPS is not needed for the HTTP examples.
 
-## Run locally with Docker Compose
+### Run locally with Docker Compose
 
 From the repository root, copy [`.env.example`](.env.example) to the ignored
 `.env` file and replace the example password with a local password. In Bash:
@@ -171,7 +175,7 @@ Remove containers and local MongoDB data when a fresh database is needed:
 docker compose down --volumes
 ```
 
-## API contract and executable documentation
+## API contract
 
 - Swagger UI: <http://localhost:8080/swagger>
 - Generated OpenAPI: <http://localhost:8080/swagger/v1/swagger.json>
@@ -190,7 +194,7 @@ scenarios. Flow/policy descriptors stay next to the code that executes them.
 Clients should branch on the stable problem `code` rather than the error title
 or detail. Health responses use their documented plain-text format.
 
-## Health and startup
+## Health checks
 
 | Probe | Purpose |
 | --- | --- |
@@ -206,7 +210,7 @@ named index initialization runs once. A conflicting index or failed
 initialization stops startup. Business writes and whole index operations are
 not retried by that policy; see [local startup](docs/local-startup.md).
 
-## Tests and local verification
+## Tests
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:
@@ -248,7 +252,7 @@ files are build artifacts and should not be edited manually. Performance
 benchmarks live in `tests/ECommerceStoreUsers.Performance.BenchmarkTests/`
 outside the standard CI gate.
 
-## CI pipeline
+## CI
 
 GitHub Actions runs on pull requests and pushes to `master`:
 
@@ -266,7 +270,7 @@ image but does not publish it to a registry. See
 [ADR-0004](docs/adr/0004-ci-and-security-gates.md) and the
 [workflow](.github/workflows/ci.yml) for exact jobs and event conditions.
 
-## Operations and next steps
+## Operations
 
 The API can run with multiple replicas when MongoDB and its named indexes are
 ready. Readiness prevents routing to an instance without a writable primary.
@@ -277,11 +281,10 @@ History retention and backup/restore still need an operational policy.
 Authentication and authorization, production secret delivery, deployment and
 observability remain open before exposing the API publicly. Hosted reports,
 RAG ingestion and generated-client compatibility for consumers are later work.
-The [ADR index](docs/adr/README.md) records decisions in force, and
 [`TECHNICAL_TODO.md`](TECHNICAL_TODO.md) separates completed work from
 production requirements and deferred ideas.
 
-## Troubleshooting
+### Troubleshooting
 
 - **Startup fails or `/health/ready` returns `503`:** inspect
   `docker compose ps` and the logs for `mongo-init`, `compose-mongodb`, and
@@ -298,3 +301,9 @@ production requirements and deferred ideas.
 - **`APPDATA` mount error:** set `APPDATA` to a host folder accessible to Docker,
   or use the default Windows profile location. The Compose file contains these
   mounts even when using only HTTP locally.
+
+## Architecture decisions
+
+The [ADR index](docs/adr/README.md) records decisions about MongoDB history,
+public errors, acceptance isolation, CI and generated documentation. It
+distinguishes implemented decisions from the operational follow-ups above.

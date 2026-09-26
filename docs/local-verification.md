@@ -1,27 +1,26 @@
 # Local verification
 
-From the repository root, with .NET SDK `10.0.100` or a newer .NET 10 feature band (selected by `global.json`), Bash and Docker running:
+Run `bash scripts/verify.sh` from the repository root with the prerequisites
+in the README. It runs the stages in this order: **Source checks**, **Restore
+and build**, **Format**, **Domain**, **Application**, **Infrastructure**,
+**Acceptance**, **OpenAPI**, **Docker**.
 
-```bash
-bash scripts/verify.sh
-```
+The ignored `artifacts/verification/` directory has the following layout:
 
-The script runs restore, Release build, formatting, Domain and Application tests
-with separate 70% line coverage thresholds, MongoDB Infrastructure and HTTP
-acceptance tests with Testcontainers, and a Docker build. Infrastructure coverage
-is measured for diagnosis without a percentage gate. Separate HTML and text
-coverage reports for all three layers are written to the ignored
-`artifacts/verification/{domain,application,infrastructure}-coverage` directories.
-It also exports OpenAPI from the running API in an isolated test host and validates
-the generated document with Redocly CLI. The export starts without MongoDB; the
-acceptance suite still uses its MongoDB Testcontainer. The generated document is
-written to ignored `artifacts/verification/openapi.json` and requires Node.js 22.
-Acceptance uses one MongoDB replica set container per test run and a separate
-database, API host, and HTTP client per scenario. Scenario hooks dispose the host
-and drop its database on both success and failure; isolation scenarios verify
-current and history collections between independent runs.
-CI publishes the same detailed reports in job summaries and artifacts. CI selects the SDK
-using `global.json`; the Docker build stage uses SDK 10.0.100.
+| Output | Path |
+| --- | --- |
+| Test results | `{domain,application,infrastructure,acceptance}/<suite>.trx` |
+| Coverage input | `{domain,application,infrastructure}/<collector-id>/coverage.cobertura.xml` |
+| Coverage reports | `{domain,application,infrastructure}-coverage/Summary.txt` and `index.html` |
+| Combined local summary | `summary.md` |
+| Generated API contract | `openapi.json` |
+| Operation links | `operation-links.json` |
 
-CI additionally checks dependencies, secrets and image vulnerabilities; it does
-not publish a Users image.
+Each run clears the previous test and coverage outputs and generated OpenAPI
+before executing. The script exits nonzero at the first failing stage, reporting
+its name and exit code. Each test suite must produce exactly one TRX with
+nonzero total and passed counts and no failures. A missing coverage input or
+report fails verification. Domain and Application each require at least 70%
+line coverage; Infrastructure coverage is reported without a percentage gate.
+OpenAPI validation and Docker build must succeed. CI also runs dependency,
+secret and image vulnerability gates; `verify.sh` does not replace them.

@@ -223,7 +223,7 @@ This requires the SDK, Node.js and a running Docker daemon. TRX, generated
 OpenAPI and coverage reports are written under the ignored
 `artifacts/verification` directory. Domain and Application each have a 70%
 line-coverage threshold; Infrastructure coverage is reported without a
-minimum. See [local verification](docs/local-verification.md) for artifacts.
+minimum. See [local verification](docs/local-verification.md) for the shared stage names, TRX and coverage paths, combined summary and failure rules.
 
 Run restore, build and formatting separately:
 
@@ -307,3 +307,4 @@ production requirements and deferred ideas.
 The [ADR index](docs/adr/README.md) records decisions about MongoDB history,
 public errors, acceptance isolation, CI and generated documentation. It
 distinguishes implemented decisions from the operational follow-ups above.
+

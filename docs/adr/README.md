@@ -3,6 +3,8 @@
 Records describe decisions implemented in this service. A later decision may
 supersede a record without erasing the original context.
 
+Use repository-local, sequential ADR numbers. Each record has a title, `Status` and `Date` metadata, then `Context`, `Decision`, `Consequences` and `Alternatives considered` sections in that order. Keep accepted records when later decisions supersede them, and add the new record to this index.
+
 | ADR | Status | Decision |
 | --- | --- | --- |
 | [0001](0001-mongodb-documents-and-history.md) | Accepted | MongoDB documents, current/history writes, transactions, indexes and schema evolution. |

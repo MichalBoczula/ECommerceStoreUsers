@@ -254,6 +254,11 @@ outside the standard CI gate.
 
 ## CI
 
+The workflow calls `scripts/ci.sh` for source checks, audited restore and
+build, formatting, each test suite and coverage, and the generated OpenAPI
+contract. `scripts/verify.sh` uses the same entry points locally. GitHub
+Actions owns job dependencies, artifact upload, secrets and image scanning.
+
 GitHub Actions runs on pull requests and pushes to `master`:
 
 1. Check source links, architecture boundaries and acceptance matrix; restore,

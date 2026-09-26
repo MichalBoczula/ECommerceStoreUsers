@@ -18,6 +18,11 @@ Infrastructure and HTTP acceptance suites run separately with TRX and coverage
 reports. Domain and Application each require at least 70% line coverage;
 Infrastructure reports coverage without a percentage threshold.
 
+The CI build and suite jobs call `scripts/ci.sh` for source checks, audited
+restore/build, formatting, test execution, coverage and generated OpenAPI.
+`scripts/verify.sh` calls the same entry points locally. GitHub Actions
+retains job dependencies, artifact upload, secrets and image scanning.
+
 Enable NuGet audit for high/critical findings (`NU1903`/`NU1904` as errors),
 Dependency Review on pull requests, Gitleaks, and a Trivy high/critical scan
 of the local Docker image after the quality gate. Compiler warnings remain
@@ -38,3 +43,4 @@ publication, provenance, deployment and rollout remain separate decisions.
   selected quality and vulnerability gates.
 - Publish an image from every PR: would distribute changes before merge and
   without an agreed destination registry for Users.
+

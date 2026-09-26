@@ -1,6 +1,6 @@
 # Local verification
 
-From the repository root, with .NET SDK `10.0.100`, Bash and Docker running:
+From the repository root, with .NET SDK `10.0.100` or a newer .NET 10 feature band (selected by `global.json`), Bash and Docker running:
 
 ```bash
 bash scripts/verify.sh
@@ -20,8 +20,8 @@ Acceptance uses one MongoDB replica set container per test run and a separate
 database, API host, and HTTP client per scenario. Scenario hooks dispose the host
 and drop its database on both success and failure; isolation scenarios verify
 current and history collections between independent runs.
-CI publishes the same detailed reports in job summaries and artifacts. The SDK version is
-selected by `global.json` and used by CI and the build stage of the Dockerfile.
+CI publishes the same detailed reports in job summaries and artifacts. CI selects the SDK
+using `global.json`; the Docker build stage uses SDK 10.0.100.
 
 CI additionally checks dependencies, secrets and image vulnerabilities; it does
 not publish a Users image.

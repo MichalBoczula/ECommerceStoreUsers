@@ -221,9 +221,10 @@ bash scripts/verify.sh
 
 This requires the SDK, Node.js and a running Docker daemon. TRX, generated
 OpenAPI and coverage reports are written under the ignored
-`artifacts/verification` directory. Domain and Application each have a 70%
-line-coverage threshold; Infrastructure coverage is reported without a
-minimum. See [local verification](docs/local-verification.md) for the shared stage names, TRX and coverage paths, combined summary and failure rules.
+`artifacts/verification` directory. Domain, Application and Infrastructure
+each have a separate 70% line-coverage gate. See
+[local verification](docs/local-verification.md) for the shared stage names,
+TRX and coverage paths, combined summary and failure rules.
 
 Run restore, build and formatting separately:
 
@@ -264,7 +265,8 @@ GitHub Actions runs on pull requests and pushes to `master`:
 1. Check source links, architecture boundaries and acceptance matrix; restore,
    verify formatting, build and export/lint OpenAPI with pinned tools.
 2. Run Domain, Application, Infrastructure and HTTP acceptance suites with TRX
-   and coverage reports; enforce separate Domain/Application coverage gates.
+   and coverage reports; enforce separate 70% Domain, Application and
+   Infrastructure coverage gates.
 3. Run NuGet high/critical audit, Gitleaks on both events and Dependency Review
    on pull requests. Ordinary compiler warnings remain visible.
 4. Require the quality gate, build a local Docker image, then fail the job on
@@ -312,4 +314,3 @@ production requirements and deferred ideas.
 The [ADR index](docs/adr/README.md) records decisions about MongoDB history,
 public errors, acceptance isolation, CI and generated documentation. It
 distinguishes implemented decisions from the operational follow-ups above.
-

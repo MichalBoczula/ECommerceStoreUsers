@@ -15,8 +15,8 @@ CI verifies source links, operation-to-flow/policy/scenario relationships and
 architecture boundaries, then restores, checks format, builds and validates
 generated OpenAPI with a pinned Redocly CLI. Domain, Application,
 Infrastructure and HTTP acceptance suites run separately with TRX and coverage
-reports. Domain and Application each require at least 70% line coverage;
-Infrastructure reports coverage without a percentage threshold.
+reports. Domain, Application and Infrastructure each require at least 70%
+line coverage.
 
 The CI build and suite jobs call `scripts/ci.sh` for source checks, audited
 restore/build, formatting, test execution, coverage and generated OpenAPI.
@@ -43,4 +43,3 @@ publication, provenance, deployment and rollout remain separate decisions.
   selected quality and vulnerability gates.
 - Publish an image from every PR: would distribute changes before merge and
   without an agreed destination registry for Users.
-

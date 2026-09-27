@@ -46,6 +46,7 @@ case "$command" in
       infrastructure)
         project=tests/ECommerceStoreUsers.Infrastructure.UnitTests/ECommerceStoreUsers.Infrastructure.UnitTests.csproj
         assembly=ECommerceStoreUsers.Infrastructure
+        threshold=70
         ;;
       acceptance)
         project=tests/ECommerceStoreUsers.AcceptanceTests/ECommerceStoreUsers.AcceptanceTests.csproj

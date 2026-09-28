@@ -12,3 +12,4 @@ Use repository-local, sequential ADR numbers. Each record has a title, `Status` 
 | [0003](0003-acceptance-isolation.md) | Accepted | Isolate scenarios on one MongoDB replica set. |
 | [0004](0004-ci-and-security-gates.md) | Accepted | Gate quality and scan a local, unpublished image. |
 | [0005](0005-generated-documentation-sources.md) | Accepted | Generate OpenAPI and flow links from executed sources. |
+| [0006](0006-publish-scanned-image.md) | Accepted | Publish the scanned Users image after the quality gate on `master`. |

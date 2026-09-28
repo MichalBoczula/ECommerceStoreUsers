@@ -272,9 +272,13 @@ GitHub Actions runs on pull requests and pushes to `master`:
 4. Require the quality gate, build a local Docker image, then fail the job on
    high/critical Trivy image findings.
 
-Dependency Review is expected to be skipped on a push. CI verifies the Users
-image but does not publish it to a registry. See
-[ADR-0004](docs/adr/0004-ci-and-security-gates.md) and the
+Dependency Review is expected to be skipped on a push. Pull requests build and
+scan the image without publishing it. After the quality gate and Trivy scan
+succeed on a `master` push, CI publishes the same scanned image to
+`mb0101/ecommerce-store-users-api` with `latest` and full commit SHA tags.
+Docker Hub credentials come from the `DOCKERHUB_USERNAME` and
+`DOCKERHUB_TOKEN` GitHub Actions secrets. See [ADR-0004](docs/adr/0004-ci-and-security-gates.md),
+[ADR-0006](docs/adr/0006-publish-scanned-image.md) and the
 [workflow](.github/workflows/ci.yml) for exact jobs and event conditions.
 
 ## Operations

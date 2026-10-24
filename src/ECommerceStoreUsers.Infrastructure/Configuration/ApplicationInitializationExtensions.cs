@@ -1,5 +1,6 @@
-﻿using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Context;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -15,6 +16,13 @@ namespace ECommerceStoreUsers.Infrastructure.Configuration
             CancellationToken cancellationToken = default)
         {
             using var scope = serviceProvider.CreateScope();
+            cancellationToken.ThrowIfCancellationRequested();
+            var settings = scope.ServiceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+            if (!settings.InitializeOnStartup)
+            {
+                return;
+            }
+
             var context = scope.ServiceProvider.GetRequiredService<MongoDbContext>();
             var mongoInitializer = scope.ServiceProvider.GetRequiredService<MongoInitializer>();
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);

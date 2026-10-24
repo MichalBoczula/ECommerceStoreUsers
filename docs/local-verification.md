@@ -32,3 +32,17 @@ report fails verification. Domain, Application and Infrastructure each require
 at least 70% line coverage.
 OpenAPI validation and Docker build must succeed. CI also runs dependency,
 secret and image vulnerability gates; `verify.sh` does not replace them.
+
+The MongoDB integration and acceptance jobs use `ubuntu-24.04` rather than a
+moving `ubuntu-latest` image. MongoDB 8 refuses startup on Linux kernels
+6.19 through 7.0.13 ([MongoDB release notes](https://www.mongodb.com/docs/v8.0/release-notes/8.0/),
+SERVER-121912); the current Ubuntu 24.04 runner uses kernel 6.17. Containers
+inherit the host kernel, so changing only the MongoDB container's base OS does
+not solve this. Local Docker hosts also need a supported kernel. The CI script
+pulls the Mongo image and checks its shell before running either real database
+suite, and fixtures preserve startup logs on failure. No database tests or
+coverage gates are skipped.
+
+The filtered, read-only OpenAPI export does not start the Reqnroll Mongo fixture.
+The export test already removes database initialization from its HTTP host;
+normal acceptance runs still start the real replica set and exercise writes.

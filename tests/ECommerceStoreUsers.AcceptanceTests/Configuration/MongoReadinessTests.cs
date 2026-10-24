@@ -11,6 +11,17 @@ namespace ECommerceStoreUsers.AcceptanceTests.Configuration;
 public sealed class MongoReadinessTests
 {
     [Fact]
+    public async Task PreparationWithoutMongo_StartsLiveButRemainsUnready()
+    {
+        using var factory = new ApplicationFactory(
+            "mongodb://127.0.0.1:1/?directConnection=true", "prepare-without-mongo", initializeOnStartup: false);
+        using var client = factory.CreateClient();
+
+        (await GetStatusAsync(client, "/health/live")).ShouldBe(HttpStatusCode.OK);
+        (await GetStatusAsync(client, "/health/ready")).ShouldBe(HttpStatusCode.ServiceUnavailable);
+    }
+
+    [Fact]
     public async Task PausedReplicaSet_IsUnreadyButLive_AndRecoversAfterUnpause()
     {
         await using var container = new MongoDbBuilder("mongo:8.0").WithReplicaSet().Build();

@@ -36,6 +36,8 @@ namespace ECommerceStoreUsers.AcceptanceTests
             }
             catch
             {
+                var logs = await container.GetLogsAsync();
+                Console.Error.WriteLine($"MongoDB startup logs:\n{logs.Stdout}\n{logs.Stderr}");
                 await container.DisposeAsync();
                 throw;
             }

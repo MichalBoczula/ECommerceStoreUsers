@@ -158,6 +158,23 @@ The API receives its connection string through
 defined in [`appsettings.json`](src/ECommerceStoreUsers.API/appsettings.json).
 See [local startup](docs/local-startup.md) for probe deadlines and failures.
 
+For the staged Azure Container Apps rollout, set
+`MongoDbSettings__InitializeOnStartup=false` only while discovering the app's
+outbound IP addresses before adding database firewall rules. This skips the
+startup connection and index initialization; `/health/live` can succeed while
+`/health/ready` still reports an unavailable database. Keep this preparation
+revision internal. After the exact firewall rules exist, set the flag back to
+`true` (the default) and use `/health/ready` as the readiness probe. Existing
+collections and indexes are preserved by the normal initializer.
+
+Readiness accepts a writable replica set or a MongoDB-compatible router
+(`hello.msg=isdbgrid`, used by Azure DocumentDB), requires session support, and
+pings the application database. These probes do not execute a write transaction.
+Before serving real traffic on Azure DocumentDB, verify customer/admin writes,
+their history documents, unique indexes, and rollback against the deployed
+cluster. The local MongoDB transaction tests remain required; they do not prove
+every hosted MongoDB-compatible service behaves identically.
+
 The API is exposed at `http://localhost:8080`; MongoDB maps container port
 `27017` to host port `27018`. The replica set advertises `compose-mongodb`,
 which is resolvable inside Compose but may require host-side DNS configuration

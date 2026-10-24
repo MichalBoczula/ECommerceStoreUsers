@@ -12,14 +12,16 @@ namespace ECommerceStoreUsers.AcceptanceTests
     {
         private readonly string _connectionString;
         private readonly string _databaseName;
+        private readonly bool _initializeOnStartup;
 
-        public ApplicationFactory(string connectionString, string databaseName)
+        public ApplicationFactory(string connectionString, string databaseName, bool initializeOnStartup = true)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
             ArgumentException.ThrowIfNullOrWhiteSpace(databaseName);
 
             _connectionString = connectionString;
             _databaseName = databaseName;
+            _initializeOnStartup = initializeOnStartup;
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -30,6 +32,7 @@ namespace ECommerceStoreUsers.AcceptanceTests
             {
                 var overrides = new Dictionary<string, string?>
                 {
+                    ["MongoDbSettings:InitializeOnStartup"] = _initializeOnStartup.ToString(),
                     ["MongoDbSettings:ConnectionString"] = _connectionString,
                     ["MongoDbSettings:DatabaseName"] = _databaseName,
                     ["MongoDbSettings:CustomerCollectionName"] = "customers",

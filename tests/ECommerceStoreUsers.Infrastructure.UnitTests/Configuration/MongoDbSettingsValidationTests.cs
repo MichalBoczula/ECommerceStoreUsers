@@ -22,6 +22,7 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Configuration
             settings.ConnectionString.ShouldBe("mongodb://localhost:27017");
             settings.DatabaseName.ShouldBe("ecommerce-store-users-db-test");
             settings.FavoriteCollectionName.ShouldBe("favorites");
+            settings.InitializeOnStartup.ShouldBeTrue();
         }
 
         [Theory]

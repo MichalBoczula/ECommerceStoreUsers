@@ -19,6 +19,13 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         [BeforeTestRun]
         public static Task BeforeTestRun()
         {
+            // The contract command filters to the read-only export test, whose
+            // host deliberately removes Mongo startup. Real suites still use Mongo.
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAPI_EXPORT_PATH")))
+            {
+                return Task.CompletedTask;
+            }
+
             return AcceptanceMongoDb.StartAsync();
         }
 

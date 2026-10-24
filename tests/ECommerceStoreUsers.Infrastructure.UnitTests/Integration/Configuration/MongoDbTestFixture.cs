@@ -1,4 +1,4 @@
-﻿using Testcontainers.MongoDb;
+using Testcontainers.MongoDb;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration
 {
@@ -13,9 +13,18 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration
 
         public string DatabaseName => "ecommerce-store-users-db";
 
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
-            return _mongoDbContainer.StartAsync();
+            try
+            {
+                await _mongoDbContainer.StartAsync();
+            }
+            catch
+            {
+                var logs = await _mongoDbContainer.GetLogsAsync();
+                Console.Error.WriteLine($"MongoDB startup logs:\n{logs.Stdout}\n{logs.Stderr}");
+                throw;
+            }
         }
 
         public Task DisposeAsync()

@@ -6,6 +6,13 @@ command="${1:?Usage: scripts/ci.sh source|build|format|contract|test SUITE}"
 shift
 results_dir="${VERIFY_RESULTS_DIR:-$PWD/artifacts/verification}"
 
+prepare_mongo_image() {
+  # The Reqnroll assembly fixture also runs for the filtered OpenAPI export.
+  # Fail at the image boundary with a useful log before starting Testcontainers.
+  docker pull mongo:8.0
+  docker run --rm --entrypoint mongosh mongo:8.0 --version
+}
+
 case "$command" in
   source)
     python3 scripts/check-acceptance-matrix.py
@@ -25,6 +32,7 @@ case "$command" in
     dotnet format ECommerceStoreUsers.slnx --verify-no-changes --no-restore
     ;;
   contract)
+    prepare_mongo_image
     bash scripts/validate-openapi.sh "$results_dir/openapi.json"
     ;;
   test)
@@ -44,11 +52,13 @@ case "$command" in
         threshold=70
         ;;
       infrastructure)
+        prepare_mongo_image
         project=tests/ECommerceStoreUsers.Infrastructure.UnitTests/ECommerceStoreUsers.Infrastructure.UnitTests.csproj
         assembly=ECommerceStoreUsers.Infrastructure
         threshold=70
         ;;
       acceptance)
+        prepare_mongo_image
         project=tests/ECommerceStoreUsers.AcceptanceTests/ECommerceStoreUsers.AcceptanceTests.csproj
         ;;
       *)

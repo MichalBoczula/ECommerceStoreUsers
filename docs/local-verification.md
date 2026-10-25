@@ -23,6 +23,14 @@ The ignored `artifacts/verification/` directory has the following layout:
 | Combined local summary | `summary.md` |
 | Generated API contract | `openapi.json` |
 | Operation links | `operation-links.json` |
+| Generated flow and policy descriptions | `flows.json`, `validation-policies.json` |
+
+Acceptance tests also write raw Allure results and attachments to the ignored
+`artifacts/allure-results/acceptance/` directory; the acceptance command clears
+previous results first. The filtered API export writes the OpenAPI, flow and
+validation-policy sources without MongoDB. CI packages those exports with real
+acceptance results and feature files using the pinned LiveDocs reusable workflow.
+Local verification does not upload documentation or require the Blob SAS secret.
 
 Each run clears the previous test and coverage outputs and generated OpenAPI
 before executing. The script exits nonzero at the first failing stage, reporting

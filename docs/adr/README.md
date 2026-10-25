@@ -13,3 +13,4 @@ Use repository-local, sequential ADR numbers. Each record has a title, `Status` 
 | [0004](0004-ci-and-security-gates.md) | Accepted | Gate quality and scan a local, unpublished image. |
 | [0005](0005-generated-documentation-sources.md) | Accepted | Generate OpenAPI and flow links from executed sources. |
 | [0006](0006-publish-scanned-image.md) | Accepted | Publish the scanned Users image after the quality gate on `master`. |
+| [0007](0007-livedocs-source-publication.md) | Accepted | Package real BDD sources and archive them for the shared LiveDocs portal. |

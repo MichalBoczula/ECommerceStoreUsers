@@ -43,6 +43,21 @@ public sealed class OpenApiExportTests
         if (!string.IsNullOrWhiteSpace(exportPath))
         {
             await File.WriteAllTextAsync(exportPath, openApi);
+
+            var exportDirectory = Path.GetDirectoryName(Path.GetFullPath(exportPath))!;
+            foreach (var (route, fileName, collection) in new[]
+            {
+                ("/users-documentation/flows", "flows.json", "flows"),
+                ("/users-documentation/validations", "validation-policies.json", "validations")
+            })
+            {
+                using var documentationResponse = await client.GetAsync(route);
+                documentationResponse.EnsureSuccessStatusCode();
+                var documentation = await documentationResponse.Content.ReadAsStringAsync();
+                using var structured = JsonDocument.Parse(documentation);
+                Assert.NotEmpty(structured.RootElement.GetProperty(collection).EnumerateArray());
+                await File.WriteAllTextAsync(Path.Combine(exportDirectory, fileName), documentation);
+            }
         }
     }
 }

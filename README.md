@@ -37,8 +37,9 @@ Domain policies expose rule and error descriptions. The API serves these at
 `/users-documentation/flows` and `/users-documentation/validations`.
 Generated links and OpenAPI are ignored verification artifacts, not another
 specification to maintain. See
-[ADR-0005](docs/adr/0005-generated-documentation-sources.md). A hosted
-Allure/API portal and RAG ingestion are [later work](TECHNICAL_TODO.md).
+[ADR-0005](docs/adr/0005-generated-documentation-sources.md). CI packages these
+sources and actual BDD results for the shared LiveDocs portal; see
+[report publication](#bdd-reports-in-livedocs). RAG ingestion remains later work.
 
 ## Architecture
 
@@ -283,11 +284,16 @@ GitHub Actions runs on pull requests and pushes to `master`:
    verify formatting, build and export/lint OpenAPI with pinned tools.
 2. Run Domain, Application, Infrastructure and HTTP acceptance suites with TRX
    and coverage reports; enforce separate 70% Domain, Application and
-   Infrastructure coverage gates.
+   Infrastructure coverage gates. Package actual Allure results, feature sources,
+   generated OpenAPI, flows, validation policies and operation links using the
+   commit-pinned LiveDocs workflow. Package validation is part of the quality gate.
 3. Run NuGet high/critical audit, Gitleaks on both events and Dependency Review
    on pull requests. Ordinary compiler warnings remain visible.
 4. Require the quality gate, build a local Docker image, then fail the job on
    high/critical Trivy image findings.
+5. After successful `master` image publication, archive the verified documentation
+   bundle and receipt in the existing private `livedocs` Blob container. PRs never
+   upload documentation to Azure.
 
 Dependency Review is expected to be skipped on a push. Pull requests build and
 scan the image without publishing it. After the quality gate and Trivy scan
@@ -298,6 +304,40 @@ Docker Hub credentials come from the `DOCKERHUB_USERNAME` and
 [ADR-0006](docs/adr/0006-publish-scanned-image.md) and the
 [workflow](.github/workflows/ci.yml) for exact jobs and event conditions.
 
+### BDD reports in LiveDocs
+
+The pipeline follows ProductsCatalog's publication pattern. It creates a real
+source bundle on both PRs and master pushes. Only successful master image builds
+upload it to **`stecproductsdevmb261013/livedocs`**, using these immutable paths:
+
+- `reports/users/<source-commit>/<bundle-sha256>.zip`
+- `candidates/v1/users/<workflow-run-id>-<bundle-sha256>.json`
+
+Retries download existing blobs and compare bytes; changed content is refused.
+The `documentation-reference` Actions artifact contains the exact reference for
+LiveDocs. URLs contain no credentials. Generated reports and attachments stay
+outside Git. See [ADR-0007](docs/adr/0007-livedocs-source-publication.md).
+
+Add **`LIVEDOCS_STORAGE_SAS_TOKEN`** as a repository Actions secret in
+**ECommerceStoreUsers**. Use the complete HTTPS-only container SAS query string,
+including all fields and `sig`, with **read, create and write** permissions on
+`livedocs`. The same container SAS used by Products works. Do not paste it into
+source, issues or image build arguments. No Azure login or new identities are needed.
+
+Optional repository variables are `LIVEDOCS_STORAGE_ACCOUNT` (default
+`stecproductsdevmb261013`) and `LIVEDOCS_VERSION` (default `v1`). There is no enable
+flag: missing credentials or failed uploads fail the archive job. All existing
+test, coverage, dependency and image gates still apply.
+
+LiveDocs selects the uploaded receipt's `reference` in its development v1 manifest,
+downloads and validates the source bundle outside Docker, and generates Allure in
+its builder stage. The resulting image serves `/livedoc/v1/users/` and
+`/livedoc/v1/users/allure/` alongside Products. A separate LiveDocs image build and
+Terraform digest update publish that snapshot; uploading a bundle alone does not
+update the running portal. The Users API needs no Blob connection at runtime.
+Infrastructure stays in ECommerceStore.Terraform; no additional Azure resources
+or BFF changes are needed for this report.
+
 ## Operations
 
 The API can run with multiple replicas when MongoDB and its named indexes are
@@ -307,8 +347,9 @@ rollout; startup does not perform an automatic production schema migration.
 History retention and backup/restore still need an operational policy.
 
 Authentication and authorization, production secret delivery, deployment and
-observability remain open before exposing the API publicly. Hosted reports,
-RAG ingestion and generated-client compatibility for consumers are later work.
+observability remain open before exposing the API publicly. LiveDocs publication
+requires the CI secret and a selected report image; RAG ingestion and generated-client
+compatibility for consumers remain later work.
 [`TECHNICAL_TODO.md`](TECHNICAL_TODO.md) separates completed work from
 production requirements and deferred ideas.
 

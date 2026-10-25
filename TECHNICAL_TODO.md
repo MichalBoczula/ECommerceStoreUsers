@@ -54,8 +54,10 @@ not an architecture template for MongoDB application services.
 
 ## Deferred or conditional
 
-- [>] Hosted Allure/API reports, LiveDocs and RAG ingestion/retrieval. Current
-  generated sources and TRX/coverage artifacts are not a hosted portal.
+- [>] First Users report rollout: CI now packages real BDD/API sources and
+  uploads to shared LiveDocs Blob storage after a successful master image build.
+  Configure the SAS secret, select the verified reference in LiveDocs, publish its
+  image and deploy that digest. RAG ingestion/retrieval remains deferred.
 - [>] Kiota compatibility belongs to consumers generating a client, such as
   Invoice/BFF. This producer stores no generated clients.
 - [>] API versioning, browser CORS, rate limits, pagination, larger request

@@ -56,6 +56,7 @@ case "$command" in
         threshold=70
         ;;
       acceptance)
+        rm -rf artifacts/allure-results/acceptance
         prepare_mongo_image
         project=tests/ECommerceStoreUsers.AcceptanceTests/ECommerceStoreUsers.AcceptanceTests.csproj
         ;;

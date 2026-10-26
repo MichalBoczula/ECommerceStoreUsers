@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_a_company_that_does_not_exist_for_an_existing_customer_returns_a_not_found_problem_details_response.
 Feature: Update company not found
 
+  @allure.label.scenarioId:REF07_UpdateCompany_03
   Scenario: Update missing company for existing customer returns not found response
+    A company-update request identifies an existing customer but an absent company.
+    The API returns a not-found problem for the missing company.
     Given a customer with a company exists for update company not found request
       | Field                                      | Value                                      |
       | ExternalId                                 | auth-customer-update-company-not-found-123 |

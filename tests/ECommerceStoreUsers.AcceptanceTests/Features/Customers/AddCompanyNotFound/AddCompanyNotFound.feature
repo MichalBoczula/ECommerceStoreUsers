@@ -1,7 +1,10 @@
 @allure.description:Ensures_adding_a_company_to_a_missing_customer_by_customer_id_returns_a_not_found_problem_details_response.
 Feature: Add company not found
 
+  @allure.label.scenarioId:REF07_AddCompany_03
   Scenario: Add company by missing customer id returns not found response
+    A company-add request targets a customer identifier that does not exist.
+    The API returns a not-found problem for the missing customer.
     Given I have a missing customer add company request
       | Field                   | Value                                |
       | CustomerId              | 22222222-2222-2222-2222-222222222222 |

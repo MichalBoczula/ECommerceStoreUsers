@@ -1,7 +1,10 @@
-﻿@allure.description:Ensures_creating_a_customer_profile_returns_a_success_response_with_the_created_individual_and_company_payload_fields.
+@allure.description:Ensures_creating_a_customer_profile_returns_a_success_response_with_the_created_individual_and_company_payload_fields.
 Feature: Create customer profile
 
+  @allure.label.scenarioId:REF07_CreateCustomer_04
   Scenario: Create customer profile returns created individual and company data
+    A new customer registers individual details, billing and shipping addresses, and a company.
+    The create request returns the generated customer and company identifiers with the supplied profile data.
     Given I have a valid create customer request
       | Field                                      | Value                         |
       | ExternalId                                 | auth-customer-123456          |

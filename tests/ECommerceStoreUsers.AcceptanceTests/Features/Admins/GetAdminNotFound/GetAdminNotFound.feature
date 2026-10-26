@@ -1,7 +1,10 @@
-﻿@allure.description:Ensures_getting_a_missing_admin_profile_by_external_id_returns_a_not_found_problem_details_response.
+@allure.description:Ensures_getting_a_missing_admin_profile_by_external_id_returns_a_not_found_problem_details_response.
 Feature: Get admin profile not found
 
+  @allure.label.scenarioId:REF07_GetAdminByExternalId_01
   Scenario: Get admin profile by missing external id returns not found response
+    No administrator profile matches the requested external identity.
+    The lookup returns a not-found problem.
     Given I have a missing admin external id
       | Field      | Value                  |
       | ExternalId | auth-missing-404-admin |

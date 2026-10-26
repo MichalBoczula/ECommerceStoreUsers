@@ -85,7 +85,7 @@ public sealed class WriteFailuresStepDefinitions(ScenarioApiContext context) : I
                     () => _writeCalls++));
             }
         }));
-        _client = _factory.CreateClient();
+        _client = context.CreateClient(_factory);
     }
 
     [When("I submit the failing {string} write")]
@@ -228,3 +228,4 @@ public sealed class WriteFailuresStepDefinitions(ScenarioApiContext context) : I
         }
     }
 }
+

@@ -1,7 +1,10 @@
 @allure.description:Ensures_creating_an_individual_customer_profile_with_an_invalid_address_returns_a_bad_request_with_validation_errors.
 Feature: Create customer profile validation
 
+  @allure.label.scenarioId:REF07_CreateCustomer_05
   Scenario: Create individual customer profile with invalid billing address returns bad request
+    A customer registration supplies invalid individual billing-address values.
+    The API reports the address validation errors in a bad-request problem.
     Given I have an invalid individual create customer request
       | Field                                      | Value                |
       | ExternalId                                 | auth-customer-654321 |

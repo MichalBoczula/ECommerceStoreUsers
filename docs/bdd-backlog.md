@@ -17,11 +17,12 @@ after successful master image publication; it does not deploy ACA.
   source/matrix/OpenAPI operation and status coverage in both directions, and
   reject stale feature/scenario/outline-example links. Add focused regressions
   to the existing contract test script.
-- [ ] **USERS-BDD-02 — Shared HTTP evidence and identities.** Centralize all
+- [x] **USERS-BDD-02 — Shared HTTP evidence and identities.** Centralize all
   scenario clients, including fault and race clients. Add stable scenario,
   example-instance and exchange IDs, readable scenario descriptions, paired
   method/path/query/status/body evidence and JSON/malformed/text/204 formats.
-  Keep the intentional OpenAPI bootstrap/export behavior.
+  Keep the intentional OpenAPI bootstrap/export behavior. See
+  [the evidence contract and verification scope](bdd-02-http-evidence.md).
 - [ ] **USERS-BDD-03 — Customer success scenarios.** Create/get/update
   individual/add company/update company: readable descriptions and Gherkin
   tables, full request/response evidence, explicit response expectations and

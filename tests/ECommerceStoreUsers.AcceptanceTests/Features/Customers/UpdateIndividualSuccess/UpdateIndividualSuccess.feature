@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_an_existing_customer_individual_data_returns_a_success_response_with_the_updated_individual_payload_fields.
 Feature: Update customer individual data
 
+  @allure.label.scenarioId:REF07_UpdateIndividualData_03
   Scenario: Update customer individual data returns updated customer profile
+    An existing customer changes individual and contact details while retaining its identity.
+    The update returns the customer profile with the new individual and address values.
     Given a customer exists for update individual request
       | Field                                      | Value                         |
       | ExternalId                                 | customer-update-individual-123456 |

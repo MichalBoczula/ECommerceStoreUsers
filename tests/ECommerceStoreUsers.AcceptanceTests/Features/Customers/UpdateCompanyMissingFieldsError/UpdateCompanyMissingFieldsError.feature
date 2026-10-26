@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_customer_company_data_with_a_payload_missing_required_update_company_json_properties_returns_a_bad_request.
 Feature: Update customer company data deserialization validation
 
+  @allure.label.scenarioId:REF07_UpdateCompany_02
   Scenario: Update customer company data with missing company name and shipping address returns deserialization error
+    A company-update body omits the required company-name and shipping-address members.
+    Request deserialization rejects the incomplete body with a safe bad-request problem.
     Given a customer with a company exists for update company missing fields request
       | Field                           | Value                               |
       | ExternalId                      | customer-update-company-missing-123 |

@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_existing_customer_company_data_with_invalid_update_company_contract_values_returns_a_bad_request_with_validation_errors.
 Feature: Update customer company data validation
 
+  @allure.label.scenarioId:REF07_UpdateCompany_05
   Scenario: Update existing customer company data with invalid tax id and company name returns bad request
+    A company update supplies invalid tax-identifier and company-name values.
+    The API returns their business-validation errors in a bad-request problem.
     Given a customer with a company exists for update company validation request
       | Field                           | Value                                  |
       | ExternalId                      | customer-update-company-validation-123 |

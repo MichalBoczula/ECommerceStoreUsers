@@ -1,7 +1,10 @@
 @allure.description:Ensures_adding_a_company_with_a_tax_id_that_already_exists_for_the_customer_returns_a_conflict_response.
 Feature: Add company conflict
 
+  @allure.label.scenarioId:REF07_AddCompany_01
   Scenario: Add duplicate company tax id to existing customer returns conflict response
+    An existing customer already has a company with the supplied tax identifier.
+    Adding another company with that identifier returns a conflict problem.
     Given a customer with a company exists for add company conflict request
       | Field                                           | Value                                |
       | ExternalId                                      | customer-add-company-conflict-123456 |

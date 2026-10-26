@@ -1,7 +1,10 @@
-﻿@allure.description:Ensures_creating_a_customer_with_a_payload_missing_required_individual_json_properties_returns_a_bad_request.
+@allure.description:Ensures_creating_a_customer_with_a_payload_missing_required_individual_json_properties_returns_a_bad_request.
 Feature: Create customer profile deserialization validation
 
+  @allure.label.scenarioId:REF07_CreateCustomer_03
   Scenario: Create customer profile with missing individual email and phone returns deserialization error
+    A customer registration omits required individual email and phone members.
+    Request deserialization rejects the incomplete body with a safe bad-request problem.
     Given I have a create customer request payload missing the individual email and phone
       | Field                                      | Value                         |
       | ExternalId                                 | auth-customer-missing-123456  |

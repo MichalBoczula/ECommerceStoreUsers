@@ -26,6 +26,8 @@ def scenarios(feature):
     header = None
     examples = False
     docstring = None
+    pending_tags = []
+    description = False
     for line in feature.read_text(encoding="utf-8-sig").splitlines():
         stripped = line.strip()
         if stripped.startswith(('"""', '```')):
@@ -34,15 +36,21 @@ def scenarios(feature):
             continue
         if docstring:
             continue
+        if stripped.startswith("@"):
+            pending_tags.extend(stripped.split())
+            continue
         match = re.fullmatch(r"Scenario( Outline)?:\s*(.+)", stripped)
         if match:
             outline, name = match.groups()
             assert name not in result, f"Duplicate scenario title: {feature} {name}"
-            current = {"outline": bool(outline), "examples": []}
+            current = {"outline": bool(outline), "examples": [], "tags": pending_tags, "description": []}
             result[name] = current
+            pending_tags = []
+            description = True
             examples, header = False, None
         elif stripped.startswith("Examples:"):
             assert current and current["outline"], f"Examples without outline: {feature}"
+            description = False
             examples, header = True, None
         elif examples and stripped.startswith("|"):
             # Gherkin table escapes: \n, \| and \\. Step tables are never read here.
@@ -56,6 +64,12 @@ def scenarios(feature):
                 current["examples"].append(dict(zip(header, cells)))
         elif stripped and not stripped.startswith(("#", "@")):
             examples = False
+            if re.match(r"(?:Given|When|Then|And|But|\*)\s", stripped):
+                description = False
+            elif current and description:
+                current["description"].append(stripped)
+            elif stripped.startswith("Feature:"):
+                pending_tags = []
     assert result, f"No scenarios found: {feature}"
     for name, item in result.items():
         assert not item["outline"] or item["examples"], f"Outline without examples: {feature} {name}"
@@ -72,13 +86,49 @@ def inventory():
 def verify_baseline(cases):
     baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
     assert baseline["schemaVersion"] == 1 and baseline["cases"], "Invalid BDD baseline"
-    key = lambda case: json.dumps(case, sort_keys=True, ensure_ascii=False)
+    # Task 2 adds identity metadata; retain every original behavioral parameter.
+    def key(case):
+        example = case["example"]
+        if example is not None:
+            example = {name: value for name, value in example.items() if name != "scenarioId"}
+        return json.dumps({**case, "example": example}, sort_keys=True, ensure_ascii=False)
     original = [key(case) for case in baseline["cases"]]
     current = [key(case) for case in cases]
     assert len(original) == len(set(original)), "Duplicate baseline case"
     assert len(current) == len(set(current)), "Duplicate expanded BDD case"
     missing = set(original) - set(current)
     assert not missing, f"Missing baseline BDD cases (review an explicit migration for renames): {sorted(missing)}"
+
+
+def scenario_id(item, example=None):
+    prefix = "@allure.label.scenarioId:"
+    tags = [tag[len(prefix):] for tag in item["tags"] if tag.startswith(prefix)]
+    argument = (example or {}).get("scenarioId")
+    assert len(tags) + (argument is not None) == 1, "Specify scenarioId once: scenario tag or Examples column"
+    value = argument if argument is not None else tags[0]
+    assert re.fullmatch(r"REF\d{2}_[A-Za-z0-9_]+", value), f"Invalid scenarioId: {value}"
+    return value
+
+
+def verify_evidence_sources():
+    seen = {}
+    for feature in sorted(FEATURES.rglob("*.feature")):
+        for name, item in scenarios(feature).items():
+            assert item["description"], f"Missing readable scenario description: {feature} {name}"
+            for example in (item["examples"] if item["outline"] else [None]):
+                identity = scenario_id(item, example)
+                source = (feature, name)
+                assert identity not in seen or seen[identity] == source, f"scenarioId reused by different scenarios: {identity}"
+                seen[identity] = source
+    # All BDD clients must use ScenarioApiContext. Swagger bootstrap is the only
+    # direct client: it obtains the contract before the checked pipeline exists.
+    for file in FEATURES.rglob("*.cs"):
+        if file.name in {"ScenarioApiContext.cs", "TestHooks.cs"}:
+            continue
+        code = file.read_text(encoding="utf-8-sig")
+        receivers = re.findall(r"\b(\w+)\.Create(?:Default)?Client\s*\(", code)
+        assert all(receiver in {"context", "_apiContext"} for receiver in receivers) and not re.search(
+            r"new\s+HttpClient\s*\(", code), f"BDD HTTP client bypasses shared evidence: {file}"
 
 
 def operations():
@@ -134,14 +184,20 @@ def verify():
                         {"area": row["cause"].split()[0]} if any("area" in x for x in item["examples"]) else
                         {"Case": row["cause"]} if any("Case" in x for x in item["examples"]) else {})
             assert selector, f"No matrix example selector for outline: {feature} {row['scenario']}"
-            assert any(selector.items() <= example.items() for example in item["examples"]), \
+            matching = [example for example in item["examples"] if selector.items() <= example.items()]
+            assert matching, \
                 f"Missing outline example for matrix case: {row['scenarioId']} {selector}"
+            assert any(scenario_id(item, example) == row["scenarioId"] for example in matching), \
+                f"Matrix/evidence scenarioId mismatch: {row['scenarioId']}"
+        else:
+            assert scenario_id(item) == row["scenarioId"], f"Matrix/evidence scenarioId mismatch: {row['scenarioId']}"
         statuses_by_operation[name].add(row["status"])
     missing = {name: expected - statuses_by_operation[name]
                for name, (_, _, expected) in actual.items() if expected - statuses_by_operation[name]}
     assert not missing, f"Missing documented response status/operation links: {missing}"
     cases = inventory()
     verify_baseline(cases)
+    verify_evidence_sources()
     print(f"Verified {len(actual)} named HTTP operations, "
           f"{sum(len(item[2]) for item in actual.values())} declared operation/status pairs, "
           f"{len(rows)} matrix links and {len(cases)} expanded BDD cases")

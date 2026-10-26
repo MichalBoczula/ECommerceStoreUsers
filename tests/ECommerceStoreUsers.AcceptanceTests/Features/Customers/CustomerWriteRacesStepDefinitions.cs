@@ -51,7 +51,7 @@ public sealed class CustomerWriteRacesStepDefinitions(ScenarioApiContext context
                     provider.GetRequiredService<MongoDbContext>(), delete));
         }));
         context.HttpClient.Dispose();
-        context.HttpClient = _factory.CreateDefaultClient(new OpenApiResponseHandler(context.OpenApiDocument));
+        context.HttpClient = context.CreateClient(_factory);
     }
 
     [When("the raced individual update is submitted")]
@@ -136,3 +136,4 @@ public sealed class CustomerWriteRacesStepDefinitions(ScenarioApiContext context
             => inner.UpdateCustomer(customer, token);
     }
 }
+

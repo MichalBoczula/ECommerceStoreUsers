@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_an_existing_customer_company_returns_a_success_response_with_the_updated_company_payload_fields.
 Feature: Update customer company
 
+  @allure.label.scenarioId:REF07_UpdateCompany_04
   Scenario: Update customer company returns updated customer data
+    An existing customer changes the details of an identified company.
+    The response contains the revised company data within the customer profile.
     Given a customer with company exists for update company request
       | Field                                      | Value                          |
       | ExternalId                                 | customer-update-company-123456 |

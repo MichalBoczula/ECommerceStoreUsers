@@ -225,9 +225,18 @@ public sealed class CustomerSuccessState(ScenarioApiContext context)
                     AssertEqual(current.Companies.Single(item => item.Id == company.Id), company);
             }
         }
-        Attach("Customer persistence verified", new { operation = _operation, customerId = current.Id,
-            current.Version, currentCount = after.Current.Length, historyCount = after.History.Length,
-            previousHistoryPreserved = true, updatedAt = timestamp });
+        Attach("Customer persistence verified", new
+        {
+            operation = _operation,
+            customerId = current.Id,
+            current.Version,
+            currentCount = after.Current.Length,
+            historyCount = after.History.Length,
+            previousHistoryPreserved = true,
+            updatedAt = timestamp,
+            requestStartedAt = _started,
+            requestCompletedAt = _finished
+        });
     }
 
     private async Task<Snapshot> LoadAsync()
@@ -271,8 +280,13 @@ public sealed class CustomerSuccessState(ScenarioApiContext context)
     private static object StoredProfile(CustomersHistoryDocument customer)
         => new { customer.ExternalId, customer.Individual, customer.Companies, customer.UpdatedAt };
     private static object StoredProfile(CustomerResponseDto customer)
-        => new { customer.ExternalId, customer.Individual, customer.Companies,
-            UpdatedAt = DateTimeOffset.FromUnixTimeMilliseconds(new DateTimeOffset(customer.UpdatedAt).ToUnixTimeMilliseconds()).UtcDateTime };
+        => new
+        {
+            customer.ExternalId,
+            customer.Individual,
+            customer.Companies,
+            UpdatedAt = DateTimeOffset.FromUnixTimeMilliseconds(new DateTimeOffset(customer.UpdatedAt).ToUnixTimeMilliseconds()).UtcDateTime
+        };
 
     private static void AssertEqual(object actual, object expected)
         => JsonElement.DeepEquals(JsonSerializer.SerializeToElement(actual, EvidenceJson),

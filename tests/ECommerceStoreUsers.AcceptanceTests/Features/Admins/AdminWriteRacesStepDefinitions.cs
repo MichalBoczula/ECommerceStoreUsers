@@ -19,7 +19,7 @@ using System.Text.Json;
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins;
 
 [Binding]
-public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context) : IDisposable
+public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context, AdminSuccessState success) : IDisposable
 {
     private WebApplicationFactory<ECommerceStoreUsers.API.Program>? _factory;
     private Guid _id;
@@ -37,17 +37,20 @@ public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context) :
     private async Task Arrange(Race race)
     {
         _race = race;
-        using var response = await context.HttpClient.PostAsJsonAsync("/admins", new CreateAdminRequestDto
+        var request = new CreateAdminRequestDto
         {
             ExternalId = $"admin-race-{Guid.NewGuid():N}",
             FullName = "Original Admin",
             Email = "original@example.com"
-        }, context.JsonOptions);
+        };
+        if (race == Race.None)
+        {
+            _id = (await success.SeedAsync(request)).Id;
+            return;
+        }
+        using var response = await context.HttpClient.PostAsJsonAsync("/admins", request, context.JsonOptions);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         _id = (await response.Content.ReadFromJsonAsync<AdminResponseDto>(context.JsonOptions))!.Id;
-
-        if (race == Race.None)
-            return;
 
         _factory = context.Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
         {
@@ -63,11 +66,15 @@ public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context) :
     [When("the raced admin profile update is submitted")]
     public async Task WhenUpdate()
     {
+        if (_race == Race.None)
+            await success.BeginAsync("NoOp");
         context.Response = await context.HttpClient.PutAsJsonAsync($"/admins/{_id}", new UpdateAdminProfileRequestDto
         {
             FullName = _race == Race.None ? "Original Admin" : "Attempt Admin",
             Email = _race == Race.None ? "original@example.com" : "attempt@example.com"
         }, context.JsonOptions);
+        if (_race == Race.None)
+            await success.CompleteAsync();
     }
 
     [Then("the raced admin update returns {int} with consistent history")]

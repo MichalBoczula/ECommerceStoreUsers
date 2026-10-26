@@ -25,6 +25,12 @@ column, retaining all original behavioral example values. See
 [the evidence contract](bdd-02-http-evidence.md) for attachment formats, client
 coverage, exclusions and verification.
 
+Task 3 retains those original cases and adds three Customer preservation cases:
+84 expanded BDD cases, 64 declarations in the same 42 feature files, and 103
+acceptance-project cases including the 19 standalone cases. See
+[Customer success evidence](bdd-03-customers.md) for complete profile and
+current/history assertions, fixture field names and timestamp behavior.
+
 The MongoDB.Driver 3.7.1 dependency brings in SharpCompress and Snappier.
 Infrastructure pins their versions to 0.48.1 and 1.3.1 respectively, which
 are newer than the driver's minimums. Benchmarks reference Infrastructure,

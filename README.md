@@ -230,6 +230,12 @@ not retried by that policy; see [local startup](docs/local-startup.md).
 
 ## Tests
 
+The [Users BDD backlog](docs/bdd-backlog.md) tracks the 12 evidence and design
+documentation tasks. [Task 1's baseline](docs/bdd-01-baseline.md) records 42
+feature files, 61 declared scenarios/outlines and 81 expanded BDD cases, with
+six additional non-BDD facts in the acceptance project. Existing source checks
+preserve those original cases and verify endpoint/matrix/OpenAPI response links.
+
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:
 
@@ -376,3 +382,4 @@ production requirements and deferred ideas.
 The [ADR index](docs/adr/README.md) records decisions about MongoDB history,
 public errors, acceptance isolation, CI and generated documentation. It
 distinguishes implemented decisions from the operational follow-ups above.
+

@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "112c4be06a79ef1f0653e1e2d8d6de0538e7d611",
+  "workflowRunId": 40210725093,
+  "cases": [
+    {
+      "feature": "Admins/AdminWriteRaces.feature",
+      "scenario": "REF08_AdminUpdate_409_ConcurrentChange",
+      "example": null
+    },
+    {
+      "feature": "Admins/AdminWriteRaces.feature",
+      "scenario": "REF08_AdminUpdate_404_DeletedAfterRead",
+      "example": null
+    },
+    {
+      "feature": "Admins/AdminWriteRaces.feature",
+      "scenario": "REF08_AdminUpdate_200_UnchangedProfile",
+      "example": null
+    },
+    {
+      "feature": "Admins/CreateAdminConflictError/CreateAdminConflictError.feature",
+      "scenario": "Create duplicate admin profile returns conflict response",
+      "example": null
+    },
+    {
+      "feature": "Admins/CreateAdminMissingFieldsError/CreateAdminMissingFieldsError.feature",
+      "scenario": "Create admin profile with missing external id returns deserialization error",
+      "example": null
+    },
+    {
+      "feature": "Admins/CreateAdminSuccess/CreateAdminSuccess.feature",
+      "scenario": "Create admin profile returns created admin data",
+      "example": null
+    },
+    {
+      "feature": "Admins/CreateAdminValidationError/CreateAdminValidationError.feature",
+      "scenario": "Create admin profile with invalid email returns bad request",
+      "example": null
+    },
+    {
+      "feature": "Admins/GetAdminNotFound/GetAdminNotFound.feature",
+      "scenario": "Get admin profile by missing external id returns not found response",
+      "example": null
+    },
+    {
+      "feature": "Admins/GetAdminSuccess/GetAdminSuccess.feature",
+      "scenario": "Get admin profile by external id returns existing admin data",
+      "example": null
+    },
+    {
+      "feature": "Admins/GetAdminValidationError/GetAdminValidationError.feature",
+      "scenario": "Get admin profile with blank external id returns bad request",
+      "example": null
+    },
+    {
+      "feature": "Admins/UpdateAdminMissingFieldsError/UpdateAdminMissingFieldsError.feature",
+      "scenario": "Update admin profile with missing full name returns deserialization error",
+      "example": null
+    },
+    {
+      "feature": "Admins/UpdateAdminNotFound/UpdateAdminNotFound.feature",
+      "scenario": "Update admin profile by missing admin id returns not found response",
+      "example": null
+    },
+    {
+      "feature": "Admins/UpdateAdminSuccess/UpdateAdminSuccess.feature",
+      "scenario": "Update admin profile returns updated admin data",
+      "example": null
+    },
+    {
+      "feature": "Admins/UpdateAdminValidationError/UpdateAdminValidationError.feature",
+      "scenario": "Update admin profile with invalid email returns bad request",
+      "example": null
+    },
+    {
+      "feature": "Common/AcceptanceIsolation.feature",
+      "scenario": "A previous scenario cannot leave customer documents in this scenario (<run>)",
+      "example": {
+        "run": "first"
+      }
+    },
+    {
+      "feature": "Common/AcceptanceIsolation.feature",
+      "scenario": "A previous scenario cannot leave customer documents in this scenario (<run>)",
+      "example": {
+        "run": "second"
+      }
+    },
+    {
+      "feature": "Common/AcceptanceIsolation.feature",
+      "scenario": "A handled dependency failure does not write customer documents",
+      "example": null
+    },
+    {
+      "feature": "Common/ApiProblemContract.feature",
+      "scenario": "Framework failures have the same JSON problem contract",
+      "example": {
+        "Case": "route",
+        "Status": "404",
+        "Code": "route_not_found"
+      }
+    },
+    {
+      "feature": "Common/ApiProblemContract.feature",
+      "scenario": "Framework failures have the same JSON problem contract",
+      "example": {
+        "Case": "method",
+        "Status": "405",
+        "Code": "method_not_allowed"
+      }
+    },
+    {
+      "feature": "Common/ApiProblemContract.feature",
+      "scenario": "Framework failures have the same JSON problem contract",
+      "example": {
+        "Case": "media",
+        "Status": "415",
+        "Code": "unsupported_media_type"
+      }
+    },
+    {
+      "feature": "Common/ApiProblemContract.feature",
+      "scenario": "Framework failures have the same JSON problem contract",
+      "example": {
+        "Case": "json",
+        "Status": "400",
+        "Code": "invalid_json"
+      }
+    },
+    {
+      "feature": "Common/ApiProblemContract.feature",
+      "scenario": "Framework failures have the same JSON problem contract",
+      "example": {
+        "Case": "type",
+        "Status": "400",
+        "Code": "invalid_json"
+      }
+    },
+    {
+      "feature": "Common/ApiProblemContract.feature",
+      "scenario": "Framework failures have the same JSON problem contract",
+      "example": {
+        "Case": "null",
+        "Status": "400",
+        "Code": "invalid_json"
+      }
+    },
+    {
+      "feature": "Common/ApiProblemContract.feature",
+      "scenario": "Framework failures have the same JSON problem contract",
+      "example": {
+        "Case": "missing",
+        "Status": "400",
+        "Code": "invalid_json"
+      }
+    },
+    {
+      "feature": "Common/ApiProblemContract.feature",
+      "scenario": "Framework failures have the same JSON problem contract",
+      "example": {
+        "Case": "body",
+        "Status": "400",
+        "Code": "invalid_request"
+      }
+    },
+    {
+      "feature": "Common/HealthEndpoint.feature",
+      "scenario": "Health endpoint returns success",
+      "example": null
+    },
+    {
+      "feature": "Common/HealthEndpoint.feature",
+      "scenario": "Replica set is ready for transactional writes",
+      "example": null
+    },
+    {
+      "feature": "Common/UnexpectedServerErrors.feature",
+      "scenario": "Endpoint returns a safe 500 response when its dependency fails",
+      "example": {
+        "area": "customer"
+      }
+    },
+    {
+      "feature": "Common/UnexpectedServerErrors.feature",
+      "scenario": "Endpoint returns a safe 500 response when its dependency fails",
+      "example": {
+        "area": "admin"
+      }
+    },
+    {
+      "feature": "Common/UnexpectedServerErrors.feature",
+      "scenario": "Endpoint returns a safe 500 response when its dependency fails",
+      "example": {
+        "area": "favorites"
+      }
+    },
+    {
+      "feature": "Common/UnexpectedServerErrors.feature",
+      "scenario": "Endpoint returns a safe 500 response when its dependency fails",
+      "example": {
+        "area": "favorite-add"
+      }
+    },
+    {
+      "feature": "Common/UnexpectedServerErrors.feature",
+      "scenario": "Endpoint returns a safe 500 response when its dependency fails",
+      "example": {
+        "area": "favorite-remove"
+      }
+    },
+    {
+      "feature": "Common/UnexpectedServerErrors.feature",
+      "scenario": "Endpoint returns a safe 500 response when its dependency fails",
+      "example": {
+        "area": "favorite-clear"
+      }
+    },
+    {
+      "feature": "Common/UnexpectedServerErrors.feature",
+      "scenario": "Endpoint returns a safe 500 response when its dependency fails",
+      "example": {
+        "area": "documentation-flows"
+      }
+    },
+    {
+      "feature": "Common/UnexpectedServerErrors.feature",
+      "scenario": "Endpoint returns a safe 500 response when its dependency fails",
+      "example": {
+        "area": "documentation-validations"
+      }
+    },
+    {
+      "feature": "Common/WriteFailures.feature",
+      "scenario": "<operationId> reports a safe 500 without changing stored data",
+      "example": {
+        "operationId": "CreateCustomer"
+      }
+    },
+    {
+      "feature": "Common/WriteFailures.feature",
+      "scenario": "<operationId> reports a safe 500 without changing stored data",
+      "example": {
+        "operationId": "UpdateIndividualData"
+      }
+    },
+    {
+      "feature": "Common/WriteFailures.feature",
+      "scenario": "<operationId> reports a safe 500 without changing stored data",
+      "example": {
+        "operationId": "AddCompany"
+      }
+    },
+    {
+      "feature": "Common/WriteFailures.feature",
+      "scenario": "<operationId> reports a safe 500 without changing stored data",
+      "example": {
+        "operationId": "UpdateCompany"
+      }
+    },
+    {
+      "feature": "Common/WriteFailures.feature",
+      "scenario": "<operationId> reports a safe 500 without changing stored data",
+      "example": {
+        "operationId": "CreateAdmin"
+      }
+    },
+    {
+      "feature": "Common/WriteFailures.feature",
+      "scenario": "<operationId> reports a safe 500 without changing stored data",
+      "example": {
+        "operationId": "UpdateAdminProfile"
+      }
+    },
+    {
+      "feature": "Customers/AddCompanyConflictError/AddCompanyConflictError.feature",
+      "scenario": "Add duplicate company tax id to existing customer returns conflict response",
+      "example": null
+    },
+    {
+      "feature": "Customers/AddCompanyMissingFieldsError/AddCompanyMissingFieldsError.feature",
+      "scenario": "Add company to existing customer with missing company name returns deserialization error",
+      "example": null
+    },
+    {
+      "feature": "Customers/AddCompanyNotFound/AddCompanyNotFound.feature",
+      "scenario": "Add company by missing customer id returns not found response",
+      "example": null
+    },
+    {
+      "feature": "Customers/AddCompanySuccess/AddCompanySuccess.feature",
+      "scenario": "Add company to customer returns updated customer data",
+      "example": null
+    },
+    {
+      "feature": "Customers/AddCompanyValidationError/AddCompanyValidationError.feature",
+      "scenario": "Add company with invalid tax id returns bad request",
+      "example": null
+    },
+    {
+      "feature": "Customers/CreateCustomerConflictError/CreateCustomerConflictError.feature",
+      "scenario": "Create duplicate individual customer profile returns conflict response",
+      "example": null
+    },
+    {
+      "feature": "Customers/CreateCustomerDuplicateCompaniesConflictError/CreateCustomerDuplicateCompaniesConflictError.feature",
+      "scenario": "Create customer with duplicate company tax ids returns conflict response",
+      "example": null
+    },
+    {
+      "feature": "Customers/CreateCustomerMissingFieldsError/CreateCustomerMissingFieldsError.feature",
+      "scenario": "Create customer profile with missing individual email and phone returns deserialization error",
+      "example": null
+    },
+    {
+      "feature": "Customers/CreateCustomerSuccess/CreateCustomerSuccess.feature",
+      "scenario": "Create customer profile returns created individual and company data",
+      "example": null
+    },
+    {
+      "feature": "Customers/CreateCustomerValidationError/CreateCustomerValidationError.feature",
+      "scenario": "Create individual customer profile with invalid billing address returns bad request",
+      "example": null
+    },
+    {
+      "feature": "Customers/CustomerWriteRaces.feature",
+      "scenario": "REF08_CustomerUpdate_409_ConcurrentChange",
+      "example": null
+    },
+    {
+      "feature": "Customers/CustomerWriteRaces.feature",
+      "scenario": "REF08_CustomerUpdate_404_DeletedAfterRead",
+      "example": null
+    },
+    {
+      "feature": "Customers/GetCustomerNotFound/GetCustomerNotFound.feature",
+      "scenario": "Get customer profile by missing external id returns not found response",
+      "example": null
+    },
+    {
+      "feature": "Customers/GetCustomerSuccess/GetCustomerSuccess.feature",
+      "scenario": "Get customer profile by external id returns existing customer data",
+      "example": null
+    },
+    {
+      "feature": "Customers/GetCustomerValidationError/GetCustomerValidationError.feature",
+      "scenario": "Get customer profile with empty guid external id returns bad request",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateCompanyConflictError/UpdateCompanyConflictError.feature",
+      "scenario": "Update company tax id to another existing company tax id returns conflict response",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateCompanyMissingFieldsError/UpdateCompanyMissingFieldsError.feature",
+      "scenario": "Update customer company data with missing company name and shipping address returns deserialization error",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateCompanyNotFound/UpdateCompanyNotFound.feature",
+      "scenario": "Update missing company for existing customer returns not found response",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateCompanySuccess/UpdateCompanySuccess.feature",
+      "scenario": "Update customer company returns updated customer data",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateCompanyValidationError/UpdateCompanyValidationError.feature",
+      "scenario": "Update existing customer company data with invalid tax id and company name returns bad request",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateIndividualMissingFieldsError/UpdateIndividualMissingFieldsError.feature",
+      "scenario": "Update customer individual data with missing individual email and phone returns deserialization error",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateIndividualNotFound/UpdateIndividualNotFound.feature",
+      "scenario": "Update individual data by missing customer id returns not found response",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateIndividualSuccess/UpdateIndividualSuccess.feature",
+      "scenario": "Update customer individual data returns updated customer profile",
+      "example": null
+    },
+    {
+      "feature": "Customers/UpdateIndividualValidationError/UpdateIndividualValidationError.feature",
+      "scenario": "Update existing customer individual data with invalid contact values returns bad request",
+      "example": null
+    },
+    {
+      "feature": "Documentation/DocumentationEndpoints.feature",
+      "scenario": "Get all flow descriptors",
+      "example": null
+    },
+    {
+      "feature": "Documentation/DocumentationEndpoints.feature",
+      "scenario": "Get all validation descriptors",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Add a product to favorites",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Add a favorite with invalid identifiers",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Add a favorite without the required product identifier",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Add the same product twice",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Add a favorite inserted by another request after the existence check",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Get a client's favorites",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Get favorites with an empty client identifier",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Remove a product from favorites",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Remove a favorite with empty identifiers",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Remove a favorite that does not exist",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Remove a favorite deleted by another request after loading it",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Clear all favorites for a client",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Clear favorites for a client with no products is a successful no-op",
+      "example": null
+    },
+    {
+      "feature": "Favorites/FavoritesEndpoints.feature",
+      "scenario": "Clear favorites with an empty client identifier",
+      "example": null
+    }
+  ]
+}

@@ -32,18 +32,21 @@ def resolve(schema, components):
 
 def check(document, generated):
     components = document.get("components", {}).get("schemas", {})
+    expected_names = [item["operationId"] for item in generated["operations"]]
+    assert len(expected_names) == len(set(expected_names)), "Duplicate operationId in generated links"
     actual = {}
     for path, path_item in document["paths"].items():
         for method, operation in path_item.items():
             if method not in VERBS:
                 continue
             name = operation.get("operationId")
-            if name not in {item["operationId"] for item in generated["operations"]}:
-                continue  # Health and framework routes are outside the acceptance matrix.
+            if method == "get" and normalize(path) in {"/health", "/health/live", "/health/ready"}:
+                continue  # Explicit technical probes; no blanket unknown-operation exclusion.
+            assert name in expected_names, f"OpenAPI operation without acceptance links: {method.upper()} {path} ({name})"
             assert name not in actual, f"Duplicate operationId in OpenAPI: {name}"
             actual[name] = (method.upper(), normalize(path), operation)
-    assert set(actual) == {item["operationId"] for item in generated["operations"]}, \
-        f"OpenAPI operation mismatch: missing {set(item['operationId'] for item in generated['operations']) - set(actual)}"
+    assert set(actual) == set(expected_names), \
+        f"OpenAPI operation mismatch: missing {set(expected_names) - set(actual)}"
     checked = 0
     for item in generated["operations"]:
         name = item["operationId"]
@@ -70,6 +73,8 @@ def check(document, generated):
                     assert {"title", "status", "detail", "type"} <= set(props), \
                         f"Incomplete problem DTO: {name} {status}"
             checked += 1
+        uncovered = set(responses) - {str(case["status"]) for case in item["scenarios"]}
+        assert not uncovered, f"OpenAPI response without acceptance case: {name} {sorted(uncovered)}"
     return len(actual), checked
 
 
@@ -83,3 +88,4 @@ if __name__ == "__main__":
     except (AssertionError, KeyError, OSError, ValueError) as error:
         print(f"OpenAPI contract drift: {error}", file=sys.stderr)
         sys.exit(1)
+

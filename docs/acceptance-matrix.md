@@ -9,11 +9,20 @@ the actual endpoint registration. Health endpoints and framework-level
 
 `python3 scripts/check-acceptance-matrix.py` runs locally and in CI. It compares
 the matrix with all named endpoint registrations and declared response statuses,
-checks unique IDs, and confirms the referenced feature/scenario and outline
-example exist. For a new distinct response cause, add a scenario and matrix row.
+checks unique IDs, and confirms the referenced feature/scenario and the matching
+outline's example exist. Complete endpoint registrations are read, including
+response metadata after `.WithName` and nested generic DTOs. Both missing and
+undeclared operation/status links fail. The exported OpenAPI check also rejects
+unlinked operations and response statuses, with only the three explicit GET
+health probes excluded. For a new distinct response cause, add a scenario and matrix row.
 The matrix is a navigation aid; the HTTP and database assertions are in the
 linked acceptance tests. REF-08 adds race cases as their behavior is implemented;
 the remaining concurrency and transactional cases are still tracked there.
+
+The same source stage preserves the original 81 expanded cases in
+[`bdd-baseline.json`](bdd-baseline.json). See [USERS-BDD-01](bdd-01-baseline.md)
+for the 42-feature/61-declaration inventory and the scope of this guard, and
+[the BDD backlog](bdd-backlog.md) for the following tasks.
 
 Customer updates now compare the server-side version loaded from MongoDB with
 the stored version before replacing the document. A changed version returns
@@ -30,3 +39,4 @@ without incrementing the version or adding history. This does not turn the
 HTTP DTO into a client-supplied precondition: a later sequential request
 based on stale client state remains a separate contract decision. Existing
 Admin documents without `Version` are treated as version zero on first write.
+

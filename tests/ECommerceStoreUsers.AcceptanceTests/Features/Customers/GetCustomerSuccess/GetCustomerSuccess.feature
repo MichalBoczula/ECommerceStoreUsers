@@ -1,7 +1,10 @@
 @allure.description:Ensures_getting_an_existing_customer_profile_returns_a_success_response_with_the_customer_payload_fields.
 Feature: Get customer profile
 
+  @allure.label.scenarioId:REF07_GetCustomerByExternalId_02
   Scenario: Get customer profile by external id returns existing customer data
+    An existing customer is located using its external identity reference.
+    The response contains the stored individual, address and company details.
     Given a customer profile exists for get customer request
       | Field                                      | Value                    |
       | ExternalId                                 | auth-get-customer-123456 |

@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_a_company_with_a_tax_id_that_is_already_used_by_another_company_for_the_customer_returns_a_conflict_response.
 Feature: Update company conflict
 
+  @allure.label.scenarioId:REF07_UpdateCompany_01
   Scenario: Update company tax id to another existing company tax id returns conflict response
+    A customer has two companies and an update would give them the same tax identifier.
+    The API returns a conflict problem for the duplicate company data.
     Given a customer with two companies exists for update company conflict request
       | Field                                           | Value                                      |
       | ExternalId                                      | customer-update-company-conflict-123456    |

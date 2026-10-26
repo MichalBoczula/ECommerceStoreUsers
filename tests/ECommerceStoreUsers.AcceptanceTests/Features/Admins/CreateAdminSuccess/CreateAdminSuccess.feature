@@ -1,7 +1,10 @@
-﻿@allure.description:Ensures_creating_an_admin_profile_returns_a_success_response_with_the_created_payload_fields.
+@allure.description:Ensures_creating_an_admin_profile_returns_a_success_response_with_the_created_payload_fields.
 Feature: Create admin profile
 
+  @allure.label.scenarioId:REF07_CreateAdmin_03
   Scenario: Create admin profile returns created admin data
+    A new administrator registers an external identity, full name and email address.
+    The create request returns the generated administrator identifier and profile data.
     Given I have a valid create admin request
       | Field      | Value             |
       | ExternalId | auth-678901234     |

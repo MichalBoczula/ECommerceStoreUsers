@@ -1,7 +1,10 @@
 @allure.description:Ensures_adding_a_company_with_a_payload_missing_required_json_properties_returns_a_bad_request_after_customer_creation.
 Feature: Add company deserialization validation
 
+  @allure.label.scenarioId:REF07_AddCompany_02
   Scenario: Add company to existing customer with missing company name returns deserialization error
+    A company-add request omits the required company-name member.
+    Request deserialization returns a safe bad-request problem.
     Given a customer exists for add company missing fields request
       | Field                   | Value                                |
       | ExternalId              | customer-company-missing-123456      |

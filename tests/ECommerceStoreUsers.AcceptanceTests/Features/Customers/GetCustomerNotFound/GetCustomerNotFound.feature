@@ -1,7 +1,10 @@
 @allure.description:Ensures_getting_a_missing_customer_profile_by_external_id_returns_a_not_found_problem_details_response.
 Feature: Get customer profile not found
 
+  @allure.label.scenarioId:REF07_GetCustomerByExternalId_01
   Scenario: Get customer profile by missing external id returns not found response
+    No customer profile matches the requested external identity reference.
+    The lookup returns a not-found problem.
     Given I have a missing customer external id
       | Field      | Value                     |
       | ExternalId | auth-missing-404-customer |

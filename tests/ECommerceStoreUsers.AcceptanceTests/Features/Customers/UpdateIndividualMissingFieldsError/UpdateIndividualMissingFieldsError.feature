@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_customer_individual_data_with_a_payload_missing_required_individual_json_properties_returns_a_bad_request.
 Feature: Update customer individual data deserialization validation
 
+  @allure.label.scenarioId:REF07_UpdateIndividualData_01
   Scenario: Update customer individual data with missing individual email and phone returns deserialization error
+    An individual-data update omits required email and phone members.
+    Request deserialization returns a safe bad-request problem.
     Given a customer exists for update individual missing fields request
       | Field                   | Value                                  |
       | ExternalId              | customer-update-individual-missing-123 |

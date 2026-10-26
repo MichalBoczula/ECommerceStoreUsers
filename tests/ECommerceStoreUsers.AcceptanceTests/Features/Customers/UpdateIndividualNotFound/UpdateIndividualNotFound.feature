@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_individual_data_for_a_missing_customer_by_customer_id_returns_a_not_found_problem_details_response.
 Feature: Update customer individual data not found
 
+  @allure.label.scenarioId:REF07_UpdateIndividualData_02
   Scenario: Update individual data by missing customer id returns not found response
+    An individual-data update targets a customer identifier that does not exist.
+    The API returns a not-found problem for the missing customer.
     Given I have a missing customer update individual request
       | Field                                    | Value                                |
       | CustomerId                               | 33333333-3333-3333-3333-333333333333 |

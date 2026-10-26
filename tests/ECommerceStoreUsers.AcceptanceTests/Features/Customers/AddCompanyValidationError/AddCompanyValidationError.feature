@@ -1,7 +1,10 @@
 @allure.description:Ensures_adding_a_company_with_invalid_company_data_to_an_existing_customer_returns_a_bad_request_with_validation_errors.
 Feature: Add customer company validation
 
+  @allure.label.scenarioId:REF07_AddCompany_05
   Scenario: Add company with invalid tax id returns bad request
+    A company-add request supplies an invalid tax identifier.
+    The API returns a bad-request problem containing the tax-identifier validation error.
     Given a customer exists for add company validation request
       | Field                           | Value                           |
       | ExternalId                      | customer-company-validation-123 |

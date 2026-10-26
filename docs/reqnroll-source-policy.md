@@ -17,6 +17,14 @@ scenarios are enabled. For a clean checkout, run the acceptance test project
 from the repository root with the command in `AGENTS.md`. Inspect the test
 discovery/output for the expected scenarios, including both creation flows.
 
+Task 2 adds descriptions, scenario/instance identities and shared HTTP evidence
+without replacing those original cases. Its 13 standalone recorder-test cases
+bring the current expected acceptance total to 100: 81 BDD plus 19 non-BDD test
+cases. The baseline comparison excludes only the added `scenarioId` metadata
+column, retaining all original behavioral example values. See
+[the evidence contract](bdd-02-http-evidence.md) for attachment formats, client
+coverage, exclusions and verification.
+
 The MongoDB.Driver 3.7.1 dependency brings in SharpCompress and Snappier.
 Infrastructure pins their versions to 0.48.1 and 1.3.1 respectively, which
 are newer than the driver's minimums. Benchmarks reference Infrastructure,

@@ -1,7 +1,10 @@
-﻿@allure.description:Ensures_creating_a_duplicate_customer_profile_returns_a_conflict_response.
+@allure.description:Ensures_creating_a_duplicate_customer_profile_returns_a_conflict_response.
 Feature: Create customer profile conflict
 
+  @allure.label.scenarioId:REF07_CreateCustomer_01
   Scenario: Create duplicate individual customer profile returns conflict response
+    A customer profile already exists for the supplied external identity.
+    A second create request returns a conflict problem instead of creating a duplicate profile.
     Given I have a valid create individual customer request payload
       | Field                                      | Value                          |
       | ExternalId                                 | auth-customer-conflict-123456  |

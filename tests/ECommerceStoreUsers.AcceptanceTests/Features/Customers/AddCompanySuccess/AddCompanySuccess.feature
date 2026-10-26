@@ -1,7 +1,10 @@
 @allure.description:Ensures_adding_a_company_to_an_existing_customer_returns_a_success_response_with_the_company_payload_fields.
 Feature: Add customer company
 
+  @allure.label.scenarioId:REF07_AddCompany_04
   Scenario: Add company to customer returns updated customer data
+    An existing customer adds company details with a new tax identifier and addresses.
+    The response contains the updated customer and the newly assigned company identifier.
     Given a customer exists for add company request
       | Field                           | Value                         |
       | ExternalId                      | customer-company-123456       |

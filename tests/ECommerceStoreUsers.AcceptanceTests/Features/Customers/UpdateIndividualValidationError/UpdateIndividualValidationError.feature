@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_existing_customer_individual_data_with_invalid_contact_values_returns_a_bad_request_with_validation_errors.
 Feature: Update customer individual data validation
 
+  @allure.label.scenarioId:REF07_UpdateIndividualData_04
   Scenario: Update existing customer individual data with invalid contact values returns bad request
+    An existing customer submits invalid individual name, contact and address values.
+    The API returns the corresponding business-validation errors in a bad-request problem.
     Given a customer exists for update individual validation request
       | Field                           | Value                                 |
       | ExternalId                      | customer-update-individual-validation |

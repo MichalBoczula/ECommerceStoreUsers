@@ -86,7 +86,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
                     }
                 }));
 
-            _client = _factory.CreateClient();
+            _client = _apiContext.CreateClient(_factory);
         }
 
         [When("I request the failing {string} endpoint")]
@@ -328,3 +328,4 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         }
     }
 }
+

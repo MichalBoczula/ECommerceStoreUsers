@@ -144,6 +144,56 @@ class BddInventoryTests(unittest.TestCase):
         cases = matrix.inventory() + [{"feature": "New.feature", "scenario": "New behavior", "example": None}]
         matrix.verify_baseline(cases)
 
+    def test_added_identity_column_preserves_original_behavioral_examples(self):
+        cases = json.loads(matrix.BASELINE.read_text(encoding="utf-8"))["cases"]
+        for case in cases:
+            if case["example"] is not None:
+                case["example"]["scenarioId"] = "REF09_Metadata"
+        matrix.verify_baseline(cases)
+
+    def test_identity_must_come_from_exactly_one_source(self):
+        item = {"tags": ["@allure.label.scenarioId:REF09_Metadata"]}
+        self.assertEqual("REF09_Metadata", matrix.scenario_id(item))
+        self.assertEqual("REF09_Example", matrix.scenario_id({"tags": []}, {"scenarioId": "REF09_Example"}))
+        for broken, example in [({"tags": []}, None), (item, {"scenarioId": "REF09_Example"})]:
+            with self.assertRaisesRegex(AssertionError, "Specify scenarioId once"):
+                matrix.scenario_id(broken, example)
+
+    def test_missing_description_or_identity_and_bypassing_clients_fail(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            feature = root / "Example.feature"
+            valid = 'Feature: Evidence\n  @allure.label.scenarioId:REF09_Metadata\n  Scenario: Example\n' \
+                    '    A readable explanation.\n    Given a step\n'
+            feature.write_text(valid, encoding="utf-8")
+            with patch.object(matrix, "FEATURES", root):
+                matrix.verify_evidence_sources()
+                feature.write_text(valid.replace('    A readable explanation.\n', ''), encoding="utf-8")
+                with self.assertRaisesRegex(AssertionError, "Missing readable scenario description"):
+                    matrix.verify_evidence_sources()
+                feature.write_text(valid.replace('  @allure.label.scenarioId:REF09_Metadata\n', ''), encoding="utf-8")
+                with self.assertRaisesRegex(AssertionError, "Specify scenarioId once"):
+                    matrix.verify_evidence_sources()
+                feature.write_text(valid, encoding="utf-8")
+                step = root / "Steps.cs"
+                for bypass in ['factory.CreateClient()', 'factory.CreateDefaultClient(capture)', 'new HttpClient()']:
+                    step.write_text(bypass, encoding="utf-8")
+                    with self.assertRaisesRegex(AssertionError, "BDD HTTP client bypasses shared evidence"):
+                        matrix.verify_evidence_sources()
+                step.write_text('context.CreateClient(factory)', encoding="utf-8")
+                matrix.verify_evidence_sources()
+
+    def test_reusing_identity_for_different_scenarios_fails(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "Example.feature").write_text(
+                'Feature: Evidence\n' + ''.join(
+                    f'  @allure.label.scenarioId:REF09_Same\n  Scenario: {name}\n'
+                    '    A readable explanation.\n    Given a step\n' for name in ('First', 'Second')), encoding="utf-8")
+            with patch.object(matrix, "FEATURES", root), self.assertRaisesRegex(
+                    AssertionError, "scenarioId reused by different scenarios"):
+                matrix.verify_evidence_sources()
+
     def test_multiple_example_blocks_and_escaped_values_ignore_step_tables_and_docstrings(self):
         with TemporaryDirectory() as directory:
             feature = Path(directory) / "Example.feature"

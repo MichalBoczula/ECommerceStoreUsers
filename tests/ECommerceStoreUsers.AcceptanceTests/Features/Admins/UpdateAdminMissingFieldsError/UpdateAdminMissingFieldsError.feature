@@ -1,7 +1,10 @@
 @allure.description:Ensures_updating_an_admin_profile_with_a_payload_missing_required_json_properties_returns_a_bad_request.
 Feature: Update admin profile deserialization validation
 
+  @allure.label.scenarioId:REF07_UpdateAdminProfile_01
   Scenario: Update admin profile with missing full name returns deserialization error
+    An administrator update omits the required full-name member.
+    Request deserialization rejects the incomplete body with a safe bad-request problem.
     Given I have an existing admin profile and an update admin request payload missing the full name
       | Field              | Value                         |
       | ExistingExternalId | auth-update-missing-456789    |

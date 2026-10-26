@@ -4,6 +4,8 @@ Feature: Safe unexpected server errors
   Exception types, messages and stack traces must not be exposed to API consumers.
 
   Scenario Outline: Endpoint returns a safe 500 response when its dependency fails
+    An endpoint is invoked with a deliberately failing repository or documentation provider.
+    The response reports a safe server error without exposing the injected exception's internal details.
     Given the "<area>" dependency fails unexpectedly
     When I request the failing "<area>" endpoint
     Then a safe custom server error is returned
@@ -13,12 +15,12 @@ Feature: Safe unexpected server errors
       | Detail     | An unexpected error occurred. |
 
     Examples:
-      | area                      |
-      | customer                  |
-      | admin                     |
-      | favorites                 |
-      | favorite-add              |
-      | favorite-remove           |
-      | favorite-clear            |
-      | documentation-flows       |
-      | documentation-validations |
+      | area                      | scenarioId                          |
+      | customer                  | REF07_GetCustomerByExternalId_04    |
+      | admin                     | REF07_GetAdminByExternalId_04       |
+      | favorites                 | REF07_GetFavoritesByClientId_03     |
+      | favorite-add              | REF07_AddProductToFavorites_05      |
+      | favorite-remove           | REF07_RemoveProductFromFavorites_04 |
+      | favorite-clear            | REF07_ClearClientFavorites_03       |
+      | documentation-flows       | REF07_GetFlowDocumentation_02       |
+      | documentation-validations | REF07_GetValidationDocumentation_02 |

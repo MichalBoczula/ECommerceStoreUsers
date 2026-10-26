@@ -235,6 +235,9 @@ documentation tasks. [Task 1's baseline](docs/bdd-01-baseline.md) records 42
 feature files, 61 declared scenarios/outlines and 81 expanded BDD cases, with
 six additional non-BDD facts in the acceptance project. Existing source checks
 preserve those original cases and verify endpoint/matrix/OpenAPI response links.
+Task 2 adds [shared HTTP evidence and stable identities](docs/bdd-02-http-evidence.md)
+to all BDD clients. Its 13 recorder-test cases bring the expected acceptance
+project total to 100 while retaining the 81 BDD cases.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:

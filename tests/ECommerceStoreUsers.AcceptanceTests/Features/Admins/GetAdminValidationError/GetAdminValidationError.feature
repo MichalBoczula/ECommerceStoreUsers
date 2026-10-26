@@ -1,7 +1,10 @@
-﻿@allure.description:Ensures_getting_an_admin_profile_with_invalid_external_id_returns_a_bad_request_with_validation_errors.
+@allure.description:Ensures_getting_an_admin_profile_with_invalid_external_id_returns_a_bad_request_with_validation_errors.
 Feature: Get admin profile validation
 
+  @allure.label.scenarioId:REF07_GetAdminByExternalId_03
   Scenario: Get admin profile with blank external id returns bad request
+    An administrator lookup supplies a blank external-identity value.
+    The API returns a bad-request validation problem.
     Given I have an invalid get admin external id
       | Field      | Value       |
       | ExternalId | <whitespace> |

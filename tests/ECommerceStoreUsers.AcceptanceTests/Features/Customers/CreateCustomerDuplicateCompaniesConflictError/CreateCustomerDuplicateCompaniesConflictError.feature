@@ -1,7 +1,10 @@
 @allure.description:Ensures_creating_a_customer_with_duplicate_company_tax_ids_returns_a_conflict_response.
 Feature: Create customer duplicate companies conflict
 
+  @allure.label.scenarioId:REF07_CreateCustomer_02
   Scenario: Create customer with duplicate company tax ids returns conflict response
+    A customer registration contains two companies with the same tax identifier.
+    The request returns a conflict problem for the duplicate company data.
     Given I have a create customer duplicate companies request payload
       | Field                                      | Value                                 |
       | ExternalId                                 | auth-customer-duplicate-companies-123 |

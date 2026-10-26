@@ -1,3 +1,4 @@
+using Allure.Net.Commons;
 using Reqnroll;
 using System.Text.Json;
 
@@ -7,13 +8,17 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
     public sealed class TestHooks
     {
         private readonly ScenarioApiContext _apiContext;
+        private readonly ScenarioContext _scenarioContext;
+        private readonly FeatureContext _featureContext;
         private ApplicationFactory? _factory;
         private JsonDocument? _openApi;
         private string? _databaseName;
 
-        public TestHooks(ScenarioApiContext apiContext)
+        public TestHooks(ScenarioApiContext apiContext, ScenarioContext scenarioContext, FeatureContext featureContext)
         {
             _apiContext = apiContext;
+            _scenarioContext = scenarioContext;
+            _featureContext = featureContext;
         }
 
         [BeforeTestRun]
@@ -32,6 +37,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         [BeforeScenario]
         public async Task BeforeScenario()
         {
+            _apiContext.InitializeEvidence(_scenarioContext.ScenarioInfo, _featureContext.FeatureInfo.Title);
             _databaseName = $"acceptance-{Guid.NewGuid():N}";
             try
             {
@@ -44,7 +50,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
                 using (var swaggerClient = _factory.CreateClient())
                     _openApi = JsonDocument.Parse(await swaggerClient.GetStringAsync("/swagger/v1/swagger.json"));
                 _apiContext.OpenApiDocument = _openApi;
-                _apiContext.HttpClient = _factory.CreateDefaultClient(new OpenApiResponseHandler(_openApi));
+                _apiContext.HttpClient = _apiContext.CreateClient(_factory);
             }
             catch
             {
@@ -54,7 +60,25 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         }
 
         [AfterScenario]
-        public Task AfterScenario() => CleanupAsync();
+        public async Task AfterScenario()
+        {
+            try { _apiContext.FlushEvidence(); }
+            finally { await CleanupAsync(); }
+        }
+
+        [BeforeStep]
+        public void BeforeStep()
+        {
+            _apiContext.BeginStep(_scenarioContext.StepContext.StepInfo.StepDefinitionType.ToString());
+            _apiContext.PublishEvidenceIdentity();
+            var description = _scenarioContext.ScenarioInfo.Description;
+            if (string.IsNullOrWhiteSpace(description))
+                throw new InvalidOperationException("A readable scenario description is required for BDD evidence.");
+            AllureApi.SetDescription(description);
+        }
+
+        [AfterStep]
+        public void AfterStep() => _apiContext.FlushEvidence();
 
         private async Task CleanupAsync()
         {
@@ -99,3 +123,4 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         }
     }
 }
+

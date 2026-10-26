@@ -23,10 +23,11 @@ after successful master image publication; it does not deploy ACA.
   method/path/query/status/body evidence and JSON/malformed/text/204 formats.
   Keep the intentional OpenAPI bootstrap/export behavior. See
   [the evidence contract and verification scope](bdd-02-http-evidence.md).
-- [ ] **USERS-BDD-03 — Customer success scenarios.** Create/get/update
+- [x] **USERS-BDD-03 — Customer success scenarios.** Create/get/update
   individual/add company/update company: readable descriptions and Gherkin
   tables, full request/response evidence, explicit response expectations and
-  persisted current/history/version assertions.
+  persisted current/history/version assertions. See
+  [Customer coverage and timestamp behavior](bdd-03-customers.md).
 - [ ] **USERS-BDD-04 — Admin success scenarios.** Create/get/update with full
   response and current/history/version assertions. An unchanged update is a
   successful no-op without a new version/history entry.

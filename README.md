@@ -238,6 +238,8 @@ preserve those original cases and verify endpoint/matrix/OpenAPI response links.
 Task 2 adds [shared HTTP evidence and stable identities](docs/bdd-02-http-evidence.md)
 to all BDD clients. Its 13 recorder-test cases bring the expected acceptance
 project total to 100 while retaining the 81 BDD cases.
+Task 3 strengthens [Customer success and persistence evidence](docs/bdd-03-customers.md)
+and adds three preservation cases: 84 BDD cases and 103 acceptance-project cases.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:

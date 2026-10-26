@@ -23,6 +23,14 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         public void PublishEvidenceIdentity() => Evidence.PublishIdentity();
         public void FlushEvidence() => Evidence.Flush();
 
+        public void RecordEvidence(string name, object value) => Evidence.Record(name, new
+        {
+            service = "users",
+            scenarioId = Evidence.ScenarioId,
+            instanceId = Evidence.InstanceId,
+            value
+        });
+
         public HttpClient CreateClient(WebApplicationFactory<Program> factory)
             // Capture inside validation so the real response survives a contract failure.
             => factory.CreateDefaultClient(new OpenApiResponseHandler(OpenApiDocument), new HttpEvidenceHandler(Evidence));

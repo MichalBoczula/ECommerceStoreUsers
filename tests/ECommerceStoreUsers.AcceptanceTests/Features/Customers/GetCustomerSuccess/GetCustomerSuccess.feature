@@ -29,9 +29,9 @@ Feature: Get customer profile
       | Field                                      | Value                    |
       | StatusCode                                 | 200                      |
       | HasId                                      | true                     |
+      | HasUpdatedAt                               | true                     |
       | ExternalId                                 | auth-get-customer-123456 |
       | CompaniesCount                             | 0                        |
-      | HasUpdatedAt                               | true                     |
       | Individual.FirstName                       | Get                      |
       | Individual.LastName                        | Customer                 |
       | Individual.Email                           | get.customer@db.com      |
@@ -46,3 +46,13 @@ Feature: Get customer profile
       | Individual.ShippingAddress.Street          | Shipping Street          |
       | Individual.ShippingAddress.BuildingNumber  | 15                       |
       | Individual.ShippingAddress.ApartmentNumber | 25                       |
+    And the customer database contains the expected current and history snapshots
+      | Field          | Value    |
+      | CurrentBefore  | 1        |
+      | HistoryBefore  | 1        |
+      | VersionBefore  | 0        |
+      | CurrentAfter   | 1        |
+      | HistoryAfter   | 1        |
+      | VersionAfter   | 0        |
+      | HistoryActions | Insert   |
+      | UpdatedAt      | retained |

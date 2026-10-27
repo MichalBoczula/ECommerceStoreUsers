@@ -99,7 +99,8 @@ returning 200 with its own current and Insert-history profile at version zero.
 All other collections remain empty. The peer host is then disposed and its
 database dropped; absence is checked against the actual database list. A real
 GET from the main host still returns the original full profile and exact stored
-state. A separate AfterScenario cleanup handles a failed peer scenario too.
+state, normalizing only the known BSON millisecond timestamp precision between
+POST and GET. A separate AfterScenario cleanup handles a failed peer scenario too.
 This proves explicit peer cleanup and isolation, without assuming execution
 order or claiming every failed-test teardown has been demonstrated. Its primary
 matrix link is CreateAdmin; the follow-up GET remains in shared HTTP evidence.

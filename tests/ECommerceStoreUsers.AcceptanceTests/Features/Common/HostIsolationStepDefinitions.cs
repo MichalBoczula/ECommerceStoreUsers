@@ -125,7 +125,12 @@ public sealed class HostIsolationStepDefinitions(ScenarioApiContext context, Fra
         context.Response.StatusCode.ShouldBe(HttpStatusCode.OK);
         context.Response.Content.Headers.ContentType?.MediaType.ShouldBe("application/json");
         var response = JsonSerializer.Deserialize<AdminResponseDto>(await context.Response.Content.ReadAsStringAsync(), context.JsonOptions)!;
-        JsonElement.DeepEquals(JsonSerializer.SerializeToElement(response), JsonSerializer.SerializeToElement(_responses[0])).ShouldBeTrue();
+        // BSON persists milliseconds; retain every other field exactly across POST -> GET.
+        var expectedGet = _responses[0] with
+        {
+            LastLoginAt = DateTimeOffset.FromUnixTimeMilliseconds(new DateTimeOffset(_responses[0].LastLoginAt).ToUnixTimeMilliseconds()).UtcDateTime
+        };
+        JsonElement.DeepEquals(JsonSerializer.SerializeToElement(response), JsonSerializer.SerializeToElement(expectedGet)).ShouldBeTrue();
         var after = await state.SnapshotAsync();
         JsonElement.DeepEquals(JsonSerializer.SerializeToElement(after), JsonSerializer.SerializeToElement(_mainAfterCreate)).ShouldBeTrue();
         context.RecordEvidence("Technical main after peer cleanup", new { response, collections = after, unchanged = true });

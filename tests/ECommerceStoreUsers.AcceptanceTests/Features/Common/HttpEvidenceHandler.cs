@@ -5,6 +5,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common;
 /// <summary>Buffers actual HTTP content without replacing it or changing contract validation.</summary>
 internal sealed class HttpEvidenceHandler(ScenarioHttpEvidence evidence) : DelegatingHandler
 {
+    internal static readonly HttpRequestOptionsKey<bool> SupportingExchangeKey = new("Users.HttpEvidence.Supporting");
     internal static readonly HttpRequestOptionsKey<string> ExchangeIdKey = new("Users.HttpEvidence.ExchangeId");
     internal static readonly HttpRequestOptionsKey<string> StepPhaseKey = new("Users.HttpEvidence.StepPhase");
 

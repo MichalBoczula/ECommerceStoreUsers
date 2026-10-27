@@ -293,6 +293,7 @@ Feature: Framework rejections preserve Users data
     And every Users collection is unchanged
 
   @allure.label.scenarioId:REF07_Framework_Media_Absent
+  @allure.label.branchId:users.branch.http.unsupported-media-type
   Scenario: Reject a nonempty JSON-shaped body without a content type
     A nonempty body with an unsupported or absent media type is rejected before Favorite binding.
     Given the framework request is
@@ -313,6 +314,7 @@ Feature: Framework rejections preserve Users data
     And every Users collection is unchanged
 
   @allure.label.scenarioId:REF07_Framework_Media_Text
+  @allure.label.branchId:users.branch.http.unsupported-media-type
   Scenario: Reject a text plain Favorite request
     A nonempty body with an unsupported or absent media type is rejected before Favorite binding.
     Given the framework request is
@@ -333,6 +335,7 @@ Feature: Framework rejections preserve Users data
     And every Users collection is unchanged
 
   @allure.label.scenarioId:REF07_Framework_Route_FavoriteClient
+  @allure.label.branchId:users.branch.http.route-not-found
   Scenario: Reject a non GUID Favorite client route segment
     A failed GUID route constraint selects no business endpoint; this is a routing 404 rather than a JSON-binding 400.
     Given the framework request is
@@ -353,6 +356,7 @@ Feature: Framework rejections preserve Users data
     And every Users collection is unchanged
 
   @allure.label.scenarioId:REF07_Framework_Route_Customer
+  @allure.label.branchId:users.branch.http.route-not-found
   Scenario: Reject a non GUID Customer route segment
     A failed GUID route constraint selects no business endpoint; this is a routing 404 rather than a JSON-binding 400.
     Given the framework request is
@@ -373,6 +377,7 @@ Feature: Framework rejections preserve Users data
     And every Users collection is unchanged
 
   @allure.label.scenarioId:REF07_Framework_Route_Company
+  @allure.label.branchId:users.branch.http.route-not-found
   Scenario: Reject a non GUID company route segment
     A failed GUID route constraint selects no business endpoint; this is a routing 404 rather than a JSON-binding 400.
     Given the framework request is
@@ -393,6 +398,7 @@ Feature: Framework rejections preserve Users data
     And every Users collection is unchanged
 
   @allure.label.scenarioId:REF07_Framework_Route_FavoriteProduct
+  @allure.label.branchId:users.branch.http.route-not-found
   Scenario: Reject a non GUID Favorite product route segment
     A failed GUID route constraint selects no business endpoint; this is a routing 404 rather than a JSON-binding 400.
     Given the framework request is
@@ -413,6 +419,7 @@ Feature: Framework rejections preserve Users data
     And every Users collection is unchanged
 
   @allure.label.scenarioId:REF07_Framework_Method_Favorites
+  @allure.label.branchId:users.branch.http.method-not-allowed
   Scenario: Reject PUT on the Favorite collection route
     The route exists for DELETE, GET and POST; PUT returns a safe 405 and the complete allowed-method set.
     Given the framework request is

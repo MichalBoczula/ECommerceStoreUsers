@@ -3,6 +3,7 @@ using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common;
 
+[Documentation("users.rule.empty-guid", "Reject Guid.Empty; do not check resource existence.")]
 internal sealed class EmptyGuidRule : IValidationRule<Guid>
 {
     private readonly ValidationError _emptyGuidError;
@@ -25,3 +26,4 @@ internal sealed class EmptyGuidRule : IValidationRule<Guid>
 
     public List<ValidationError> Describe() => [_emptyGuidError];
 }
+

@@ -1,10 +1,11 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.IndividualDatas
 {
+    [Documentation("users.rule.individual-email", "Email must be a valid format (address@domain.something).")]
     internal sealed class IndividualDataEmailValidationRule : IValidationRule<IndividualData>
     {
         private readonly ValidationError _invalidEmail;
@@ -31,3 +32,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Individual
         public List<ValidationError> Describe() => [_invalidEmail];
     }
 }
+

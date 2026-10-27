@@ -1,9 +1,10 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Addresses
 {
+    [Documentation("users.rule.address-apartment-number", "Apartment Number cannot be empty or white space.")]
     internal sealed class AddressApartmentNumberValidationRule : IValidationRule<Address>
     {
         private readonly ValidationError _invalidApartmentNumber;
@@ -32,3 +33,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Addresses
         public List<ValidationError> Describe() => [_invalidApartmentNumber];
     }
 }
+

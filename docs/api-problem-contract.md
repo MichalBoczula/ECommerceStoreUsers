@@ -33,4 +33,5 @@ ProductsCatalog and ECommerceStoreUsers use the same `application/problem+json` 
 
 Other empty HTTP error responses use the deterministic `http_{status}` code. JSON contract inspection is limited to buffered bodies of at most 64 KiB. Large or streamed bodies still receive the same safe error and code; `missingProperties` may be empty. JSON names come from serialization metadata, never from parsing framework exception messages.
 
-Health/readiness endpoints keep their built-in text response when they already write a body, including an unhealthy 503. This is a documented technical exception to the JSON contract. OpenAPI describes the problem media type on declared operation error responses; full operation × status verification belongs to REF-11.
+Health/readiness endpoints keep their built-in text response when they already write a body, including an unhealthy 503. This is a documented technical exception to the JSON contract. OpenAPI describes the problem media type on declared operation error responses; current CI verifies all declared operation/status links and exercised request/response contracts. See [source/evidence boundaries](source-description-contract.md).
+

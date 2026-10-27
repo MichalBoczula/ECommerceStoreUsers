@@ -160,7 +160,7 @@ def verify():
     actual = operations()
     with MATRIX.open(newline="", encoding="utf-8") as stream:
         rows = list(csv.DictReader(stream, delimiter="\t"))
-    columns = {"scenarioId", "operationId", "method", "path", "status", "cause", "feature", "scenario"}
+    columns = {"scenarioId", "operationId", "method", "path", "status", "cause", "feature", "scenario", "branchId", "ruleIds"}
     assert rows and columns == set(rows[0]), "Unexpected matrix columns"
     assert {row["operationId"] for row in rows} == set(actual), "Missing or stale operationId in matrix"
     ids = [row["scenarioId"] for row in rows]

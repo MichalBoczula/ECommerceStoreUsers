@@ -93,7 +93,7 @@ namespace ECommerceStoreUsers.API.Endpoints
 
                 return Results.Ok(customer);
             })
-            .WithSummary("Update specific corporate company elements.")
+            .WithSummary("Update one Customer company.")
             .WithDescription("Updates company data. Duplicate tax IDs and concurrent customer changes return 409; a customer removed before saving returns 404. " +
                 "Explicit null addresses return 400 validation_failed with a RequiredRequestObject error, entity Address, " +
                 "and message 'billingAddress is required.' or 'shippingAddress is required.'.")
@@ -116,8 +116,8 @@ namespace ECommerceStoreUsers.API.Endpoints
 
                 return Results.Ok(customer);
             })
-            .WithSummary("Get customer profile data by identity engine pointer.")
-            .WithDescription("Returns a flattened clean data view context assigned underneath a specific global external account provider identification hash sequence format block.")
+            .WithSummary("Get Customer by external account reference.")
+            .WithDescription("Returns the complete current individual and company profile for the external account reference. Missing profiles return 404; this lookup does not change stored data.")
             .WithName("GetCustomerByExternalId")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")

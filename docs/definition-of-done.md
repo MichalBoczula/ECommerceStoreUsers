@@ -10,4 +10,5 @@ This checklist is the review standard for a change, not a claim that all existin
 - Ordinary compiler warnings are allowed; material warnings are reported. Vulnerabilities have a separate agreed severity gate. Tests, coverage and security checks are not weakened to make a PR pass.
 - Update README/ADR or source documentation when behavior or decisions change. The PR records actual commands/results, unavailable checks with reasons, and any follow-up. Update backlog status only after verifying the criterion.
 
-OpenAPI CI validation remains in REF-11. Run `bash scripts/verify.sh` for the full local check where the required tools are available; confirm the relevant CI checks and describe anything unverified in the PR.
+OpenAPI export/lint and current source/evidence links are required CI checks. Run `bash scripts/verify.sh` for the full local check where the required tools are available; confirm the relevant CI checks and describe anything unverified in the PR.
+

@@ -78,12 +78,45 @@ def check(document, generated):
     return len(actual), checked
 
 
+def check_descriptions(generated, flow_document, policy_document):
+    documentation = generated["documentation"]
+    exposed = [flow for group in flow_document["flows"] for flow in group.values()]
+    actual = unique_names(exposed, "flowName")
+    expected = {flow["flowName"]: flow for flow in documentation["flows"]}
+    assert set(actual) == set(expected), "Runtime/source flow inventory differs"
+    for name, flow in expected.items():
+        steps = [{"order": step["order"], "stepName": step["description"], "bpmnId": step["bpmnId"]} for step in flow["steps"]]
+        assert actual[name]["steps"] == steps, f"Runtime/source step semantics differ: {name}"
+    policies = unique_names([policy for group in policy_document["validations"] for policy in group.values()], "policyName")
+    expected_policies = {policy["name"]: policy for policy in documentation["policies"]}
+    rules = {rule["id"]: rule for rule in documentation["rules"]}
+    assert set(policies) == set(expected_policies), "Runtime/source policy inventory differs"
+    for name, policy in expected_policies.items():
+        assert sorted(rule["ruleName"] for rule in policies[name]["rules"]) == sorted(rules[identity]["name"] for identity in policy["ruleIds"]), f"Runtime/source active rules differ: {name}"
+    return len(expected), sum(len(flow["steps"]) for flow in expected.values()), len(policies)
+
+
+def unique_names(items, key):
+    result = {}
+    for item in items:
+        name = item[key]
+        assert name not in result, f"Duplicate runtime descriptor: {name}"
+        result[name] = item
+    return result
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("openapi", type=Path, help="OpenAPI JSON exported from a running application")
     args = parser.parse_args()
     try:
-        result = check(json.loads(args.openapi.read_text(encoding="utf-8")), links.generate())
+        generated = links.generate()
+        result = check(json.loads(args.openapi.read_text(encoding="utf-8")), generated)
+        if "documentation" in generated:
+            descriptions = check_descriptions(generated,
+                json.loads(args.openapi.with_name("flows.json").read_text(encoding="utf-8")),
+                json.loads(args.openapi.with_name("validation-policies.json").read_text(encoding="utf-8")))
+            print(f"Verified runtime/source semantics: {descriptions[0]} flows, {descriptions[1]} steps, {descriptions[2]} policies")
         print(f"Verified {result[0]} generated OpenAPI operations and {result[1]} acceptance status/cause cases")
     except (AssertionError, KeyError, OSError, ValueError) as error:
         print(f"OpenAPI contract drift: {error}", file=sys.stderr)

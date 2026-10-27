@@ -99,3 +99,10 @@ cases (61 standalone)**. The 36 added standalone cases exercise the bounded
 schema validator and post-HTTP request checking; they are not BDD scenarios.
 All previous identities/outcomes remain. Descriptions/examples come from source
 XML comments and Swagger metadata; no second handwritten specification.
+
+Task 11 adds [source semantics and evidence joins](source-description-contract.md):
+**279 BDD cases, 123 declarations in 47 features, 250 links and 346 acceptance
+cases (67 standalone)**. Six new standalone join checks remain outside BDD.
+Original identities and primary HTTP outcomes are retained. Step display text
+becomes authored prose while flow/BPMN IDs and orders remain. The one new BDD
+case covers a missing Customer during company update. Task 12 remains pending.

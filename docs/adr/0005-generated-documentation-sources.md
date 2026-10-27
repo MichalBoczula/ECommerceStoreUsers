@@ -27,10 +27,10 @@ generated data.
 
 Changing routes, validation or flows can break CI until the executable sources
 and acceptance scenarios agree. The runtime comparison establishes what the
-acceptance suite exercises, not every conceivable response. The current CI
-does not host a documentation portal, publish Allure reports, ingest documents
-into a RAG store or evaluate retrieval answers. Those are future proposals,
-not a feature accepted as implemented by this ADR.
+acceptance suite exercises, not every conceivable response. [ADR-0007](0007-livedocs-source-publication.md) later added producer source-bundle
+archival for the existing LiveDocs portal. [USERS-BDD-11](../source-description-contract.md)
+adds richer source outcomes and exchange joins. Those extensions do not implement
+RAG ingestion/retrieval/evaluation or automatically refresh/deploy the portal.
 
 ## Alternatives considered
 
@@ -38,3 +38,4 @@ not a feature accepted as implemented by this ADR.
   synchronization and opportunities for drift.
 - Copy Products' CQRS linking model into Users: changes service architecture
   only to match a tool, with no business reason.
+

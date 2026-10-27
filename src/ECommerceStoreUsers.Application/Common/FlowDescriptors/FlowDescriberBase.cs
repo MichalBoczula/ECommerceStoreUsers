@@ -18,7 +18,7 @@ namespace ECommerceStoreUsers.Application.Common.FlowDescriptors
                 .Select(x => new FlowStepDescriptor
                 {
                     Order = x.Attribute!.Order,
-                    StepName = x.Method.Name,
+                    StepName = x.Attribute.Description,
                     BpmnId = x.Attribute.BpmnId
                 })
                 .ToList();
@@ -31,3 +31,4 @@ namespace ECommerceStoreUsers.Application.Common.FlowDescriptors
         }
     }
 }
+

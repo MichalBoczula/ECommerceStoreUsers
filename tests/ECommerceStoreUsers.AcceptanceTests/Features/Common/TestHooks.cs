@@ -62,7 +62,14 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
         [AfterScenario]
         public async Task AfterScenario()
         {
-            try { _apiContext.FlushEvidence(); }
+            try
+            {
+                try
+                {
+                    if (_scenarioContext.TestError is null) _apiContext.CompleteDocumentation();
+                }
+                finally { _apiContext.FlushEvidence(); }
+            }
             finally { await CleanupAsync(); }
         }
 

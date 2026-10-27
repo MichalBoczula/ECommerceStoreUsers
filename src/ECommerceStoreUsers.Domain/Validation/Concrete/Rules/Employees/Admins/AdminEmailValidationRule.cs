@@ -1,10 +1,11 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
+using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Employees.Admins
 {
+    [Documentation("users.rule.admin-email", "Email must be a valid format (address@domain.something).")]
     internal sealed class AdminEmailValidationRule : IValidationRule<Admin>
     {
         private readonly ValidationError _invalidEmail;

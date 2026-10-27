@@ -69,8 +69,8 @@ namespace ECommerceStoreUsers.API.Endpoints
 
                 return Results.Ok(admin);
             })
-            .WithSummary("Get admin profile by external identification pointer.")
-            .WithDescription("Returns a flat administrative account overview context assigned beneath a specific identity engine reference string token context.")
+            .WithSummary("Get Admin by external account reference.")
+            .WithDescription("Returns the complete current Admin profile for the external account reference. Missing profiles return 404; this lookup does not record a login or change LastLoginAt.")
             .WithName("GetAdminByExternalId")
             .Produces<AdminResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")

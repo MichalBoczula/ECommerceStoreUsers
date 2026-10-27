@@ -5,6 +5,7 @@ using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Customers
 {
+    [Documentation("users.rule.customer-company-tax-id", "Customer already contains a company with the same Tax Id. This rule class is not installed in a registered policy; it does not enforce HTTP behavior.")]
     internal sealed class CustomerCompanyTaxIdValidationRule : IValidationRule<Customer>
     {
         private readonly ValidationError _duplicatedTaxId;
@@ -35,3 +36,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Custome
         public List<ValidationError> Describe() => [_duplicatedTaxId];
     }
 }
+

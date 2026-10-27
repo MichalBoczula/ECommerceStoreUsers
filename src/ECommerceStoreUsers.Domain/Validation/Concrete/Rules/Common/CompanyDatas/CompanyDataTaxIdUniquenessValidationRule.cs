@@ -4,6 +4,7 @@ using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDatas
 {
+    [Documentation("users.rule.company-tax-id-uniqueness", "Customer already contains a company with the same Tax Id.")]
     internal sealed class CompanyDataTaxIdUniquenessValidationRule : IValidationRule<IReadOnlyCollection<CompanyData>>
     {
         private readonly ValidationError _duplicatedTaxId;
@@ -34,3 +35,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDat
         public List<ValidationError> Describe() => [_duplicatedTaxId];
     }
 }
+

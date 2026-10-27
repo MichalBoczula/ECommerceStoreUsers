@@ -1,10 +1,11 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
+using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Employees.Admins;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Employees.Admins
 {
+    [Documentation("users.policy.admin", "Validate external reference, full name and email. GET by external ID supplies valid synthetic name/email.")]
     internal sealed class AdminValidationPolicy : IValidationPolicy<Admin>, IValidationPolicyDescriptorProvider
     {
         private readonly List<IValidationRule<Admin>> _rules = [];

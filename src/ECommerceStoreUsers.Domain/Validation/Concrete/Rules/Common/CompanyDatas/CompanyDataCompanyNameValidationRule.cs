@@ -1,9 +1,10 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDatas
 {
+    [Documentation("users.rule.company-name", "Company Name cannot be empty or white space.")]
     internal sealed class CompanyDataCompanyNameValidationRule : IValidationRule<CompanyData>
     {
         private readonly ValidationError _invalidCompanyName;
@@ -29,3 +30,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDat
         public List<ValidationError> Describe() => [_invalidCompanyName];
     }
 }
+

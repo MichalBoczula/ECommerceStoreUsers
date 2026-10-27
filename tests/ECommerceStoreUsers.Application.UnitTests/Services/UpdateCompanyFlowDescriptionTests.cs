@@ -11,14 +11,15 @@ public class UpdateCompanyFlowDescriptionTests
         var steps = new UpdateCompanyDescriptor().Describe().Steps;
 
         steps.Select(step => step.Order).ShouldBe(Enumerable.Range(1, steps.Count));
-        steps.Select(step => step.StepName).Take(6).ShouldBe(new[]
+        steps.Select(step => step.BpmnId).Take(6).ShouldBe(new[]
         {
-            nameof(UpdateCompanyDescriptor.ValidateCustomerId),
-            nameof(UpdateCompanyDescriptor.ThrowValidationExceptionIfCustomerIdInvalid),
-            nameof(UpdateCompanyDescriptor.ValidateCompanyId),
-            nameof(UpdateCompanyDescriptor.ThrowValidationExceptionIfCompanyIdInvalid),
-            nameof(UpdateCompanyDescriptor.LoadCustomer),
-            nameof(UpdateCompanyDescriptor.ThrowNotFoundExceptionIfCustomerMissing)
+            "ValidateCustomerId",
+            "IsCustomerIdValid",
+            "ValidateCompanyId",
+            "IsCompanyIdValid",
+            "LoadCustomerProfile",
+            "VerifyCustomerExists"
         });
     }
 }
+

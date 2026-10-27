@@ -4,6 +4,7 @@ using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Common;
 
+[Documentation("users.policy.guid", "Reject Guid.Empty. This rule does not check whether a referenced entity exists.")]
 internal sealed class EmptyGuidValidationPolicy : IValidationPolicy<Guid>, IValidationPolicyDescriptorProvider
 {
     private readonly List<IValidationRule<Guid>> _rules = [];
@@ -40,3 +41,4 @@ internal sealed class EmptyGuidValidationPolicy : IValidationPolicy<Guid>, IVali
         };
     }
 }
+

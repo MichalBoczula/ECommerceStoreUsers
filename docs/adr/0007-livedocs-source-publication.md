@@ -37,7 +37,8 @@ no Azure resources, runtime API storage credentials or automatic rollout.
 
 The producer run, source SHA and bundle digest identify the BDD evidence. Reports
 and attachments are archived outside Git, and credentials stay outside manifests
-and images. The SAS must also be configured in Users before the first upload.
+and images. Archival requires the Users Actions SAS secret; credentials remain
+outside source and manifests.
 CI packaging does not itself make a report visible: a verified archive reference,
 LiveDocs image publication and Terraform apply complete the handoff.
 
@@ -52,3 +53,4 @@ optional automated importer remain outside this change.
 - Fetch reports from running Users or LiveDocs replicas: introduces runtime storage credentials and mutable content.
 - Add dedicated storage or identities: unnecessary for the current shared educational store.
 - Hand-maintain API/flow JSON: duplicates executable service documentation sources.
+

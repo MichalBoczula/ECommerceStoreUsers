@@ -7,6 +7,7 @@ using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDatas;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers;
 
+[Documentation("users.policy.company-data", "Validate company name, tax ID and each billing/shipping address; does not check Customer-wide uniqueness.")]
 internal sealed class CompanyValidationPolicy : IValidationPolicy<CompanyData>, IValidationPolicyDescriptorProvider
 {
     private readonly List<IValidationRule<CompanyData>> _companyRules = [];
@@ -54,3 +55,4 @@ internal sealed class CompanyValidationPolicy : IValidationPolicy<CompanyData>, 
         };
     }
 }
+

@@ -1,9 +1,10 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
+using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Employees.Admins
 {
+    [Documentation("users.rule.admin-external-id", "ExternalId cannot be null or white space.")]
     internal sealed class AdminExternalIdValidationRule : IValidationRule<Admin>
     {
         private readonly ValidationError _invalidExternalId;

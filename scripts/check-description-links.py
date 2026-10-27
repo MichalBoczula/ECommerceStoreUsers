@@ -11,8 +11,8 @@ APP = next((ROOT / "src").glob("*.Application"))
 API = next((ROOT / "src").glob("*.Api"), None) or next((ROOT / "src").glob("*.API"))
 DOMAIN = next((ROOT / "src").glob("*.Domain"))
 STEP = re.compile(
-    r"\[FlowStep\(([^\]]*)\)\]\s*public\s+(?:virtual\s+)?(?:async\s+)?"
-    r"[\w<>,?\[\]\s]+?\s+(\w+)\s*\("
+    r"\[FlowStep\((.*?)\)\]\s*public\s+(?:virtual\s+)?(?:async\s+)?"
+    r"[\w<>,?\[\]\s]+?\s+(\w+)\s*\(", re.DOTALL
 )
 
 
@@ -128,3 +128,4 @@ if __name__ == "__main__":
     except (AssertionError, AttributeError, OSError, ValueError) as error:
         print(f"Description link error: {error}", file=sys.stderr)
         sys.exit(1)
+

@@ -53,7 +53,9 @@ public sealed class HostIsolationStepDefinitions(ScenarioApiContext context, Fra
         var responses = new List<AdminResponseDto>();
         foreach (var (client, request) in new[] { context.HttpClient, _peerClient }.Zip(_requests))
         {
-            using var response = await client.PostAsJsonAsync("/admins", request, context.JsonOptions);
+            using var message = new HttpRequestMessage(HttpMethod.Post, "/admins") { Content = JsonContent.Create(request, options: context.JsonOptions) };
+            message.Options.Set(HttpEvidenceHandler.SupportingExchangeKey, ReferenceEquals(client, _peerClient));
+            using var response = await client.SendAsync(message);
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             response.Content.Headers.ContentType?.MediaType.ShouldBe("application/json");
             responses.Add(JsonSerializer.Deserialize<AdminResponseDto>(await response.Content.ReadAsStringAsync(), context.JsonOptions)!);

@@ -58,3 +58,34 @@ Feature: Update company not found
       | Type             | https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4                                                                                  |
       | InstanceTemplate | /customers/{CustomerId}/companies/{CompanyId}                                                                                                |
       | HasTraceId       | true                                                                                                                                         |
+
+  @allure.label.scenarioId:REF11_UpdateCompany_MissingCustomer
+  Scenario: Updating a company for an absent Customer preserves all stored profiles
+    A valid company replacement identifies an absent Customer UUID rather than an absent company inside an existing Customer.
+    The initial lookup returns the complete safe Customer 404 problem and all five populated collections remain unchanged.
+    Given representative Users data exists for framework rejection checks
+    And I record all Users data before this framework request
+    And the framework request is
+      | Field       | Value                                                                                           |
+      | Method      | PUT                                                                                             |
+      | Path        | /customers/99999999-9999-9999-9999-999999999999/companies/88888888-8888-8888-8888-888888888888 |
+      | ContentType | application/json; charset=utf-8                                                                 |
+      | Body        | <docstring>                                                                                     |
+    And the exact framework body is
+      """
+      {
+        "taxId":"1234567890","companyName":"Missing Customer Company",
+        "billingAddress":{"postalCode":"00-001","city":"Warsaw","street":"Example Street","buildingNumber":"10","apartmentNumber":null},
+        "shippingAddress":{"postalCode":"00-002","city":"Krakow","street":"Shipping Street","buildingNumber":"20","apartmentNumber":null}
+      }
+      """
+    When I send the framework request
+    Then the complete framework problem has these values
+      | Field             | Value                                                                                                                                             |
+      | Status            | 404                                                                                                                                               |
+      | Code              | resource_not_found                                                                                                                                |
+      | Title             | Resource not found.                                                                                                                               |
+      | Detail            | Resource Customer identified by id 99999999-9999-9999-9999-999999999999 cannot be found in database during action UpdateCompany.                  |
+      | MissingProperties | []                                                                                                                                                |
+      | Allow             | []                                                                                                                                                |
+    And every Users collection is unchanged

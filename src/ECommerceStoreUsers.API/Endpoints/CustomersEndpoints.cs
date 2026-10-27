@@ -30,7 +30,9 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(customer);
             })
             .WithSummary("Create customer profile.")
-            .WithDescription("Creates a new customer aggregate record complete with individual user data details and optional company metadata.")
+            .WithDescription("Creates a new customer aggregate record complete with individual user data details and optional company metadata. " +
+                "Explicit null required objects return 400 validation_failed with a RequiredRequestObject error: " +
+                "entity IndividualData, message 'individual is required.'; or entity Address, message 'billingAddress is required.' or 'shippingAddress is required.'.")
             .WithName("CreateCustomer")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
@@ -48,7 +50,9 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(customer);
             })
             .WithSummary("Update individual personal data.")
-            .WithDescription("Updates individual details. A concurrent customer change returns 409; a customer removed before saving returns 404.")
+            .WithDescription("Updates individual details. A concurrent customer change returns 409; a customer removed before saving returns 404. " +
+                "Explicit null required objects return 400 validation_failed with a RequiredRequestObject error: " +
+                "entity IndividualData, message 'individual is required.'; or entity Address, message 'billingAddress is required.' or 'shippingAddress is required.'.")
             .WithName("UpdateIndividualData")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
@@ -67,7 +71,9 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(customer);
             })
             .WithSummary("Add company metadata.")
-            .WithDescription("Adds company data. Duplicate tax IDs and concurrent customer changes return 409; a customer removed before saving returns 404.")
+            .WithDescription("Adds company data. Duplicate tax IDs and concurrent customer changes return 409; a customer removed before saving returns 404. " +
+                "Explicit null addresses return 400 validation_failed with a RequiredRequestObject error, entity Address, " +
+                "and message 'billingAddress is required.' or 'shippingAddress is required.'.")
             .WithName("AddCompany")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
@@ -87,7 +93,9 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(customer);
             })
             .WithSummary("Update specific corporate company elements.")
-            .WithDescription("Updates company data. Duplicate tax IDs and concurrent customer changes return 409; a customer removed before saving returns 404.")
+            .WithDescription("Updates company data. Duplicate tax IDs and concurrent customer changes return 409; a customer removed before saving returns 404. " +
+                "Explicit null addresses return 400 validation_failed with a RequiredRequestObject error, entity Address, " +
+                "and message 'billingAddress is required.' or 'shippingAddress is required.'.")
             .WithName("UpdateCompany")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
@@ -117,3 +125,4 @@ namespace ECommerceStoreUsers.API.Endpoints
         }
     }
 }
+

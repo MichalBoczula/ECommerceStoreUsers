@@ -32,9 +32,6 @@ public sealed class BusinessValidationStepDefinitions(BusinessValidationState st
     [Then("the complete business conflict detail is {string}")]
     public Task Conflict(string detail) => state.ConflictAsync(detail);
 
-    [Then("the null object reports the existing safe server problem")]
-    public Task NullObject() => state.MappingFailureAsync();
-
     [Then("every Users collection is unchanged after business rejection")]
     public Task Unchanged() => state.UnchangedAsync();
 }

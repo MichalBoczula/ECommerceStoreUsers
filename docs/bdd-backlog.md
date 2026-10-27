@@ -42,6 +42,8 @@ after successful master image publication; it does not deploy ACA.
   complete safe problems and unchanged stored data. Document actual behavior;
   do not activate unused rules as documentation cleanup. See
   [business rule and preservation evidence](bdd-06-business-validation.md).
+  The [required-object follow-up](bdd-06-null-object-fix.md) corrects the three
+  discovered null-object 500 cases to explicit 400 validation errors.
 - [x] **USERS-BDD-07 — Framework failures.** Malformed JSON, missing/null
   members, wrong types/media, route/method/binding failures: exact request
   bytes, complete safe response and no writes. Distinguish framework rejection

@@ -7,6 +7,7 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
+using ECommerceStoreUsers.Domain.Validation.Common;
 using Shouldly;
 
 namespace ECommerceStoreUsers.Application.UnitTests.Mapping
@@ -128,7 +129,7 @@ namespace ECommerceStoreUsers.Application.UnitTests.Mapping
             };
 
             // Act
-            var result = MappingConfig.MapAddress(request);
+            var result = MappingConfig.MapAddress(request, "billingAddress");
 
             // Assert
             result.PostalCode.ShouldBe(request.PostalCode);
@@ -327,6 +328,28 @@ namespace ECommerceStoreUsers.Application.UnitTests.Mapping
             result.AddedAt.ShouldBe(favorite.AddedAt);
         }
 
+        [Fact]
+        public void NullIndividual_ReportsRequiredObjectValidationInsteadOfDereferencingIt()
+        {
+            var exception = Should.Throw<ValidationException>(() => MappingConfig.MapToDomain((IndividualDataRequestDto?)null));
+            var error = exception.ValidationResult.GetValidationErrors().ShouldHaveSingleItem();
+            error.Name.ShouldBe("RequiredRequestObject");
+            error.Entity.ShouldBe("IndividualData");
+            error.Message.ShouldBe("individual is required.");
+        }
+
+        [Theory]
+        [InlineData("billingAddress")]
+        [InlineData("shippingAddress")]
+        public void NullAddress_ReportsTheMissingRequestMember(string member)
+        {
+            var exception = Should.Throw<ValidationException>(() => MappingConfig.MapAddress(null, member));
+            var error = exception.ValidationResult.GetValidationErrors().ShouldHaveSingleItem();
+            error.Name.ShouldBe("RequiredRequestObject");
+            error.Entity.ShouldBe("Address");
+            error.Message.ShouldBe($"{member} is required.");
+        }
+
         private static IndividualDataRequestDto CreateIndividualRequestDto()
         {
             return new IndividualDataRequestDto
@@ -356,3 +379,4 @@ namespace ECommerceStoreUsers.Application.UnitTests.Mapping
 
     }
 }
+

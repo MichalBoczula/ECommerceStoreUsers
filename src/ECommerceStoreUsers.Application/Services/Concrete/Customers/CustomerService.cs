@@ -102,8 +102,8 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var customer = await descriptor.LoadCustomer(clientId, _customerRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);
 
-            var billingAddress = descriptor.MapAddress(request.BillingAddress);
-            var shippingAddress = descriptor.MapAddress(request.ShippingAddress);
+            var billingAddress = descriptor.MapAddress(request.BillingAddress, "billingAddress");
+            var shippingAddress = descriptor.MapAddress(request.ShippingAddress, "shippingAddress");
             descriptor.AddCompanyToCustomer(customer!, request, billingAddress, shippingAddress);
 
             var company = customer!.Companies.Last();
@@ -138,8 +138,8 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
             var customer = await descriptor.LoadCustomer(clientId, _customerRepository, cancellationToken);
             descriptor.ThrowNotFoundExceptionIfCustomerMissing(clientId, customer);
 
-            var billingAddress = descriptor.MapAddress(request.BillingAddress);
-            var shippingAddress = descriptor.MapAddress(request.ShippingAddress);
+            var billingAddress = descriptor.MapAddress(request.BillingAddress, "billingAddress");
+            var shippingAddress = descriptor.MapAddress(request.ShippingAddress, "shippingAddress");
             var company = descriptor.LoadCompany(customer!, companyId);
             descriptor.ThrowNotFoundExceptionIfCompanyMissing(companyId, company);
             descriptor.UpdateCompanyInsideAggregate(company!, request, billingAddress, shippingAddress);
@@ -158,3 +158,4 @@ namespace ECommerceStoreUsers.Application.Services.Concrete.Customers
         }
     }
 }
+

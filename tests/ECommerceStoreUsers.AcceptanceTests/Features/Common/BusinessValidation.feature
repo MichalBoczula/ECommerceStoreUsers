@@ -281,34 +281,181 @@ Feature: Active business validation and data preservation
     And every Users collection is unchanged after business rejection
 
   @allure.label.scenarioId:REF06_Validation_NullIndividual
-  Scenario: Characterize NullIndividual as the existing safe mapping failure
-    An explicit null object passes member-presence checks but the current mapping cannot handle it; this is a documented 500 gap rather than a policy-validation 400.
+  Scenario: Reject a null Individual during Customer creation
+    An explicit null required object produces a complete 400 validation problem before it can be dereferenced or stored.
     Given the business request uses "CreateCustomer" with method "POST" and path "/customers"
     And I change only these JSON values
       | Pointer     | JsonValue |
       | /individual | null      |
     When I submit the business validation request
-    Then the null object reports the existing safe server problem
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                 | Entity         |
+      | RequiredRequestObject | individual is required. | IndividualData |
     And every Users collection is unchanged after business rejection
 
   @allure.label.scenarioId:REF06_Validation_NullIndividualAddress
-  Scenario: Characterize NullIndividualAddress as the existing safe mapping failure
-    An explicit null object passes member-presence checks but the current mapping cannot handle it; this is a documented 500 gap rather than a policy-validation 400.
+  Scenario: Reject a null individual billing address during update
+    An explicit null required object produces a complete 400 validation problem before it can be dereferenced or stored.
     Given the business request uses "UpdateIndividualData" with method "PUT" and path "/customers/{customerId}/individual"
     And I change only these JSON values
       | Pointer                    | JsonValue |
       | /individual/billingAddress | null      |
     When I submit the business validation request
-    Then the null object reports the existing safe server problem
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                     | Entity  |
+      | RequiredRequestObject | billingAddress is required. | Address |
     And every Users collection is unchanged after business rejection
 
   @allure.label.scenarioId:REF06_Validation_NullCompanyAddress
-  Scenario: Characterize NullCompanyAddress as the existing safe mapping failure
-    An explicit null object passes member-presence checks but the current mapping cannot handle it; this is a documented 500 gap rather than a policy-validation 400.
+  Scenario: Reject a null billing address during company add
+    An explicit null required object produces a complete 400 validation problem before it can be dereferenced or stored.
     Given the business request uses "AddCompany" with method "POST" and path "/customers/{customerId}/companies"
     And I change only these JSON values
       | Pointer         | JsonValue |
       | /billingAddress | null      |
     When I submit the business validation request
-    Then the null object reports the existing safe server problem
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                     | Entity  |
+      | RequiredRequestObject | billingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_UpdateIndividual_NullIndividual
+  Scenario: Reject a null Individual during individual update
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "UpdateIndividualData" with method "PUT" and path "/customers/{customerId}/individual"
+    And I change only these JSON values
+      | Pointer     | JsonValue |
+      | /individual | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                 | Entity         |
+      | RequiredRequestObject | individual is required. | IndividualData |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_CreateCustomer_IndividualBilling
+  Scenario: Reject a null individual billing address during Customer creation
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "CreateCustomer" with method "POST" and path "/customers"
+    And I change only these JSON values
+      | Pointer                    | JsonValue |
+      | /individual/billingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                     | Entity  |
+      | RequiredRequestObject | billingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_CreateCustomer_IndividualShipping
+  Scenario: Reject a null individual shipping address during Customer creation
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "CreateCustomer" with method "POST" and path "/customers"
+    And I change only these JSON values
+      | Pointer                     | JsonValue |
+      | /individual/shippingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                      | Entity  |
+      | RequiredRequestObject | shippingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_UpdateIndividual_Shipping
+  Scenario: Reject a null individual shipping address during update
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "UpdateIndividualData" with method "PUT" and path "/customers/{customerId}/individual"
+    And I change only these JSON values
+      | Pointer                     | JsonValue |
+      | /individual/shippingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                      | Entity  |
+      | RequiredRequestObject | shippingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_CreateCustomer_CompanyBilling
+  Scenario: Reject a null second company billing address during Customer creation
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "CreateCustomer" with method "POST" and path "/customers"
+    And I change only these JSON values
+      | Pointer                     | JsonValue |
+      | /companies/1/billingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                     | Entity  |
+      | RequiredRequestObject | billingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_CreateCustomer_CompanyShipping
+  Scenario: Reject a null second company shipping address during Customer creation
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "CreateCustomer" with method "POST" and path "/customers"
+    And I change only these JSON values
+      | Pointer                      | JsonValue |
+      | /companies/1/shippingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                      | Entity  |
+      | RequiredRequestObject | shippingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_AddCompany_Shipping
+  Scenario: Reject a null shipping address during company add
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "AddCompany" with method "POST" and path "/customers/{customerId}/companies"
+    And I change only these JSON values
+      | Pointer          | JsonValue |
+      | /shippingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                      | Entity  |
+      | RequiredRequestObject | shippingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_UpdateCompany_Billing
+  Scenario: Reject a null billing address during company update
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "UpdateCompany" with method "PUT" and path "/customers/{customerId}/companies/{companyId}"
+    And I change only these JSON values
+      | Pointer         | JsonValue |
+      | /billingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                     | Entity  |
+      | RequiredRequestObject | billingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_UpdateCompany_Shipping
+  Scenario: Reject a null shipping address during company update
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "UpdateCompany" with method "PUT" and path "/customers/{customerId}/companies/{companyId}"
+    And I change only these JSON values
+      | Pointer          | JsonValue |
+      | /shippingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                      | Entity  |
+      | RequiredRequestObject | shippingAddress is required. | Address |
+    And every Users collection is unchanged after business rejection
+
+  @allure.label.scenarioId:REF06_NullObject_UpdateCompany_BothAddresses
+  Scenario: Reject two null company addresses with the first required object error
+    Required request objects are checked before mapping; the first missing object produces an exact validation error.
+    The full problem and unchanged Customer, Admin, history and Favorite documents are verified.
+    Given the business request uses "UpdateCompany" with method "PUT" and path "/customers/{customerId}/companies/{companyId}"
+    And I change only these JSON values
+      | Pointer          | JsonValue |
+      | /billingAddress  | null      |
+      | /shippingAddress | null      |
+    When I submit the business validation request
+    Then the complete business validation problem contains exactly these errors
+      | Name                  | Message                     | Entity  |
+      | RequiredRequestObject | billingAddress is required. | Address |
     And every Users collection is unchanged after business rejection

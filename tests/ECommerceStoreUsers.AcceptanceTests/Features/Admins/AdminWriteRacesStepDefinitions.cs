@@ -4,11 +4,13 @@ using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
 using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Mapping;
 using ECommerceStoreUsers.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Reqnroll;
 using Shouldly;
@@ -19,7 +21,7 @@ using System.Text.Json;
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Admins;
 
 [Binding]
-public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context, AdminSuccessState success) : IDisposable
+public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context, AdminSuccessState success, AtomicityState atomicity) : IDisposable
 {
     private WebApplicationFactory<ECommerceStoreUsers.API.Program>? _factory;
     private Guid _id;
@@ -52,12 +54,13 @@ public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context, A
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         _id = (await response.Content.ReadFromJsonAsync<AdminResponseDto>(context.JsonOptions))!.Id;
 
+        await atomicity.BeginAsync();
         _factory = context.Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<IAdminRepository>();
             services.AddScoped<IAdminRepository>(provider =>
                 new RacingRepository(new AdminRepository(provider.GetRequiredService<MongoDbContext>()),
-                    provider.GetRequiredService<MongoDbContext>(), race));
+                    provider.GetRequiredService<MongoDbContext>(), race, atomicity));
         }));
         context.HttpClient.Dispose();
         context.HttpClient = context.CreateClient(_factory);
@@ -84,10 +87,10 @@ public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context, A
         context.Response.StatusCode.ShouldBe((HttpStatusCode)status);
         if (status != 200)
         {
-            context.Response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
-            var body = await context.Response.Content.ReadFromJsonAsync<JsonElement>(context.JsonOptions);
-            body.GetProperty("code").GetString().ShouldBe(_race == Race.Delete
-                ? "resource_not_found" : "concurrency_conflict");
+            await atomicity.ProblemAsync(status, _race == Race.Delete ? "resource_not_found" : "concurrency_conflict",
+                _race == Race.Delete ? "Resource not found." : "Conflict.", _race == Race.Delete
+                    ? $"Resource Admin identified by id {_id} cannot be found in database during action UpdateAdmin."
+                    : "The resource was changed by another request. Reload it and retry.");
         }
         else
         {
@@ -114,7 +117,7 @@ public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context, A
 
     private enum Race { None, Change, Delete }
 
-    private sealed class RacingRepository(AdminRepository inner, MongoDbContext mongo, Race race) : IAdminRepository
+    private sealed class RacingRepository(AdminRepository inner, MongoDbContext mongo, Race race, AtomicityState atomicity) : IAdminRepository
     {
         private bool _triggered;
 
@@ -125,12 +128,16 @@ public sealed class AdminWriteRacesStepDefinitions(ScenarioApiContext context, A
             {
                 _triggered = true;
                 if (race == Race.Delete)
-                    await mongo.Admins.DeleteOneAsync(x => x.Id == id, token);
+                {
+                    (await mongo.Admins.DeleteOneAsync(x => x.Id == id, token)).DeletedCount.ShouldBe(1);
+                    await atomicity.CommitDeleteAsync("admins", new BsonBinaryData(id, GuidRepresentation.Standard));
+                }
                 else
                 {
                     var winner = Admin.Rehydrate(loaded.Id, loaded.ExternalId, "Winner Admin",
                         "winner@example.com", loaded.IsActive, loaded.LastLoginAt, loaded.Version);
                     await inner.UpdateAdmin(winner, token);
+                    await atomicity.CommitAggregateAsync("admins", AdminMapping.MapToDocument(winner).ToBsonDocument());
                 }
             }
 

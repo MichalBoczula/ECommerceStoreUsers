@@ -10,13 +10,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using Reqnroll;
 using Shouldly;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Common;
 
@@ -32,8 +29,7 @@ public sealed class WriteFailuresStepDefinitions(ScenarioApiContext context) : I
     private Guid _customerId;
     private Guid _companyId;
     private Guid _adminId;
-    private string[] _collections = [];
-    private string[] _before = [];
+    private readonly FrameworkFailureState _preservation = new(context);
     private int _writeCalls;
 
     [Given("the {string} write will fail at the repository")]
@@ -41,7 +37,7 @@ public sealed class WriteFailuresStepDefinitions(ScenarioApiContext context) : I
     {
         _operation = operationId;
         var admin = operationId is "CreateAdmin" or "UpdateAdminProfile";
-        _collections = admin ? ["admins", "admins-history"] : ["customers", "customers-history"];
+        _preservation.UseEvidencePrefix("Pre-repository failure");
 
         if (operationId is "UpdateIndividualData" or "AddCompany" or "UpdateCompany")
         {
@@ -65,7 +61,7 @@ public sealed class WriteFailuresStepDefinitions(ScenarioApiContext context) : I
             _adminId = adminResponse.Id;
         }
 
-        _before = await Snapshot();
+        await _preservation.BeginAsync();
         _factory = context.Factory.WithWebHostBuilder(builder => builder.ConfigureTestServices(services =>
         {
             if (admin)
@@ -127,32 +123,11 @@ public sealed class WriteFailuresStepDefinitions(ScenarioApiContext context) : I
     [Then("the write reports a safe 500 and leaves current and history unchanged")]
     public async Task ThenTheWriteFailsWithoutChanges()
     {
-        context.Response.ShouldNotBeNull();
         _writeCalls.ShouldBe(1);
-        context.Response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-        context.Response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
-        var body = await context.Response.Content.ReadAsStringAsync();
-        using var json = JsonDocument.Parse(body);
-        json.RootElement.GetProperty("status").GetInt32().ShouldBe(500);
-        json.RootElement.GetProperty("code").GetString().ShouldBe("internal_error");
-        json.RootElement.GetProperty("instance").GetString().ShouldBe(_path);
-        json.RootElement.GetProperty("traceId").GetString().ShouldNotBeNullOrWhiteSpace();
-        body.ShouldNotContain(SensitiveDetail);
-        body.ShouldNotContain("stackTrace");
-        (await Snapshot()).ShouldBe(_before);
-    }
-
-    private async Task<string[]> Snapshot()
-    {
-        var database = AcceptanceMongoDb.GetDatabase(context.DatabaseName);
-        var snapshots = new List<string>();
-        foreach (var name in _collections)
-        {
-            var documents = await database.GetCollection<BsonDocument>(name)
-                .Find(FilterDefinition<BsonDocument>.Empty).ToListAsync();
-            snapshots.Add(JsonSerializer.Serialize(documents.Select(doc => doc.ToJson()).OrderBy(doc => doc)));
-        }
-        return [.. snapshots];
+        context.RecordEvidence("Pre-repository failure verified", new { writeCalls = _writeCalls, realRepositoryWriteInvoked = false, effect = "NoWrite; not transaction rollback" });
+        await _preservation.ExpectProblemAsync(500, "internal_error", "Server error.", "An unexpected error occurred.", "[]", "[]");
+        (await context.Response!.Content.ReadAsStringAsync()).ShouldNotContain(SensitiveDetail);
+        await _preservation.ExpectUnchangedAsync();
     }
 
     private CreateCustomerRequestDto CustomerRequest(IReadOnlyCollection<AddCompanyRequestDto> companies) => new()

@@ -1,11 +1,13 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
+using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
 using ECommerceStoreUsers.Domain.Common.Enums;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Mapping;
 using ECommerceStoreUsers.Infrastructure.Persistence.Admins;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Shouldly;
 
@@ -279,10 +281,12 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             first.Deactivate();
             second.RecordLogin();
 
+            var before = await MongoStateAssertions.Snapshot(context);
             await repository.UpdateAdmin(first, CancellationToken.None);
             await Should.ThrowAsync<ConcurrencyConflictException>(() =>
                 repository.UpdateAdmin(second, CancellationToken.None));
 
+            await MongoStateAssertions.Winner(context, before, "admins", AdminMapping.MapToDocument(first).ToBsonDocument());
             first.Version.ShouldBe(1);
             second.Version.ShouldBe(0);
             var saved = await repository.GetByIdAsync(original.Id, CancellationToken.None);
@@ -314,9 +318,15 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
                 catch (Exception exception) { return exception; }
             }
 
+            var before = await MongoStateAssertions.Snapshot(context);
             var outcomes = await Task.WhenAll(Attempt(first), Attempt(second));
             outcomes.Count(x => x is null).ShouldBe(1);
             outcomes.Count(x => x is ConcurrencyConflictException).ShouldBe(1);
+            var winner = outcomes[0] is null ? first : second;
+            var loser = outcomes[0] is null ? second : first;
+            winner.Version.ShouldBe(1);
+            loser.Version.ShouldBe(0);
+            await MongoStateAssertions.Winner(context, before, "admins", AdminMapping.MapToDocument(winner).ToBsonDocument());
             (await repository.GetByIdAsync(original.Id, CancellationToken.None))!.Version.ShouldBe(1);
             (await context.AdminsHistory.CountDocumentsAsync(x => x.AdminId == original.Id)).ShouldBe(2);
         }
@@ -390,3 +400,4 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             );
     }
 }
+

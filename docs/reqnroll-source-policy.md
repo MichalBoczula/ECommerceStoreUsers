@@ -87,7 +87,7 @@ acceptance-project cases**; Infrastructure has 98 cases.
 Task 9 records [technical outcomes](bdd-09-technical.md) without inventing HTTP
 responses for client cancellation or relabeling lifecycle facts as BDD. Current
 inventory: **272 BDD cases, 119 declarations in 46 features, 244 operation links,
-296 acceptance-project cases (24 standalone) and 101 Infrastructure cases**.
+297 acceptance-project cases (25 standalone) and 101 Infrastructure cases**.
 Cancellation publishes a request/failure event and an explicit NoWrite scope;
 health publishes actual plain text. All previous identities and expected HTTP
 outcomes remain. Production contracts, flow/policy exports and original baseline

@@ -3,7 +3,7 @@
 Task 9 adds **12 BDD cases** and strengthens **15 existing cases**, retaining all
 previous identities, titles and expected HTTP outcomes. Current inventory:
 **272 expanded BDD cases, 119 declarations in 46 features, 244 named-operation
-links and 296 acceptance-project cases**. The latter is 272 BDD plus **24
+links and 297 acceptance-project cases**. The latter is 272 BDD plus **25
 standalone xUnit cases**, reported separately. Infrastructure has **101 cases**.
 Domain/Application membership and production application behavior are unchanged.
 
@@ -47,8 +47,8 @@ These are host-lifecycle outcomes, not HTTP statuses; output says exactly which
 cancellation source was observed. The existing Infrastructure startup deadline
 and abort-cleanup tests remain intact.
 
-Standalone acceptance membership is **14 recorder + 2 route-matching + 3
-readiness + 4 startup/lifetime + 1 export = 24**. Generated OpenAPI export without
+Standalone acceptance membership is **15 recorder + 2 route-matching + 3
+readiness + 4 startup/lifetime + 1 export = 25**. Generated OpenAPI export without
 Mongo deliberately remains an xUnit fact. It is not relabeled as a BDD report.
 
 ## Request cancellation before persistence
@@ -68,9 +68,13 @@ response/status to make a request/response pair. Each cancellation request
 waits for the recorder's per-request completion signal after the actual terminal
 event is enqueued, because HttpClient can notify its caller before the inner
 pipeline finishes. Response-body buffering failures also produce a failure event
-and dispose the unreturned response. A focused recorder regression verifies
+and dispose the unreturned response. Two focused recorder regression instances verify
 that cancellation during response buffering is captured before completion,
-without leaking an exception message or inventing a response. These examples prove token
+without leaking an exception message or inventing a response. The recorded
+exception type stays exact: a TestServer transport abort can be
+HttpRequestException even when the caller sees cancellation. The cancellation
+flag also checks the actual transport token and separately records its state;
+ordinary uncancelled transport failures remain distinguishable. These examples prove token
 propagation and a **pre-write NoWrite** outcome, not rollback of a transaction
 that had already written current. Three new real-MongoDB Infrastructure cases
 independently verify already-cancelled Customer/Admin/Favorite writes leave all

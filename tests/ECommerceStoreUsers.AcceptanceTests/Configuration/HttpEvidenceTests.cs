@@ -127,23 +127,29 @@ public sealed class HttpEvidenceTests
         Assert.Empty(Drain(evidence));
     }
 
-    [Fact]
-    public async Task CancelledResponseBufferingRecordsFailureBeforeSignallingCompletion()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CancelledResponseBufferingRecordsFailureBeforeSignallingCompletion(bool transportAbort)
     {
         var evidence = Evidence();
-        var body = new CancelledResponseContent();
+        using var cancellation = new CancellationTokenSource();
+        var body = new CancelledResponseContent(cancellation, transportAbort);
         using var client = Client(evidence, (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = body }));
         using var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/favorites");
         var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         request.Options.Set(HttpEvidenceHandler.CompletionKey, completed);
-        var error = await Record.ExceptionAsync(() => client.SendAsync(request));
-        Assert.IsAssignableFrom<OperationCanceledException>(error);
-        Assert.True(completed.Task.IsCompletedSuccessfully);
+        var error = await Record.ExceptionAsync(() => client.SendAsync(request, cancellation.Token));
+        Assert.True(error is OperationCanceledException or HttpRequestException);
+        await completed.Task.WaitAsync(TimeSpan.FromSeconds(5));
         Assert.True(body.WasDisposed);
+        Assert.True(cancellation.IsCancellationRequested);
         var items = Drain(evidence);
         Assert.Equal(2, items.Count);
         Assert.Equal(items[0].GetProperty("exchangeId").GetString(), items[1].GetProperty("exchangeId").GetString());
         Assert.True(items[1].GetProperty("cancelled").GetBoolean());
+        Assert.True(items[1].GetProperty("cancellationRequested").GetBoolean());
+        Assert.Equal(transportAbort ? "HttpRequestException" : "OperationCanceledException", items[1].GetProperty("exceptionType").GetString());
         Assert.False(items[1].TryGetProperty("status", out _));
         Assert.DoesNotContain("sensitive message", items[1].GetRawText());
     }
@@ -195,11 +201,15 @@ public sealed class HttpEvidenceTests
         return items;
     }
 
-    private sealed class CancelledResponseContent : HttpContent
+    private sealed class CancelledResponseContent(CancellationTokenSource cancellation, bool transportAbort) : HttpContent
     {
         internal bool WasDisposed { get; private set; }
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
-            => Task.FromException(new OperationCanceledException("sensitive message"));
+        {
+            cancellation.Cancel();
+            return Task.FromException(transportAbort
+                ? new HttpRequestException("sensitive message") : new OperationCanceledException("sensitive message"));
+        }
         protected override bool TryComputeLength(out long length) { length = 0; return false; }
         protected override void Dispose(bool disposing) { WasDisposed = true; base.Dispose(disposing); }
     }

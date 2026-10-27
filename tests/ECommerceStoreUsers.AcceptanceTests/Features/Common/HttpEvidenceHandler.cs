@@ -67,7 +67,8 @@ internal sealed class HttpEvidenceHandler(ScenarioHttpEvidence evidence) : Deleg
                 path,
                 query,
                 exceptionType = error.GetType().Name,
-                cancelled = error is OperationCanceledException
+                cancelled = error is OperationCanceledException || cancellationToken.IsCancellationRequested,
+                cancellationRequested = cancellationToken.IsCancellationRequested
             });
             throw;
         }

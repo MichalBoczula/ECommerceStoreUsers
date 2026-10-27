@@ -76,7 +76,10 @@ public sealed class CustomerWriteRacesStepDefinitions(ScenarioApiContext context
             "AddCompany" => await context.HttpClient.PostAsJsonAsync($"/customers/{_id}/companies", Company("Attempt Company", "9876543210"), context.JsonOptions),
             "UpdateCompany" => await context.HttpClient.PutAsJsonAsync($"/customers/{_id}/companies/{_companyId}", new UpdateCompanyRequestDto
             {
-                TaxId = "9876543210", CompanyName = "Attempt Company", BillingAddress = Address(), ShippingAddress = Address()
+                TaxId = "9876543210",
+                CompanyName = "Attempt Company",
+                BillingAddress = Address(),
+                ShippingAddress = Address()
             }, context.JsonOptions),
             _ => throw new ArgumentOutOfRangeException(nameof(_operation))
         };
@@ -114,7 +117,10 @@ public sealed class CustomerWriteRacesStepDefinitions(ScenarioApiContext context
 
     private static AddCompanyRequestDto Company(string name, string taxId) => new()
     {
-        CompanyName = name, TaxId = taxId, BillingAddress = Address(), ShippingAddress = Address()
+        CompanyName = name,
+        TaxId = taxId,
+        BillingAddress = Address(),
+        ShippingAddress = Address()
     };
 
     private sealed class RacingRepository(CustomerRepository inner, MongoDbContext mongo, bool delete,

@@ -73,7 +73,8 @@ public sealed class MongoAtomicityStepDefinitions(ScenarioApiContext context, At
             new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("ExternalId"),
                 new CreateIndexOptions<BsonDocument>
                 {
-                    Name = "ref08_history_failure", Unique = true,
+                    Name = "ref08_history_failure",
+                    Unique = true,
                     PartialFilterExpression = Builders<BsonDocument>.Filter.Eq("ExternalId", ExternalId)
                 }));
         context.RecordEvidence("Atomicity history failure arrangement", new { collection, index = "ref08_history_failure", field = "ExternalId", value = ExternalId, targetOnly = true });
@@ -114,12 +115,16 @@ public sealed class MongoAtomicityStepDefinitions(ScenarioApiContext context, At
             "AddCompany" => await context.HttpClient.PostAsJsonAsync($"/customers/{_id}/companies", Company() with { TaxId = "9876543210" }, context.JsonOptions),
             "UpdateCompany" => await context.HttpClient.PutAsJsonAsync($"/customers/{_id}/companies/{_companyId}", new UpdateCompanyRequestDto
             {
-                TaxId = "9876543210", CompanyName = "Attempt Company", BillingAddress = Address(), ShippingAddress = Address()
+                TaxId = "9876543210",
+                CompanyName = "Attempt Company",
+                BillingAddress = Address(),
+                ShippingAddress = Address()
             }, context.JsonOptions),
             "CreateAdmin" => await context.HttpClient.PostAsJsonAsync("/admins", AdminRequest(), context.JsonOptions),
             "UpdateAdminProfile" => await context.HttpClient.PutAsJsonAsync($"/admins/{_id}", new UpdateAdminProfileRequestDto
             {
-                FullName = "Attempt Admin", Email = "attempt@example.com"
+                FullName = "Attempt Admin",
+                Email = "attempt@example.com"
             }, context.JsonOptions),
             _ => throw new ArgumentOutOfRangeException(nameof(operation))
         };
@@ -137,16 +142,27 @@ public sealed class MongoAtomicityStepDefinitions(ScenarioApiContext context, At
 
     private static AddressRequestDto Address() => new()
     {
-        PostalCode = "00-001", City = "Warsaw", Street = "Target Street", BuildingNumber = "10", ApartmentNumber = null
+        PostalCode = "00-001",
+        City = "Warsaw",
+        Street = "Target Street",
+        BuildingNumber = "10",
+        ApartmentNumber = null
     };
     private static IndividualDataRequestDto Individual() => new()
     {
-        FirstName = "Target", LastName = "Person", Email = "target@example.com", Phone = "123456789",
-        BillingAddress = Address(), ShippingAddress = Address()
+        FirstName = "Target",
+        LastName = "Person",
+        Email = "target@example.com",
+        Phone = "123456789",
+        BillingAddress = Address(),
+        ShippingAddress = Address()
     };
     private static AddCompanyRequestDto Company() => new()
     {
-        TaxId = "1234567890", CompanyName = "Target Company", BillingAddress = Address(), ShippingAddress = Address()
+        TaxId = "1234567890",
+        CompanyName = "Target Company",
+        BillingAddress = Address(),
+        ShippingAddress = Address()
     };
     private static CreateCustomerRequestDto CustomerRequest() => new() { ExternalId = ExternalId, Individual = Individual(), Companies = [Company()] };
     private static CreateAdminRequestDto AdminRequest() => new() { ExternalId = ExternalId, FullName = "Target Admin", Email = "target.admin@example.com" };

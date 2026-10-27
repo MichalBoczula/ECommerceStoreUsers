@@ -240,6 +240,8 @@ to all BDD clients. Its 13 recorder-test cases bring the expected acceptance
 project total to 100 while retaining the 81 BDD cases.
 Task 3 strengthens [Customer success and persistence evidence](docs/bdd-03-customers.md)
 and adds three preservation cases: 84 BDD cases and 103 acceptance-project cases.
+Task 4 strengthens [Admin success and no-op evidence](docs/bdd-04-admins.md),
+including a repeat after a real update: 85 BDD cases and 104 acceptance-project cases.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:

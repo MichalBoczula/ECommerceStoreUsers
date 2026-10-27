@@ -23,3 +23,23 @@ Feature: Conditional admin writes
     Given an admin profile is unchanged on update
     When the raced admin profile update is submitted
     Then the raced admin update returns 200 with consistent history
+    And the complete unchanged admin profile is returned
+      | Field          | Value                |
+      | StatusCode     | 200                  |
+      | HasId          | true                 |
+      | ExternalId     | <setup-external-id>  |
+      | FullName       | Original Admin       |
+      | Email          | original@example.com |
+      | IsActive       | true                 |
+      | HasLastLoginAt | true                 |
+    And the admin database contains the expected current and history snapshots
+      | Field          | Value    |
+      | CurrentBefore  | 1        |
+      | HistoryBefore  | 1        |
+      | VersionBefore  | 0        |
+      | CurrentAfter   | 1        |
+      | HistoryAfter   | 1        |
+      | VersionAfter   | 0        |
+      | HistoryActions | Insert   |
+      | WriteEffect    | None     |
+      | LastLoginAt    | retained |

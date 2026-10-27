@@ -7,14 +7,27 @@ Feature: Create admin profile
     The create request returns the generated administrator identifier and profile data.
     Given I have a valid create admin request
       | Field      | Value             |
-      | ExternalId | auth-678901234     |
+      | ExternalId | auth-678901234    |
       | FullName   | Jane Smith        |
       | Email      | jane.smith@db.com |
     When I submit the create admin request
     Then the admin profile is created successfully
-      | Field      | Value             |
-      | StatusCode | 200               |
-      | HasId      | true              |
-      | ExternalId | auth-678901234     |
-      | FullName   | Jane Smith        |
-      | Email      | jane.smith@db.com |
+      | Field          | Value             |
+      | StatusCode     | 200               |
+      | HasId          | true              |
+      | ExternalId     | auth-678901234    |
+      | FullName       | Jane Smith        |
+      | Email          | jane.smith@db.com |
+      | IsActive       | true              |
+      | HasLastLoginAt | true              |
+    And the admin database contains the expected current and history snapshots
+      | Field          | Value     |
+      | CurrentBefore  | 0         |
+      | HistoryBefore  | 0         |
+      | VersionBefore  | none      |
+      | CurrentAfter   | 1         |
+      | HistoryAfter   | 1         |
+      | VersionAfter   | 0         |
+      | HistoryActions | Insert    |
+      | WriteEffect    | Insert    |
+      | LastLoginAt    | generated |

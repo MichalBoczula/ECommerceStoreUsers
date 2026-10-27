@@ -28,9 +28,10 @@ after successful master image publication; it does not deploy ACA.
   tables, full request/response evidence, explicit response expectations and
   persisted current/history/version assertions. See
   [Customer coverage and timestamp behavior](bdd-03-customers.md).
-- [ ] **USERS-BDD-04 — Admin success scenarios.** Create/get/update with full
+- [x] **USERS-BDD-04 — Admin success scenarios.** Create/get/update with full
   response and current/history/version assertions. An unchanged update is a
-  successful no-op without a new version/history entry.
+  successful no-op without a new version/history entry. See
+  [Admin coverage and repeat-after-change evidence](bdd-04-admins.md).
 - [ ] **USERS-BDD-05 — Favorites success scenarios.** Add/list/remove/clear,
   exact collection contents, empty results, client isolation and clear no-op.
   Preserve the current ordering contract without promising a tie-breaker the

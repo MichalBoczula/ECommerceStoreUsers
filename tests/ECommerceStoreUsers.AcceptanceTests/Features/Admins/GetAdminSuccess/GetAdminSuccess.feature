@@ -22,3 +22,14 @@ Feature: Get admin profile
       | Email          | get.admin@db.com  |
       | IsActive       | true              |
       | HasLastLoginAt | true              |
+    And the admin database contains the expected current and history snapshots
+      | Field          | Value    |
+      | CurrentBefore  | 1        |
+      | HistoryBefore  | 1        |
+      | VersionBefore  | 0        |
+      | CurrentAfter   | 1        |
+      | HistoryAfter   | 1        |
+      | VersionAfter   | 0        |
+      | HistoryActions | Insert   |
+      | WriteEffect    | None     |
+      | LastLoginAt    | retained |

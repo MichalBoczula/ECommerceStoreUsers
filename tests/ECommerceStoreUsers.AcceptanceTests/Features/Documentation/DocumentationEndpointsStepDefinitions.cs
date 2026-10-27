@@ -92,6 +92,84 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Documentation
                 entry.Value.Rules.Count > 0);
         }
 
+        [Then("flow documentation has these exact descriptors")]
+        public async Task ThenExactFlows(Table table)
+        {
+            var response = await Deserialize<FlowDescriptorsResponseDto>();
+            response.ShouldNotBeNull();
+            var flows = response.Flows.ShouldHaveSingleItem();
+            flows.Keys.Order().ShouldBe(table.Rows.Select(row => row["Descriptor"]).Order());
+            foreach (var row in table.Rows)
+            {
+                var flow = flows[row["Descriptor"]];
+                flow.FlowName.ShouldBe(row["Flow"]);
+                var count = int.Parse(row["Steps"], System.Globalization.CultureInfo.InvariantCulture);
+                flow.Steps.Count.ShouldBe(count);
+                flow.Steps.Select(step => step.Order).ShouldBe(Enumerable.Range(1, count));
+                flow.Steps.Select(step => step.BpmnId).Distinct().Count().ShouldBe(count);
+                foreach (var step in flow.Steps)
+                {
+                    step.StepName.ShouldNotBeNullOrWhiteSpace();
+                    step.BpmnId.ShouldNotBeNullOrWhiteSpace();
+                }
+            }
+            flows.Values.Sum(flow => flow.Steps.Count).ShouldBe(92);
+            _apiContext.RecordEvidence("Technical flow expectations", table.Rows.Select(row => new { descriptor = row["Descriptor"], flow = row["Flow"], steps = row["Steps"] }).ToArray());
+            _apiContext.RecordEvidence("Technical flow metadata verified", new { descriptors = flows.Count, steps = 92, orderedSteps = true, completeStepMetadata = true });
+        }
+
+        [Then("validation documentation has these exact policies")]
+        public async Task ThenExactPolicies(Table table)
+        {
+            var response = await Deserialize<ValidationDescriptorsResponseDto>();
+            response.ShouldNotBeNull();
+            var policies = response.Validations.SelectMany(item => item).ToDictionary(item => item.Key, item => item.Value);
+            policies.Keys.Order().ShouldBe(table.Rows.Select(row => row["Policy"]).Order());
+            foreach (var row in table.Rows)
+            {
+                var policy = policies[row["Policy"]];
+                policy.PolicyName.ShouldBe(row["Policy"]);
+                policy.Rules.Count.ShouldBe(int.Parse(row["Rules"], System.Globalization.CultureInfo.InvariantCulture));
+                policy.Rules.Sum(rule => rule.Rules.Count).ShouldBe(int.Parse(row["Errors"], System.Globalization.CultureInfo.InvariantCulture));
+                policy.Rules.Select(rule => rule.RuleName).Distinct().Count().ShouldBe(policy.Rules.Count);
+                foreach (var rule in policy.Rules)
+                {
+                    rule.RuleName.ShouldNotBeNullOrWhiteSpace();
+                    rule.Rules.ShouldNotBeEmpty();
+                    foreach (var error in rule.Rules)
+                    {
+                        error.Name.ShouldBe(rule.RuleName);
+                        error.Entity.ShouldNotBeNullOrWhiteSpace();
+                        error.Message.ShouldNotBeNullOrWhiteSpace();
+                    }
+                }
+            }
+            var errors = policies.Values.SelectMany(policy => policy.Rules).SelectMany(rule => rule.Rules).ToArray();
+            errors.Select(error => (error.Name, error.Message, error.Entity)).Distinct().Count().ShouldBe(20);
+            _apiContext.RecordEvidence("Technical policy expectations", table.Rows.Select(row => new { policy = row["Policy"], rules = row["Rules"], errors = row["Errors"] }).ToArray());
+            _apiContext.RecordEvidence("Technical policy metadata verified", new { policies = policies.Count, ruleEntries = 35, errorEntries = errors.Length, distinctSignatures = 20, completeErrorTriplets = true });
+        }
+
+        [When("I request the generated OpenAPI document")]
+        public async Task WhenOpenApi() => _apiContext.Response = await _apiContext.HttpClient.GetAsync("/swagger/v1/swagger.json");
+
+        [Then("the generated OpenAPI has these values")]
+        public async Task ThenOpenApi(Table table)
+        {
+            RequireSuccessfulJsonResponse();
+            using var document = JsonDocument.Parse(await _apiContext.Response!.Content.ReadAsStringAsync());
+            JsonElement.DeepEquals(document.RootElement, _apiContext.OpenApiDocument.RootElement).ShouldBeTrue();
+            document.RootElement.GetProperty("openapi").GetString()!.StartsWith("3.", StringComparison.Ordinal).ShouldBeTrue();
+            var operations = document.RootElement.GetProperty("paths").EnumerateObject().SelectMany(path => path.Value.EnumerateObject())
+                .Where(method => method.Value.ValueKind == JsonValueKind.Object && method.Value.TryGetProperty("operationId", out _))
+                .Select(method => method.Value.GetProperty("operationId").GetString()).ToArray();
+            var expected = table.Rows.ToDictionary(row => row["Field"], row => int.Parse(row["Value"], System.Globalization.CultureInfo.InvariantCulture));
+            operations.Length.ShouldBe(expected["NamedOperations"]);
+            operations.Distinct().Count().ShouldBe(operations.Length);
+            document.RootElement.GetProperty("components").GetProperty("schemas").EnumerateObject().Count().ShouldBe(expected["Schemas"]);
+            _apiContext.RecordEvidence("Technical OpenAPI verified", new { expectations = expected, operations, bootstrapDocumentEqual = true, fullPropertyValidation = "Deferred to task 10" });
+        }
+
         private void RequireSuccessfulJsonResponse()
         {
             _apiContext.Response.ShouldNotBeNull();
@@ -112,3 +190,4 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Documentation
         }
     }
 }
+

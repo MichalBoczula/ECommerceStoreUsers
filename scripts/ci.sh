@@ -8,6 +8,7 @@ results_dir="${VERIFY_RESULTS_DIR:-$PWD/artifacts/verification}"
 
 prepare_mongo_image() {
   # Fail at the image boundary with a useful log before starting Testcontainers.
+  docker info --format 'Mongo test Docker kernel: {{.KernelVersion}}'
   docker pull mongo:8.0
   docker run --rm --entrypoint mongosh mongo:8.0 --version
 }
@@ -94,3 +95,4 @@ case "$command" in
     exit 2
     ;;
 esac
+

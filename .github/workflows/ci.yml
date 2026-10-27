@@ -327,9 +327,10 @@ jobs:
           if-no-files-found: warn
 
   infrastructure-integration-tests:
-    # MongoDB 8 rejects kernels 6.19–7.0.13 (SERVER-121912).
-    # The current Ubuntu 24.04 runner uses 6.17; keep real Mongo tests enabled.
-    runs-on: ubuntu-24.04
+    # MongoDB 8 rejects affected newer kernels (SERVER-121912).
+    # Ubuntu 24.04 rolling images reproduced that failure; 22.04 currently uses 6.8.
+    # Temporary test-only pin; review before Ubuntu 22 runner retirement in April 2027.
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs: build
     steps:
@@ -353,8 +354,8 @@ jobs:
           if-no-files-found: warn
 
   acceptance-tests:
-    # Match the supported kernel used by the MongoDB integration suite.
-    runs-on: ubuntu-24.04
+    # Match the compatible MongoDB test runner; keep every real test enabled.
+    runs-on: ubuntu-22.04
     timeout-minutes: 30
     needs: build
     steps:
@@ -377,3 +378,4 @@ jobs:
           path: artifacts/allure-results/acceptance/
           if-no-files-found: error
           retention-days: 7
+

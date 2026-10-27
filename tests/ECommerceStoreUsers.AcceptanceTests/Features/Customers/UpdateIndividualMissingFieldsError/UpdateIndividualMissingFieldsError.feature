@@ -36,6 +36,7 @@ Feature: Update customer individual data deserialization validation
       | Individual.ShippingStreet        | Delivery Street |
       | Individual.ShippingBuildingNumber | 7B              |
       | Individual.ShippingApartmentNumber | 14             |
+    And I record all Users data before this framework request
     When I submit the incomplete update individual request
     Then the update individual response indicates a json deserialization failure
       | Field           | Value                                                                         |
@@ -45,3 +46,12 @@ Feature: Update customer individual data deserialization validation
       | Type            | https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1                   |
       | MissingProperty | email                                                                         |
       | MissingProperty | phone                                                                         |
+    And the complete framework problem has these values
+      | Field             | Value                                                                                   |
+      | Status            | 400                                                                                     |
+      | Code              | invalid_json                                                                            |
+      | Title             | Invalid JSON payload.                                                                   |
+      | Detail            | JSON payload for IndividualDataRequestDto is missing required properties: email, phone. |
+      | MissingProperties | email, phone                                                                            |
+      | Allow             | []                                                                                      |
+    And every Users collection is unchanged

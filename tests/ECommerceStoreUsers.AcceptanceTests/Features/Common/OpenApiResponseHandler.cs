@@ -16,7 +16,8 @@ internal sealed class OpenApiResponseHandler(JsonDocument document) : Delegating
         var route = paths.EnumerateObject()
             .Where(item => Matches(item.Name, path))
             .OrderByDescending(item => item.Name.Split('/').Count(part => !part.StartsWith('{')))
-            .FirstOrDefault(item => item.Value.TryGetProperty(request.Method.Method.ToLowerInvariant(), out _));
+            .FirstOrDefault(item => item.Value.TryGetProperty(request.Method.Method.ToLowerInvariant(), out var candidate) &&
+                MatchesPathParameters(item.Name, path, candidate));
         if (route.Value.ValueKind == JsonValueKind.Undefined)
         {
             // No named operation exists for routing 404 and method 405.
@@ -86,6 +87,25 @@ internal sealed class OpenApiResponseHandler(JsonDocument document) : Delegating
             string.Equals(parts.First, parts.Second, StringComparison.OrdinalIgnoreCase));
     }
 
+    private static bool MatchesPathParameters(string template, string path, JsonElement operation)
+    {
+        if (!operation.TryGetProperty("parameters", out var parameters))
+            return true;
+        var expected = template.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        var actual = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        foreach (var parameter in parameters.EnumerateArray())
+        {
+            if (parameter.GetProperty("in").GetString() != "path" ||
+                !parameter.TryGetProperty("schema", out var schema) ||
+                !schema.TryGetProperty("format", out var format) || format.GetString() != "uuid")
+                continue;
+            var segment = Array.IndexOf(expected, "{" + parameter.GetProperty("name").GetString() + "}");
+            if (segment >= 0 && !Guid.TryParse(actual[segment], out _))
+                return false;
+        }
+        return true;
+    }
+
     private static void Validate(JsonElement schema, JsonElement value, JsonElement components, string path, int depth)
     {
         if (depth > 16)
@@ -126,3 +146,4 @@ internal sealed class OpenApiResponseHandler(JsonDocument document) : Delegating
         }
     }
 }
+

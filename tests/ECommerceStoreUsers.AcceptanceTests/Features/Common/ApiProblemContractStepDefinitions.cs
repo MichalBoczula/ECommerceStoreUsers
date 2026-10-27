@@ -1,85 +1,46 @@
-using System.Net;
-using System.Text;
-using System.Text.Json;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using Reqnroll;
-using Shouldly;
 
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Common;
 
 [Binding]
-public sealed class ApiProblemContractStepDefinitions(ScenarioApiContext apiContext)
+public sealed class ApiProblemContractStepDefinitions(FrameworkFailureState state)
 {
-    private string? _path;
     private string? _errorCase;
 
     [When("I trigger the Users REF-06 error case {string}")]
     public async Task WhenITriggerTheErrorCase(string errorCase)
     {
-        var client = apiContext.HttpClient;
         _errorCase = errorCase;
-        (_path, apiContext.Response) = errorCase switch
+        var (method, path, body, contentType) = errorCase switch
         {
-            "route" => ("/ref-06-not-found", await client.GetAsync("/ref-06-not-found")),
-            "method" => ("/customers/external/test", await client.PostAsync(
-                "/customers/external/test", null)),
-            "media" => ("/customers", await client.PostAsync(
-                "/customers", new StringContent("{}", Encoding.UTF8, "text/plain"))),
-            "json" => ("/customers", await client.PostAsync(
-                "/customers", new StringContent("{INTERNAL_FAILURE_MARKER", Encoding.UTF8, "application/json"))),
-            "type" => ("/favorites/clients/11111111-1111-1111-1111-111111111111", await client.PostAsync(
-                "/favorites/clients/11111111-1111-1111-1111-111111111111",
-                new StringContent("{\"productId\":\"not-a-guid\"}", Encoding.UTF8, "application/json"))),
-            "null" => ("/favorites/clients/11111111-1111-1111-1111-111111111111", await client.PostAsync(
-                "/favorites/clients/11111111-1111-1111-1111-111111111111",
-                new StringContent("{\"productId\":null}", Encoding.UTF8, "application/json"))),
-            "missing" => ("/favorites/clients/11111111-1111-1111-1111-111111111111", await client.PostAsync(
-                "/favorites/clients/11111111-1111-1111-1111-111111111111",
-                new StringContent("{}", Encoding.UTF8, "application/json"))),
-            "body" => ("/customers", await client.PostAsync(
-                "/customers", new StringContent("", Encoding.UTF8, "application/json"))),
+            "route" => ("GET", "/ref-06-not-found", "<no-content>", "<none>"),
+            "method" => ("POST", "/customers/external/test", "<no-content>", "<none>"),
+            "media" => ("POST", "/customers", "{}", "text/plain; charset=utf-8"),
+            "json" => ("POST", "/customers", "{INTERNAL_FAILURE_MARKER", "application/json; charset=utf-8"),
+            "type" => ("POST", "/favorites/clients/11111111-1111-1111-1111-111111111111", "{\"productId\":\"not-a-guid\"}", "application/json; charset=utf-8"),
+            "null" => ("POST", "/favorites/clients/11111111-1111-1111-1111-111111111111", "{\"productId\":null}", "application/json; charset=utf-8"),
+            "missing" => ("POST", "/favorites/clients/11111111-1111-1111-1111-111111111111", "{}", "application/json; charset=utf-8"),
+            "body" => ("POST", "/customers", "<empty>", "application/json; charset=utf-8"),
             _ => throw new ArgumentOutOfRangeException(nameof(errorCase))
         };
+        state.Prepare(method, path, body, contentType);
+        await state.SendAsync();
     }
 
     [Then("the Users REF-06 response has status {int} and code {string}")]
     public async Task ThenTheResponseHasProblemContract(int status, string code)
     {
-        apiContext.Response.ShouldNotBeNull();
-        apiContext.Response.StatusCode.ShouldBe((HttpStatusCode)status);
-        apiContext.Response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
-
-        var body = await apiContext.Response.Content.ReadAsStringAsync();
-        using var document = JsonDocument.Parse(body);
-        var problem = document.RootElement;
-        problem.GetProperty("status").GetInt32().ShouldBe(status);
-        problem.GetProperty("code").GetString().ShouldBe(code);
-        problem.GetProperty("type").GetString().ShouldNotBeNullOrWhiteSpace();
-        problem.GetProperty("title").GetString().ShouldNotBeNullOrWhiteSpace();
-        problem.GetProperty("detail").GetString().ShouldNotBeNullOrWhiteSpace();
-        problem.GetProperty("instance").GetString().ShouldBe(_path);
-        problem.GetProperty("traceId").GetString().ShouldNotBeNullOrWhiteSpace();
-        problem.GetProperty("errors").GetArrayLength().ShouldBe(0);
-        var missing = problem.GetProperty("missingProperties");
-        if (_errorCase == "missing")
+        var (title, detail, missing, allow) = _errorCase switch
         {
-            missing.EnumerateArray().Select(item => item.GetString()).ShouldContain("productId");
-        }
-        else
-        {
-            missing.GetArrayLength().ShouldBe(0);
-        }
-        body.ShouldNotContain("INTERNAL_FAILURE_MARKER");
-        body.ShouldNotContain("stackTrace");
-        if (_errorCase is "json" or "type" or "null" or "missing" or "body")
-        {
-            var database = AcceptanceMongoDb.GetDatabase(apiContext.DatabaseName);
-            foreach (var name in new[] { "customers", "customers-history", "favorites" })
-            {
-                (await database.GetCollection<BsonDocument>(name)
-                    .CountDocumentsAsync(FilterDefinition<BsonDocument>.Empty)).ShouldBe(0);
-            }
-        }
+            "route" => ("Route not found.", "The requested route does not exist.", "[]", "[]"),
+            "method" => ("Method not allowed.", "The requested method is not supported by this route.", "[]", "GET"),
+            "media" => ("Unsupported media type.", "The request content type is not supported.", "[]", "[]"),
+            "body" => ("Invalid request.", "The request could not be processed.", "[]", "[]"),
+            "missing" => ("Invalid JSON payload.", "JSON payload for AddFavoriteRequestDto is missing required properties: productId.", "productId", "[]"),
+            "json" or "type" or "null" => ("Invalid JSON payload.", "The request body is not valid JSON.", "[]", "[]"),
+            _ => throw new InvalidOperationException("No framework request was sent.")
+        };
+        await state.ExpectProblemAsync(status, code, title, detail, missing, allow);
+        await state.ExpectUnchangedAsync();
     }
 }

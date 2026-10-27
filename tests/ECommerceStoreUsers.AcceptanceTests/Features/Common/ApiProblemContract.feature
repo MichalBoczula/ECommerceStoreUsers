@@ -1,9 +1,12 @@
 Feature: Public API error contract
   Framework failures and unhandled exceptions expose a stable, safe problem shape.
 
+  Background:
+    Given representative Users data exists for framework rejection checks
+
   Scenario Outline: Framework failures have the same JSON problem contract
     A request fails during routing, method selection, body binding or media-type handling.
-    Each example checks its status and safe problem code; malformed or incomplete bodies do not create business data.
+    Each example checks every safe problem field and preserves all five seeded current/history/Favorite collections.
     When I trigger the Users REF-06 error case "<Case>"
     Then the Users REF-06 response has status <Status> and code "<Code>"
 

@@ -11,6 +11,7 @@ Feature: Update admin profile deserialization validation
       | ExistingFullName   | Existing Missing Field Admin  |
       | ExistingEmail      | existing.missing.admin@db.com |
       | Email              | updated.missing.admin@db.com  |
+    And I record all Users data before this framework request
     When I submit the incomplete update admin request
     Then the update admin response indicates a json deserialization failure
       | Field           | Value                                                                 |
@@ -19,3 +20,12 @@ Feature: Update admin profile deserialization validation
       | Detail          | JSON payload for UpdateAdminProfileRequestDto is missing required properties: fullName. |
       | Type            | https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1           |
       | MissingProperty | fullName                                                              |
+    And the complete framework problem has these values
+      | Field             | Value                                                                                   |
+      | Status            | 400                                                                                     |
+      | Code              | invalid_json                                                                            |
+      | Title             | Invalid JSON payload.                                                                   |
+      | Detail            | JSON payload for UpdateAdminProfileRequestDto is missing required properties: fullName. |
+      | MissingProperties | fullName                                                                                |
+      | Allow             | []                                                                                      |
+    And every Users collection is unchanged

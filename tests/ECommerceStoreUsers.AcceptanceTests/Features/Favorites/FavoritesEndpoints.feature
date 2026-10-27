@@ -50,8 +50,18 @@ Feature: Favorites endpoints
       | Field     | Value                                |
       | ClientId  | 11111111-1111-1111-1111-111111111111 |
       | ProductId | aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa |
+    And I record all Users data before this framework request
     When I add a favorite without the required product identifier
     Then the malformed favorite payload fails with status 400
+    And the complete framework problem has these values
+      | Field             | Value                                                                             |
+      | Status            | 400                                                                               |
+      | Code              | invalid_json                                                                      |
+      | Title             | Invalid JSON payload.                                                             |
+      | Detail            | JSON payload for AddFavoriteRequestDto is missing required properties: productId. |
+      | MissingProperties | productId                                                                         |
+      | Allow             | []                                                                                |
+    And every Users collection is unchanged
 
   @allure.label.scenarioId:REF07_AddProductToFavorites_04
   Scenario: Add the same product twice

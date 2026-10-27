@@ -244,6 +244,8 @@ Task 4 strengthens [Admin success and no-op evidence](docs/bdd-04-admins.md),
 including a repeat after a real update: 85 BDD cases and 104 acceptance-project cases.
 Task 5 adds [complete Favorites collection and isolation evidence](docs/bdd-05-favorites.md):
 91 BDD cases and 110 acceptance-project cases, including date ordering with unspecified ties.
+Task 7 adds [framework rejection and unchanged-data evidence](docs/bdd-07-framework.md):
+129 BDD cases and 150 acceptance-project cases. Task 6 remains pending.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:

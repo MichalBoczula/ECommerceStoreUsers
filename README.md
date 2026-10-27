@@ -38,7 +38,7 @@ Domain policies expose rule and error descriptions. The API serves these at
 Generated links and OpenAPI are ignored verification artifacts, not another
 specification to maintain. See
 [ADR-0005](docs/adr/0005-generated-documentation-sources.md). CI packages these
-sources and actual BDD results for the shared LiveDocs portal; see
+sources, declared branch/rule links and actual exchange evidence for the shared LiveDocs portal; see
 [report publication](#bdd-reports-in-livedocs). RAG ingestion remains later work.
 
 ## Architecture
@@ -262,6 +262,11 @@ Task 10 adds [generated field contracts and serializer evidence](docs/bdd-10-con
 **278 BDD + 61 standalone = 339 acceptance-project cases**, with source field
 descriptions/typed examples, scalar/nullability/format/nesting checks and linked
 actual request/response contract observations. Tasks 11–12 remain; no rollout.
+
+Task 11 adds [source semantics and RAG evidence joins](docs/source-description-contract.md):
+**279 BDD + 67 standalone = 346 acceptance cases**, 64 declared outcome groups
+and explicit primary/supporting exchange links. One added case checks the absent
+Customer branch of company update. Task 12 retains final report selection/refresh.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:

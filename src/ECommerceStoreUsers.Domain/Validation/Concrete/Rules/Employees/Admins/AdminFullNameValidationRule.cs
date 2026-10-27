@@ -1,10 +1,11 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
+using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Employees.Admins
 {
+    [Documentation("users.rule.admin-full-name", "Full Name cannot be null, white space, or contain special characters (@#$%^&*).")]
     internal sealed class AdminFullNameValidationRule : IValidationRule<Admin>
     {
         private readonly ValidationError _invalidFullName;

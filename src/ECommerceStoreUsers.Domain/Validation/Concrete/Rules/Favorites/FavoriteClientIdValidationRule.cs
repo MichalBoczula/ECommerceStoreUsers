@@ -1,9 +1,10 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
+using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Favorites
 {
+    [Documentation("users.rule.favorite-client-id", "ClientId cannot be an empty GUID.")]
     internal sealed class FavoriteClientIdValidationRule : IValidationRule<Favorite>
     {
         private readonly ValidationError _invalidClientId;
@@ -31,3 +32,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Favorites
         public List<ValidationError> Describe() => [_invalidClientId];
     }
 }
+

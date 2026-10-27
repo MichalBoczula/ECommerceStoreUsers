@@ -14,12 +14,7 @@ internal sealed class OpenApiResponseHandler(JsonDocument document, Action<strin
             if (path is "/health" or "/health/live" or "/health/ready" || path.StartsWith("/swagger/", StringComparison.OrdinalIgnoreCase))
                 return response;
 
-            var paths = document.RootElement.GetProperty("paths");
-            var route = paths.EnumerateObject()
-                .Where(item => Matches(item.Name, path))
-                .OrderByDescending(item => item.Name.Split('/').Count(part => !part.StartsWith('{')))
-                .FirstOrDefault(item => item.Value.TryGetProperty(request.Method.Method.ToLowerInvariant(), out var candidate) &&
-                    MatchesPathParameters(item.Name, path, candidate));
+            var route = FindRoute(document, request);
             if (route.Value.ValueKind == JsonValueKind.Undefined)
             {
                 if ((int)response.StatusCode is 404 or 405)
@@ -135,6 +130,16 @@ internal sealed class OpenApiResponseHandler(JsonDocument document, Action<strin
             throw new InvalidOperationException($"Framework problem differs from generated schema: {string.Join("; ", errors)}");
         request.Options.TryGetValue(HttpEvidenceHandler.ExchangeIdKey, out var exchange);
         record?.Invoke("OpenAPI framework problem contract", new { exchangeId = exchange, status = (int)response.StatusCode, conforms = true });
+    }
+
+    internal static JsonProperty FindRoute(JsonDocument document, HttpRequestMessage request)
+    {
+        var path = request.RequestUri?.AbsolutePath ?? string.Empty;
+        return document.RootElement.GetProperty("paths").EnumerateObject()
+            .Where(item => Matches(item.Name, path))
+            .OrderByDescending(item => item.Name.Split('/').Count(part => !part.StartsWith('{')))
+            .FirstOrDefault(item => item.Value.TryGetProperty(request.Method.Method.ToLowerInvariant(), out var candidate) &&
+                MatchesPathParameters(item.Name, path, candidate));
     }
 
     private static bool Matches(string template, string path)

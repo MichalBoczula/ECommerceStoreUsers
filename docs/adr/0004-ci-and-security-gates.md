@@ -26,8 +26,9 @@ retains job dependencies, artifact upload, secrets and image scanning.
 Enable NuGet audit for high/critical findings (`NU1903`/`NU1904` as errors),
 Dependency Review on pull requests, Gitleaks, and a Trivy high/critical scan
 of the local Docker image after the quality gate. Compiler warnings remain
-visible without global warnings-as-errors. CI builds but does not publish a
-Users image. The exact jobs and event conditions are in
+visible without global warnings-as-errors. This original scanning decision was
+extended by [ADR-0006](0006-publish-scanned-image.md): current master CI publishes
+the same scanned image, while PRs only build/scan. The exact jobs and event conditions are in
 [`ci.yml`](../../.github/workflows/ci.yml).
 
 ## Consequences
@@ -43,3 +44,4 @@ publication, provenance, deployment and rollout remain separate decisions.
   selected quality and vulnerability gates.
 - Publish an image from every PR: would distribute changes before merge and
   without an agreed destination registry for Users.
+

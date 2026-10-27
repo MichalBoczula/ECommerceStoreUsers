@@ -7,6 +7,7 @@ using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.IndividualData
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers;
 
+[Documentation("users.policy.individual-data", "Validate individual fields and each billing/shipping address; returns all collected error signatures.")]
 internal sealed class IndividualDataValidationPolicy : IValidationPolicy<IndividualData>, IValidationPolicyDescriptorProvider
 {
     private readonly List<IValidationRule<IndividualData>> _individualRules = [];
@@ -56,3 +57,4 @@ internal sealed class IndividualDataValidationPolicy : IValidationPolicy<Individ
         };
     }
 }
+

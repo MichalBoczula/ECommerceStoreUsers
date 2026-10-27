@@ -4,6 +4,7 @@ using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Customers
 {
+    [Documentation("users.rule.customer-external-id", "ExternalId cannot be null or white space. ExternalId cannot be an empty guid.")]
     internal sealed class CustomerExternalIdValidationRule : IValidationRule<Customer>
     {
         private readonly ValidationError _invalidExternalId;
@@ -43,3 +44,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Custome
         public List<ValidationError> Describe() => [_invalidExternalId, _emptyGuidExternalId];
     }
 }
+

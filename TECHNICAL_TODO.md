@@ -1,6 +1,6 @@
 # ECommerceStoreUsers technical backlog
 
-This file reflects the code and CI after REF-11 and ADR review REF-12/4.
+This file reflects the code and CI through USERS-BDD-11; see docs/bdd-backlog.md for the scoped evidence work.
 `[x]` means implemented and checked, `[ ]` remains, and `[>]` is deferred
 beyond this reference-service development phase. Green CI does not approve a
 public production deployment. ProductsCatalog is an equal reference service,
@@ -18,8 +18,7 @@ not an architecture template for MongoDB application services.
   rollback, duplicate requests, concurrency and deterministic reads.
 - [x] One MongoDB replica-set container per acceptance run; separate database,
   API host and client per scenario, with cleanup even on failure.
-- [x] Domain and Application 70% line-coverage gates, Infrastructure coverage
-  for diagnosis, all test layers in CI, TRX/report artifacts and format gate.
+- [x] Separate Domain, Application and Infrastructure 70% line-coverage gates, all test layers in CI, TRX/report artifacts and format gate.
 - [x] Architecture gate for layer/persistence boundaries with negative tests.
 - [x] MongoDB configuration fail-fast; named indexes safe on repeated/concurrent
   startup. Conflicting definitions stop startup rather than being dropped.
@@ -34,7 +33,7 @@ not an architecture template for MongoDB application services.
   errors, test isolation, CI and generated documentation.
 - [x] NuGet high/critical audit, Dependency Review on PRs, Gitleaks, Trivy,
   and Docker build after the quality gate. Ordinary compiler warnings remain
-  visible. No Users image is published by this repository today.
+  visible. Successful master runs publish the scanned Users image to Docker Hub; PRs do not publish.
 
 ## Open for a production environment
 
@@ -54,10 +53,11 @@ not an architecture template for MongoDB application services.
 
 ## Deferred or conditional
 
-- [>] First Users report rollout: CI now packages real BDD/API sources and
+- [>] Users report snapshot refresh: CI now packages real BDD/API sources and
   uploads to shared LiveDocs Blob storage after a successful master image build.
-  Configure the SAS secret, select the verified reference in LiveDocs, publish its
-  image and deploy that digest. RAG ingestion/retrieval remains deferred.
+  The existing portal remains available. Task 12 owns final verification and
+  selection of the refreshed Users reference/image; Azure rollout is manual.
+  RAG source/evidence joins exist; ingestion/retrieval/evaluation remain deferred.
 - [>] Kiota compatibility belongs to consumers generating a client, such as
   Invoice/BFF. This producer stores no generated clients.
 - [>] API versioning, browser CORS, rate limits, pagination, larger request
@@ -67,3 +67,4 @@ not an architecture template for MongoDB application services.
   reusable CI workflows follow portfolio-wide evaluation. Keep current gates.
 - [>] Broader write retry policies require operation-specific idempotency;
   a bounded connection probe does not authorize transaction retries.
+

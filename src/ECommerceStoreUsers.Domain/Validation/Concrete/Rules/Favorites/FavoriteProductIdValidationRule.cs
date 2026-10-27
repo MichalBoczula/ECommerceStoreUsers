@@ -1,9 +1,10 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
+using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Favorites
 {
+    [Documentation("users.rule.favorite-product-id", "ProductId cannot be an empty GUID.")]
     internal sealed class FavoriteProductIdValidationRule : IValidationRule<Favorite>
     {
         private readonly ValidationError _invalidProductId;
@@ -31,3 +32,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Favorites
         public List<ValidationError> Describe() => [_invalidProductId];
     }
 }
+

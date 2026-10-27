@@ -67,10 +67,12 @@ after successful master image publication; it does not deploy ACA.
   improve field descriptions and typed examples. Derive OpenAPI from source,
   retain real serializer behavior and avoid a second handwritten spec. See
   [generated schemas, typed examples and actual exchange checks](bdd-10-contracts.md).
-- [ ] **USERS-BDD-11 — Flows, rules and RAG links.** Describe conditions,
+- [x] **USERS-BDD-11 — Flows, rules and RAG links.** Describe conditions,
   effects and failures for the 12 flows/92 steps; link operation → flow →
   rule/branch → scenario → exchange using stable identities. Classify enforced
-  versus unused rules and reconcile stale engineering/publication guidance.
+  versus unused rules and reconcile stale engineering/publication guidance. See
+  [source identities and evidence boundaries](source-description-contract.md) and
+  [implementation scope](bdd-11-rag.md).
 - [ ] **USERS-BDD-12 — Final audit and LiveDocs refresh.** Run full CI, inspect
   every expanded case and attachment, verify manifest hashes/sizes and rendered
   reports, select the successful master archive and publish the refreshed

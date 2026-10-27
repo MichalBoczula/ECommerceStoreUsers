@@ -1,3 +1,4 @@
+using ECommerceStoreUsers.Application.Common.FlowDescriptors;
 using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.API.Configuration.Extensions;
 using ECommerceStoreUsers.Domain.Validation.Common;
@@ -6,6 +7,9 @@ using System.Text.Json;
 
 namespace ECommerceStoreUsers.API.Configuration
 {
+    [FlowOutcome("users.branch.http.invalid-json", "JSON parsing, conversion or required-member binding fails.", "Return the safe invalid_json problem and any inspected missing member names; do not claim a business policy ran.", Status = 400, Code = "invalid_json", Stage = "framework")]
+    [FlowOutcome("users.branch.http.invalid-request", "Body binding rejects a missing/empty/root-null request without a JSON conversion error.", "Return the complete safe invalid_request problem; no endpoint write is performed.", Status = 400, Code = "invalid_request", Stage = "framework")]
+    [FlowOutcome("users.branch.http.internal-error", "An unhandled dependency/provider/persistence failure reaches the exception handler.", "Return a generic safe 500 without exception internals. Locate write/rollback scope in that scenario's persistence evidence, not the status alone.", Status = 500, Code = "internal_error", Stage = "exception-handler")]
     public sealed class ExceptionHandler : IExceptionHandler
     {
         private readonly ILogger<ExceptionHandler> _logger;
@@ -65,3 +69,4 @@ namespace ECommerceStoreUsers.API.Configuration
         }
     }
 }
+

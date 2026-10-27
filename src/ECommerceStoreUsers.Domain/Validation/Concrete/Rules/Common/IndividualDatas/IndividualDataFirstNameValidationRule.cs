@@ -1,10 +1,11 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.IndividualDatas
 {
+    [Documentation("users.rule.individual-first-name", "First Name cannot be empty or white space and must contain at least one letter.")]
     internal sealed class IndividualDataFirstNameValidationRule : IValidationRule<IndividualData>
     {
         private readonly ValidationError _invalidFirstName;
@@ -31,3 +32,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Individual
         public List<ValidationError> Describe() => [_invalidFirstName];
     }
 }
+

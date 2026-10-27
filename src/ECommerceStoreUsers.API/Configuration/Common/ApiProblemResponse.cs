@@ -1,7 +1,11 @@
+using ECommerceStoreUsers.Application.Common.FlowDescriptors;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.API.Configuration.Common;
 
+[FlowOutcome("users.branch.http.route-not-found", "No route matches, including a rejected GUID route constraint.", "Return complete route_not_found problem JSON with no business operation assumed.", Status = 404, Code = "route_not_found", Stage = "framework")]
+[FlowOutcome("users.branch.http.method-not-allowed", "The route exists but does not allow the method.", "Return the safe method_not_allowed problem and the router's actual Allow header.", Status = 405, Code = "method_not_allowed", Stage = "framework")]
+[FlowOutcome("users.branch.http.unsupported-media-type", "A nonempty body has an unsupported or absent media type.", "Return complete unsupported_media_type problem JSON before the endpoint write.", Status = 415, Code = "unsupported_media_type", Stage = "framework")]
 internal static class ApiProblemResponse
 {
     public static Task WriteAsync(
@@ -60,3 +64,4 @@ internal static class ApiProblemResponse
         return WriteAsync(context, context.Response.StatusCode, code, title, detail, context.RequestAborted);
     }
 }
+

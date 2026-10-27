@@ -4,6 +4,7 @@ Feature: Public API error contract
   Background:
     Given representative Users data exists for framework rejection checks
 
+  @documentation.framework
   Scenario Outline: Framework failures have the same JSON problem contract
     A request fails during routing, method selection, body binding or media-type handling.
     Each example checks every safe problem field and preserves all five seeded current/history/Favorite collections.

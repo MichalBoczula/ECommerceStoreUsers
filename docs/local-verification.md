@@ -41,16 +41,15 @@ at least 70% line coverage.
 OpenAPI validation and Docker build must succeed. CI also runs dependency,
 secret and image vulnerability gates; `verify.sh` does not replace them.
 
-The MongoDB integration and acceptance jobs use `ubuntu-24.04` rather than a
-moving `ubuntu-latest` image. MongoDB 8 refuses startup on Linux kernels
-6.19 through 7.0.13 ([MongoDB release notes](https://www.mongodb.com/docs/v8.0/release-notes/8.0/),
-SERVER-121912); the current Ubuntu 24.04 runner uses kernel 6.17. Containers
-inherit the host kernel, so changing only the MongoDB container's base OS does
-not solve this. Local Docker hosts also need a supported kernel. The CI script
-pulls the Mongo image and checks its shell before running either real database
-suite, and fixtures preserve startup logs on failure. No database tests or
-coverage gates are skipped.
+The two MongoDB jobs temporarily use `ubuntu-22.04`. A rolling Ubuntu 24 image
+triggered MongoDB's kernel startup guard. The script logs the actual Docker-server
+kernel and checks the same Mongo 8 image before both full database suites. Task 9
+recorded kernel 6.8.0-1064-azure; labels can change, so use each run's actual log.
+Review this pin before the published Ubuntu 22 runner retirement on 2027-04-17;
+see [compatibility scope](bdd-09-technical.md#mongodb-test-runner-compatibility).
+No database tests, coverage/security gates or startup diagnostics are skipped.
 
 The filtered, read-only OpenAPI export does not start the Reqnroll Mongo fixture.
 The export test already removes database initialization from its HTTP host;
 normal acceptance runs still start the real replica set and exercise writes.
+

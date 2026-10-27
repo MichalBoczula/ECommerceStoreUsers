@@ -1,10 +1,11 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
+using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Favorites;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Favorites
 {
+    [Documentation("users.policy.favorite", "Validate nonempty client/product UUIDs; does not check Customer or catalog existence.")]
     internal sealed class FavoriteValidationPolicy : IValidationPolicy<Favorite>, IValidationPolicyDescriptorProvider
     {
         private readonly List<IValidationRule<Favorite>> _rules = [];
@@ -43,3 +44,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Favorites
         }
     }
 }
+

@@ -111,11 +111,18 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Documentation
                 {
                     step.StepName.ShouldNotBeNullOrWhiteSpace();
                     step.BpmnId.ShouldNotBeNullOrWhiteSpace();
+                    step.StepName.Length.ShouldBeGreaterThan(40);
                 }
             }
             flows.Values.Sum(flow => flow.Steps.Count).ShouldBe(92);
             _apiContext.RecordEvidence("Technical flow expectations", table.Rows.Select(row => new { descriptor = row["Descriptor"], flow = row["Flow"], steps = row["Steps"] }).ToArray());
+            var catalogue = DocumentationEvidence.SourceCatalogue;
+            catalogue.OperationFlows.Count.ShouldBe(12);
+            var nominalFlows = catalogue.OperationFlows.Values.DistinctBy(flow => flow.Id).ToArray();
+            nominalFlows.Sum(flow => flow.StepIds.Length).ShouldBe(92);
+            catalogue.Branches.Count.ShouldBe(64);
             _apiContext.RecordEvidence("Technical flow metadata verified", new { descriptors = flows.Count, steps = 92, orderedSteps = true, completeStepMetadata = true });
+            _apiContext.RecordEvidence("Design flow catalogue verified", new { nominalFlows, branches = catalogue.Branches.Values.ToArray(), sourceBasis = "Declared metadata and scenario intent, not step telemetry" });
         }
 
         [Then("validation documentation has these exact policies")]
@@ -167,7 +174,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Documentation
             operations.Length.ShouldBe(expected["NamedOperations"]);
             operations.Distinct().Count().ShouldBe(operations.Length);
             document.RootElement.GetProperty("components").GetProperty("schemas").EnumerateObject().Count().ShouldBe(expected["Schemas"]);
-            _apiContext.RecordEvidence("Technical OpenAPI verified", new { expectations = expected, operations, bootstrapDocumentEqual = true, fullPropertyValidation = "Deferred to task 10" });
+            _apiContext.RecordEvidence("Technical OpenAPI verified", new { expectations = expected, operations, bootstrapDocumentEqual = true, fullPropertyValidation = OpenApiContractAssertions.Check(document) });
         }
 
         private void RequireSuccessfulJsonResponse()

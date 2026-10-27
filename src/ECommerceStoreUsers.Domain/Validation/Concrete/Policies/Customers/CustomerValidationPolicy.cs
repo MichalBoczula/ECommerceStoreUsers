@@ -10,6 +10,7 @@ using ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Customers.Customers;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Policies.Customers;
 
+[Documentation("users.policy.customer", "Validate the Customer external reference, individual fields and both addresses, company fields/addresses and within-Customer tax-ID uniqueness. GET by external ID uses synthetic valid profile fields.")]
 internal sealed class CustomerValidationPolicy : IValidationPolicy<Customer>, IValidationPolicyDescriptorProvider
 {
     private readonly List<IValidationRule<Customer>> _customerRules = [];

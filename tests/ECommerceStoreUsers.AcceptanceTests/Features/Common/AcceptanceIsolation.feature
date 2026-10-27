@@ -15,6 +15,7 @@ Feature: Users acceptance scenario isolation
       | second |
 
   @allure.label.scenarioId:REF05_Isolation_DependencyFailure
+  @allure.label.branchId:users.branch.http.internal-error
   Scenario: A handled dependency failure does not write customer documents
     A customer lookup runs against a deliberately failing dependency in an isolated database.
     The safe server-error response leaves the current and history marker counts unchanged.

@@ -1,10 +1,11 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDatas
 {
+    [Documentation("users.rule.company-tax-id", "Tax Id must be a valid Polish NIP containing exactly 10 digits.")]
     internal sealed class CompanyDataTaxIdValidationRule : IValidationRule<CompanyData>
     {
         private readonly ValidationError _invalidTaxId;
@@ -31,3 +32,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.CompanyDat
         public List<ValidationError> Describe() => [_invalidTaxId];
     }
 }
+

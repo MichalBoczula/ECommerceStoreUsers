@@ -1,4 +1,5 @@
-﻿using ECommerceStoreUsers.API.Configuration.Common;
+using ECommerceStoreUsers.Application.Common.FlowDescriptors;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.Application.Common.FlowDescriptors;
 using ECommerceStoreUsers.Application.Common.ResponsesDto;
 using ECommerceStoreUsers.Application.Services.Abstract.Admins;
@@ -10,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceStoreUsers.API.Endpoints
 {
+    [FlowOutcome("users.branch.documentation.flows", "The flow descriptor providers complete.", "Return all twelve nominal flows and their ninety-two meaningful ordered steps without writes.", Status = 200, Code = null, Stage = "documentation")]
+    [FlowOutcome("users.branch.documentation.validations", "The registered validation descriptor providers complete.", "Return six active policy definitions; do not present uninstalled rule classes as enforced.", Status = 200, Code = null, Stage = "documentation")]
     public static class DocumentationEndpoints
     {
         public static IEndpointRouteBuilder MapDocumentationEndpoints(this IEndpointRouteBuilder app)
@@ -92,3 +95,4 @@ namespace ECommerceStoreUsers.API.Endpoints
         }
     }
 }
+

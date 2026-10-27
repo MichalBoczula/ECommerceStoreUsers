@@ -41,8 +41,9 @@ dotnet test tests/ECommerceStoreUsers.Infrastructure.UnitTests/ECommerceStoreUse
 dotnet test tests/ECommerceStoreUsers.AcceptanceTests/ECommerceStoreUsers.AcceptanceTests.csproj --configuration Release --no-restore
 ```
 
-CI additionally scans secrets, dependency changes on PRs and the image. `.github/workflows/ci.yml` is the current source for CI commands and results. OpenAPI export/lint remains tracked in REF-11. Report only checks actually run; see [local verification](docs/local-verification.md).
+CI additionally scans secrets, dependency changes on PRs and the image. `.github/workflows/ci.yml` is the current source for CI commands and results. Generated OpenAPI export/lint and source/evidence link validation are part of current CI. Report only checks actually run; see [local verification](docs/local-verification.md).
 
 ## Handoff
 
 Use `.github/pull_request_template.md`. Report changed behavior, linked backlog ID, commands and tests run, what could not be verified and why, and remaining data/contract risks. A shared REF item is complete only after its criteria have been met in both repositories.
+

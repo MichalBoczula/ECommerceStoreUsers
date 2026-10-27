@@ -1,10 +1,11 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using System.Text.RegularExpressions;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.IndividualDatas
 {
+    [Documentation("users.rule.individual-phone", "Phone must contain only digits and be between 7 and 10 characters long.")]
     internal sealed class IndividualDataPhoneValidationRule : IValidationRule<IndividualData>
     {
         private readonly ValidationError _invalidPhone;
@@ -31,3 +32,4 @@ namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Individual
         public List<ValidationError> Describe() => [_invalidPhone];
     }
 }
+

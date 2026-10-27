@@ -1,9 +1,10 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
+using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.Validation.Abstract;
 using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Domain.Validation.Concrete.Rules.Common.Addresses
 {
+    [Documentation("users.rule.address-postal-code", "Postal Code cannot be empty or white space.")]
     internal sealed class AddressPostalCodeValidationRule : IValidationRule<Address>
     {
         private readonly ValidationError _invalidPostalCode;

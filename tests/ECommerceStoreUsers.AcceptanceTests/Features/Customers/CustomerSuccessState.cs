@@ -131,7 +131,7 @@ public sealed class CustomerSuccessState(ScenarioApiContext context)
         _response = await context.Response.Content.ReadFromJsonAsync<CustomerResponseDto>(context.JsonOptions);
         _response.ShouldNotBeNull();
         var profile = Customer(expected);
-        profile.Companies.Count.ShouldBe(int.Parse(Required(expected, "CompaniesCount"), CultureInfo.InvariantCulture));
+        (profile.Companies?.Count ?? 0).ShouldBe(int.Parse(Required(expected, "CompaniesCount"), CultureInfo.InvariantCulture));
         AssertProfile(_response, profile);
         _before.ShouldNotBeNull();
         if (_before.Current.Length != 0)
@@ -265,9 +265,10 @@ public sealed class CustomerSuccessState(ScenarioApiContext context)
         actual.UpdatedAt.Kind.ShouldBe(DateTimeKind.Utc);
         actual.ExternalId.ShouldBe(expected.ExternalId);
         AssertEqual(actual.Individual, expected.Individual);
-        actual.Companies.Count.ShouldBe(expected.Companies.Count);
+        var expectedCompanies = expected.Companies ?? [];
+        actual.Companies.Count.ShouldBe(expectedCompanies.Count);
         actual.Companies.Select(company => company.Id).Distinct().Count().ShouldBe(actual.Companies.Count);
-        foreach (var company in expected.Companies)
+        foreach (var company in expectedCompanies)
         {
             var stored = actual.Companies.Single(item => item.TaxId == company.TaxId);
             stored.Id.ShouldNotBe(Guid.Empty);

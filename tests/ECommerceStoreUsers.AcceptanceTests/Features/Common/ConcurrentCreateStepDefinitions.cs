@@ -99,7 +99,7 @@ public sealed class ConcurrentCreateStepDefinitions(ScenarioApiContext context, 
             InWindow(winner.UpdatedAt);
             var companyId = winner.Companies.ShouldHaveSingleItem().Id;
             companyId.ShouldNotBe(Guid.Empty);
-            var company = request.Companies.Single();
+            var company = (request.Companies ?? throw new InvalidOperationException("The Customer race fixture requires a company.")).Single();
             var individual = request.Individual;
             var expectedCustomer = Customer.Rehydrate(winner.Id, request.ExternalId,
                 new IndividualData(individual.FirstName, individual.LastName, individual.Email, individual.Phone,

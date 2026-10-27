@@ -33,7 +33,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Common
 
         public HttpClient CreateClient(WebApplicationFactory<Program> factory)
             // Capture inside validation so the real response survives a contract failure.
-            => factory.CreateDefaultClient(new OpenApiResponseHandler(OpenApiDocument), new HttpEvidenceHandler(Evidence));
+            => factory.CreateDefaultClient(new OpenApiResponseHandler(OpenApiDocument, RecordEvidence), new HttpEvidenceHandler(Evidence));
 
         private ScenarioHttpEvidence Evidence => _evidence ?? throw new InvalidOperationException("Scenario evidence is not initialized.");
 

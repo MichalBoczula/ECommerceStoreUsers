@@ -17,7 +17,9 @@ public sealed class OpenApiRoutingTests
               "operationId":"GetFavoritesByClientId",
               "parameters":[{"name":"clientId","in":"path","schema":{"type":"string","format":"uuid"}}],
               "responses":{"200":{"description":"OK"}}
-            }}},"components":{"schemas":{}}}
+            }}},"components":{"schemas":{"ApiProblemDetails":{"type":"object",
+              "required":["status","code","type","title","detail","instance","errors","missingProperties","traceId"],
+              "properties":{"status":{"type":"integer"},"code":{"type":"string"},"type":{"type":"string"},"title":{"type":"string"},"detail":{"type":"string"},"instance":{"type":"string"},"errors":{"type":"array","items":{"type":"object"}},"missingProperties":{"type":"array","items":{"type":"string"}},"traceId":{"type":"string"}}}}}}
             """);
         using var client = new HttpClient(new OpenApiResponseHandler(document) { InnerHandler = new NotFoundHandler() });
         var request = $"http://localhost/favorites/clients/{clientId}";
@@ -39,7 +41,7 @@ public sealed class OpenApiRoutingTests
             => Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound)
             {
                 Content = new StringContent("""
-                    {"status":404,"code":"route_not_found","type":"about:blank","title":"Route not found."}
+                    {"status":404,"code":"route_not_found","type":"about:blank","title":"Route not found.","detail":"The requested route does not exist.","instance":"/favorites/clients/not-a-guid","errors":[],"missingProperties":[],"traceId":"routing-test"}
                     """, Encoding.UTF8, "application/problem+json")
             });
     }

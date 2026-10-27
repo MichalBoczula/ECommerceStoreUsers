@@ -62,10 +62,11 @@ after successful master image publication; it does not deploy ACA.
   startup and database evidence. Keep appropriate lifecycle/export xUnit facts
   outside BDD and report their counts separately. See
   [technical outcomes, evidence and runner compatibility](bdd-09-technical.md).
-- [ ] **USERS-BDD-10 — Request/response contracts.** Validate input/output
+- [x] **USERS-BDD-10 — Request/response contracts.** Validate input/output
   scalar types, required fields, nullability, formats, arrays and nesting;
   improve field descriptions and typed examples. Derive OpenAPI from source,
-  retain real serializer behavior and avoid a second handwritten spec.
+  retain real serializer behavior and avoid a second handwritten spec. See
+  [generated schemas, typed examples and actual exchange checks](bdd-10-contracts.md).
 - [ ] **USERS-BDD-11 — Flows, rules and RAG links.** Describe conditions,
   effects and failures for the 12 flows/92 steps; link operation → flow →
   rule/branch → scenario → exchange using stable identities. Classify enforced

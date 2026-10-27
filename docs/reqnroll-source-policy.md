@@ -76,5 +76,9 @@ cases, 114 declarations in 45 features, 241 named-operation links and 279
 acceptance-project cases** (21 standalone unchanged). Deterministic HTTP
 interleavings are distinguished from actual overlapping repository integration
 tests, and pre-repository exceptions from real history-insert rollback. The
-Customer/Admin create unique-key race currently returns safe 500 and is recorded
-as a production follow-up rather than mislabeled as the sequential 409.
+[creation-conflict follow-up](bdd-08-create-conflict-fix.md) now maps the confirmed
+ExternalId race to 409 resource_conflict and write-conflict 112 to 409
+concurrency_conflict. It retains the original identities with two intentional
+500-to-409 migrations and adds two actual concurrent HTTP cases. Current totals
+are **260 BDD cases, 115 declarations in 45 features, 243 links and 281
+acceptance-project cases**; Infrastructure has 98 cases.

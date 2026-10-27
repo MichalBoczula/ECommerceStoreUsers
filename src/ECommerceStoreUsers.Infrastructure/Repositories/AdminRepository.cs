@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
+using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
 using ECommerceStoreUsers.Domain.Common.Enums;
 using ECommerceStoreUsers.Domain.Validation.Common;
@@ -50,13 +50,34 @@ internal sealed class AdminRepository : IAdminRepository
         using var session = await _context.Client.StartSessionAsync(cancellationToken: cancellationToken);
         session.StartTransaction();
 
+        var currentInserted = false;
         try
         {
             await _context.Admins.InsertOneAsync(session, adminDocument, cancellationToken: cancellationToken);
+            currentInserted = true;
             await _context.AdminsHistory.InsertOneAsync(session, historyDocument, cancellationToken: cancellationToken);
 
             await session.CommitTransactionAsync(cancellationToken);
             return admin;
+        }
+        catch (MongoWriteException exception) when (!currentInserted && exception.WriteError.Code == 11000 &&
+            exception.WriteError.Message.Contains("index: UX_Admin_ExternalId dup key:", StringComparison.Ordinal))
+        {
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
+            // Confirm the committed target after abort; unrelated unique keys are server errors.
+            if (await _context.Admins.Find(x => x.ExternalId == admin.ExternalId).AnyAsync(cancellationToken))
+                throw new ResourceAlreadyExistsException(nameof(CreateAdmin), admin.ExternalId, nameof(Admin));
+            throw;
+        }
+        catch (MongoCommandException exception) when (exception.Code == 112)
+        {
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
+            throw new ConcurrencyConflictException();
+        }
+        catch (MongoWriteException exception) when (exception.WriteError.Code == 112)
+        {
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
+            throw new ConcurrencyConflictException();
         }
         catch
         {
@@ -129,3 +150,4 @@ internal sealed class AdminRepository : IAdminRepository
         }
     }
 }
+

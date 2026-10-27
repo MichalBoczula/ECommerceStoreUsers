@@ -9,6 +9,7 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees.Repositories;
 using ECommerceStoreUsers.Domain.Common.Enums;
+using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Infrastructure.Context;
 using ECommerceStoreUsers.Infrastructure.Mapping;
 using ECommerceStoreUsers.Infrastructure.Repositories;
@@ -137,6 +138,15 @@ public sealed class MongoAtomicityStepDefinitions(ScenarioApiContext context, At
         await atomicity.ProblemAsync(500, "internal_error", "Server error.", "An unexpected error occurred.");
     }
 
+    [Then("the confirmed create uniqueness conflict is reported as 409")]
+    public async Task ThenCreateConflict()
+    {
+        var entity = _operation == "CreateCustomer" ? "Customer" : "Admin";
+        atomicity.ExpectCreateConflict(_operation, entity, ExternalId);
+        await atomicity.ProblemAsync(409, "resource_conflict", "Conflict.",
+            $"Resource {entity} identified by id {ExternalId} already exists in db. Error in action {_operation}.");
+    }
+
     [Then("only the committed race or rollback outcome remains")]
     public Task ThenOutcome(Table table) => atomicity.ExpectAsync(table);
 
@@ -198,6 +208,11 @@ public sealed class MongoAtomicityStepDefinitions(ScenarioApiContext context, At
         private async Task<Customer> Observe(Func<Task<Customer>> write)
         {
             try { return await write(); }
+            catch (ResourceAlreadyExistsException error) when (race)
+            {
+                atomicity.RecordCreateConflict(error);
+                throw;
+            }
             catch (MongoWriteException error)
             {
                 atomicity.RecordMongoFailure(error, race ? "ExternalId" : "ref08_history_failure", race ? "customers" : "customers-history");
@@ -227,6 +242,11 @@ public sealed class MongoAtomicityStepDefinitions(ScenarioApiContext context, At
         private async Task<Admin> Observe(Func<Task<Admin>> write)
         {
             try { return await write(); }
+            catch (ResourceAlreadyExistsException error) when (race)
+            {
+                atomicity.RecordCreateConflict(error);
+                throw;
+            }
             catch (MongoWriteException error)
             {
                 atomicity.RecordMongoFailure(error, race ? "ExternalId" : "ref08_history_failure", race ? "admins" : "admins-history");

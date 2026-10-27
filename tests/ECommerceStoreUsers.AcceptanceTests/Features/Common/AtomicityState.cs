@@ -1,4 +1,5 @@
 using ECommerceStoreUsers.Domain.Common.Enums;
+using ECommerceStoreUsers.Domain.Validation.Common;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
@@ -20,6 +21,7 @@ public sealed class AtomicityState(ScenarioApiContext context)
     private DateTime _started;
     private int _interleavings;
     private int _mongoFailures;
+    private ResourceAlreadyExistsException? _createConflict;
 
     internal async Task BeginAsync()
     {
@@ -29,6 +31,7 @@ public sealed class AtomicityState(ScenarioApiContext context)
         _committed = null;
         _interleavings = 0;
         _mongoFailures = 0;
+        _createConflict = null;
         _started = DateTime.UtcNow;
         Attach("Atomicity before interleaving", _before);
     }
@@ -103,6 +106,22 @@ public sealed class AtomicityState(ScenarioApiContext context)
         error.WriteError.Message.ShouldContain(collection);
         _mongoFailures++;
         context.RecordEvidence("Atomicity real MongoDB write failure", new { code = error.WriteError.Code, index, collection, manufacturedException = false });
+    }
+
+    internal void RecordCreateConflict(ResourceAlreadyExistsException error)
+    {
+        _createConflict.ShouldBeNull();
+        _createConflict = error;
+        context.RecordEvidence("Atomicity mapped create conflict", new { error.ActionName, error.ResourceType, error.ResourceId, realRepositoryInvoked = true });
+    }
+
+    internal void ExpectCreateConflict(string operation, string entity, string externalId)
+    {
+        _createConflict.ShouldNotBeNull();
+        _createConflict.ActionName.ShouldBe(operation);
+        _createConflict.ResourceType.ShouldBe(entity);
+        _createConflict.ResourceId.ShouldBe(externalId);
+        _mongoFailures.ShouldBe(0);
     }
 
     internal void ExpectMongoFailure() => _mongoFailures.ShouldBe(1);

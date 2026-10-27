@@ -54,8 +54,9 @@ after successful master image publication; it does not deploy ACA.
   pre-repository failures from real MongoDB transaction rollback; retain the
   existing real history-insert rollback tests. Assess company add/update race
   causes independently from duplicate-tax-ID conflicts. See
-  [full winning-state and real rollback evidence](bdd-08-atomicity.md), including
-  the documented concurrent Customer/Admin create 500 mapping gap.
+  [full winning-state and real rollback evidence](bdd-08-atomicity.md), and the
+  [creation-conflict fix](bdd-08-create-conflict-fix.md) for both Customer/Admin
+  create paths.
 - [ ] **USERS-BDD-09 — Technical scenarios.** Health/readiness/startup,
   cancellation, isolation and documentation endpoints with truthful text,
   startup and database evidence. Keep appropriate lifecycle/export xUnit facts

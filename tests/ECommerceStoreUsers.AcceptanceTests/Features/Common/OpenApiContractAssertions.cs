@@ -60,6 +60,7 @@ internal static class OpenApiContractAssertions
 
         void CheckType(JsonElement schema, Type type, string path)
         {
+            type = Nullable.GetUnderlyingType(type) ?? type;
             if (schema.TryGetProperty("allOf", out var allOf))
             {
                 Require(allOf.GetArrayLength() == 1, $"Unexpected composition at {path}");

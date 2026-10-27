@@ -1,3 +1,4 @@
+using ECommerceStoreUsers.Domain.Validation.Common;
 using Xunit.Abstractions;
 using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
@@ -65,19 +66,14 @@ public sealed class UniqueCreateRaceTests(MongoDbTestFixture fixture, ITestOutpu
     {
         outcomes.Count(error => error is null).ShouldBe(1);
         var conflict = outcomes.Where(error => error is not null).ShouldHaveSingleItem()!;
-        // Overlapping transactions may lose at storage contention before duplicate-key reporting.
-        // The deterministic HTTP interleaving separately requires exactly error 11000.
-        var code = conflict switch
+        output.WriteLine($"Losing create: {conflict.GetType().Name}.");
+        if (conflict is ResourceAlreadyExistsException duplicate)
         {
-            MongoWriteException write => write.WriteError.Code,
-            MongoCommandException command => command.Code,
-            _ => throw new InvalidOperationException("Unexpected competing-create failure.", conflict)
-        };
-        output.WriteLine($"Losing create: {conflict.GetType().Name}; MongoDB code {code}.");
-        code.ShouldBeOneOf(11000, 112);
-        if (code == 11000)
-            conflict.Message.ShouldContain("ExternalId");
+            duplicate.ResourceId.ShouldBe("shared-external-id");
+            duplicate.ResourceType.ShouldBeOneOf("Customer", "Admin");
+            duplicate.ActionName.ShouldBe("Create" + duplicate.ResourceType);
+        }
         else
-            ((MongoException)conflict).HasErrorLabel("TransientTransactionError").ShouldBeTrue();
+            conflict.ShouldBeOfType<ConcurrencyConflictException>();
     }
 }

@@ -1,4 +1,4 @@
-﻿using ECommerceStoreUsers.API.Configuration.Common;
+using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
 using ECommerceStoreUsers.Application.Services.Abstract.Customers;
@@ -32,7 +32,8 @@ namespace ECommerceStoreUsers.API.Endpoints
             .WithSummary("Create customer profile.")
             .WithDescription("Creates a new customer aggregate record complete with individual user data details and optional company metadata. " +
                 "Explicit null required objects return 400 validation_failed with a RequiredRequestObject error: " +
-                "entity IndividualData, message 'individual is required.'; or entity Address, message 'billingAddress is required.' or 'shippingAddress is required.'.")
+                "entity IndividualData, message 'individual is required.'; or entity Address, message 'billingAddress is required.' or 'shippingAddress is required.'. " +
+                "A confirmed ExternalId uniqueness race returns 409 resource_conflict; a transaction write conflict returns 409 concurrency_conflict.")
             .WithName("CreateCustomer")
             .Produces<CustomerResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")

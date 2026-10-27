@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ECommerceStoreUsers.API.Configuration.Common;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
@@ -30,7 +30,8 @@ namespace ECommerceStoreUsers.API.Endpoints
                 return Results.Ok(admin);
             })
             .WithSummary("Create admin profile.")
-            .WithDescription("Creates a new administrator workspace account profile.")
+            .WithDescription("Creates a new administrator workspace account profile. " +
+                "A confirmed ExternalId uniqueness race returns 409 resource_conflict; a transaction write conflict returns 409 concurrency_conflict.")
             .WithName("CreateAdmin")
             .Produces<AdminResponseDto>(StatusCodes.Status200OK)
             .Produces<ApiProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")
@@ -78,3 +79,4 @@ namespace ECommerceStoreUsers.API.Endpoints
         }
     }
 }
+

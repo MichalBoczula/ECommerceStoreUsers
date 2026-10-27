@@ -44,13 +44,34 @@ internal sealed class CustomerRepository : ICustomerRepository
         using var session = await _context.Client.StartSessionAsync(cancellationToken: cancellationToken);
         session.StartTransaction();
 
+        var currentInserted = false;
         try
         {
             await _context.Customers.InsertOneAsync(session, customerDocument, cancellationToken: cancellationToken);
+            currentInserted = true;
             await _context.CustomersHistory.InsertOneAsync(session, historyDocument, cancellationToken: cancellationToken);
 
             await session.CommitTransactionAsync(cancellationToken);
             return customer;
+        }
+        catch (MongoWriteException exception) when (!currentInserted && exception.WriteError.Code == 11000 &&
+            exception.WriteError.Message.Contains("index: UX_Customer_ExternalId dup key:", StringComparison.Ordinal))
+        {
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
+            // Confirm the committed target after abort; unrelated unique keys are server errors.
+            if (await _context.Customers.Find(x => x.ExternalId == customer.ExternalId).AnyAsync(cancellationToken))
+                throw new ResourceAlreadyExistsException(nameof(CreateCustomer), customer.ExternalId, nameof(Customer));
+            throw;
+        }
+        catch (MongoCommandException exception) when (exception.Code == 112)
+        {
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
+            throw new ConcurrencyConflictException();
+        }
+        catch (MongoWriteException exception) when (exception.WriteError.Code == 112)
+        {
+            await MongoTransactionAbort.TryAbortAsync(session.AbortTransactionAsync);
+            throw new ConcurrencyConflictException();
         }
         catch
         {
@@ -113,3 +134,4 @@ internal sealed class CustomerRepository : ICustomerRepository
         }
     }
 }
+

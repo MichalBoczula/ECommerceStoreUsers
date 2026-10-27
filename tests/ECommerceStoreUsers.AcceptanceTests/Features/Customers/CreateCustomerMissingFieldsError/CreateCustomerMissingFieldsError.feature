@@ -20,6 +20,7 @@ Feature: Create customer profile deserialization validation
       | Individual.ShippingAddress.Street          | Shipping Street               |
       | Individual.ShippingAddress.BuildingNumber  | 15                            |
       | Individual.ShippingAddress.ApartmentNumber | 25                            |
+    And I record all Users data before this framework request
     When I submit the incomplete create customer request
     Then the create customer response indicates a json deserialization failure
       | Field           | Value                                                                         |
@@ -29,3 +30,12 @@ Feature: Create customer profile deserialization validation
       | Type            | https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1                   |
       | MissingProperty | email                                                                         |
       | MissingProperty | phone                                                                         |
+    And the complete framework problem has these values
+      | Field             | Value                                                                                   |
+      | Status            | 400                                                                                     |
+      | Code              | invalid_json                                                                            |
+      | Title             | Invalid JSON payload.                                                                   |
+      | Detail            | JSON payload for IndividualDataRequestDto is missing required properties: email, phone. |
+      | MissingProperties | email, phone                                                                            |
+      | Allow             | []                                                                                      |
+    And every Users collection is unchanged

@@ -41,10 +41,11 @@ after successful master image publication; it does not deploy ACA.
   address/Admin/favorite rules and error signatures using isolated inputs,
   complete safe problems and unchanged stored data. Document actual behavior;
   do not activate unused rules as documentation cleanup.
-- [ ] **USERS-BDD-07 — Framework failures.** Malformed JSON, missing/null
+- [x] **USERS-BDD-07 — Framework failures.** Malformed JSON, missing/null
   members, wrong types/media, route/method/binding failures: exact request
   bytes, complete safe response and no writes. Distinguish framework rejection
-  from business-policy validation.
+  from business-policy validation. See
+  [complete framework problems and persistence evidence](bdd-07-framework.md).
 - [ ] **USERS-BDD-08 — Concurrency and MongoDB atomicity.** Competing writes,
   unique-key races and full winner/current/history state. Distinguish mocked
   pre-repository failures from real MongoDB transaction rollback; retain the

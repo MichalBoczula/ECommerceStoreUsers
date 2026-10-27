@@ -42,6 +42,7 @@ Feature: Update customer company data deserialization validation
       | BillingStreet                   | Updated Billing Street |
       | BillingBuildingNumber           | 22                     |
       | BillingApartmentNumber          | 3                      |
+    And I record all Users data before this framework request
     When I submit the incomplete update company request
     Then the update company response indicates a json deserialization failure
       | Field           | Value                                                                                     |
@@ -51,3 +52,12 @@ Feature: Update customer company data deserialization validation
       | Type            | https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.1                               |
       | MissingProperty | companyName                                                                               |
       | MissingProperty | shippingAddress                                                                           |
+    And the complete framework problem has these values
+      | Field             | Value                                                                                                  |
+      | Status            | 400                                                                                                    |
+      | Code              | invalid_json                                                                                           |
+      | Title             | Invalid JSON payload.                                                                                  |
+      | Detail            | JSON payload for UpdateCompanyRequestDto is missing required properties: companyName, shippingAddress. |
+      | MissingProperties | companyName, shippingAddress                                                                           |
+      | Allow             | []                                                                                                     |
+    And every Users collection is unchanged

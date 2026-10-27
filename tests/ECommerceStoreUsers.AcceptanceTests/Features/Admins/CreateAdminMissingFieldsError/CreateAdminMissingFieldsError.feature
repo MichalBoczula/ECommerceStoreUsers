@@ -9,7 +9,17 @@ Feature: Create admin profile deserialization validation
       | Field    | Value             |
       | FullName | Jane Smith        |
       | Email    | jane.smith@db.com |
+    And I record all Users data before this framework request
     When I submit the incomplete create admin request
     Then the response indicates a json deserialization failure
       | Field      | Value             |
       | StatusCode | 400               |
+    And the complete framework problem has these values
+      | Field             | Value                                                                              |
+      | Status            | 400                                                                                |
+      | Code              | invalid_json                                                                       |
+      | Title             | Invalid JSON payload.                                                              |
+      | Detail            | JSON payload for CreateAdminRequestDto is missing required properties: externalId. |
+      | MissingProperties | externalId                                                                         |
+      | Allow             | []                                                                                 |
+    And every Users collection is unchanged

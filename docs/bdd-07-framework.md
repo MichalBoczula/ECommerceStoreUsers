@@ -100,6 +100,13 @@ unchanged collection snapshots. Framework route/method/media cases are
 explicit Gherkin cases; they are not fictitious named business operations or
 new endpoint `.Produces` statuses.
 
+The actual 415 body differs by entry path: text/plain uses the status-page
+problem (`Unsupported media type.` / `The request content type is not
+supported.`), while nonempty content with no content type uses the exception
+handler (`Invalid request.` / `The request could not be processed.`). Both use
+`unsupported_media_type`; the scenarios assert each complete observed body
+without changing production behavior to make the titles identical.
+
 No Azure apply, ACA rollout or selected LiveDocs snapshot change occurs here.
 The final LiveDocs refresh remains task 12. Existing master image/archive CI
 continues unchanged.

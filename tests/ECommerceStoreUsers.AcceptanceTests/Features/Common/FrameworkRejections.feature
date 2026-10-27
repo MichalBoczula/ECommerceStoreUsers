@@ -306,8 +306,8 @@ Feature: Framework rejections preserve Users data
       | Field             | Value                                      |
       | Status            | 415                                        |
       | Code              | unsupported_media_type                     |
-      | Title             | Unsupported media type.                    |
-      | Detail            | The request content type is not supported. |
+      | Title             | Invalid request.                    |
+      | Detail            | The request could not be processed. |
       | MissingProperties | []                                         |
       | Allow             | []                                         |
     And every Users collection is unchanged

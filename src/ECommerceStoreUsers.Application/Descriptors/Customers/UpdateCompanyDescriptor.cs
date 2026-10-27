@@ -61,9 +61,9 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
         }
 
         [FlowStep(order: 7, bpmnId: "MapAddress")]
-        public Address MapAddress(AddressRequestDto address)
+        public Address MapAddress(AddressRequestDto? address, string member)
         {
-            return MappingConfig.MapAddress(address);
+            return MappingConfig.MapAddress(address, member);
         }
 
         [FlowStep(order: 8, bpmnId: "LoadCompanyFromAggregate")]
@@ -128,3 +128,4 @@ namespace ECommerceStoreUsers.Application.Descriptors.Customers
         }
     }
 }
+

@@ -110,9 +110,6 @@ public sealed class BusinessValidationState
     internal Task ConflictAsync(string detail)
         => _rejection.ExpectProblemAsync(409, "resource_conflict", "Conflict.", detail, "[]", "[]");
 
-    internal Task MappingFailureAsync()
-        => _rejection.ExpectProblemAsync(500, "internal_error", "Server error.", "An unexpected error occurred.", "[]", "[]");
-
     internal async Task AddSecondCompanyAsync()
     {
         var request = _templates["Customer"]["companies"]![1]!.DeepClone();

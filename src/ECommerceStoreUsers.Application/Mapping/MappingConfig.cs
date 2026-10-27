@@ -9,6 +9,7 @@ using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.ValueObjects;
 using ECommerceStoreUsers.Domain.AggregatesModel.Employees;
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
+using ECommerceStoreUsers.Domain.Validation.Common;
 
 namespace ECommerceStoreUsers.Application.Mapping;
 
@@ -24,27 +25,29 @@ internal static class MappingConfig
             customer.AddCompany(
                 company.CompanyName,
                 company.TaxId,
-                MapAddress(company.BillingAddress),
-                MapAddress(company.ShippingAddress));
+                MapAddress(company.BillingAddress, "billingAddress"),
+                MapAddress(company.ShippingAddress, "shippingAddress"));
         }
 
         return customer;
     }
 
-    internal static IndividualData MapToDomain(IndividualDataRequestDto dto)
+    internal static IndividualData MapToDomain(IndividualDataRequestDto? dto)
     {
+        dto = RequiredRequestObject(dto, "individual", nameof(IndividualData));
         return new IndividualData(
             dto.FirstName,
             dto.LastName,
             dto.Email,
             dto.Phone,
-            MapAddress(dto.BillingAddress),
-            MapAddress(dto.ShippingAddress)
+            MapAddress(dto.BillingAddress, "billingAddress"),
+            MapAddress(dto.ShippingAddress, "shippingAddress")
         );
     }
 
-    internal static Address MapAddress(AddressRequestDto dto)
+    internal static Address MapAddress(AddressRequestDto? dto, string member)
     {
+        dto = RequiredRequestObject(dto, member, nameof(Address));
         return new Address(
             dto.PostalCode,
             dto.City,
@@ -52,6 +55,23 @@ internal static class MappingConfig
             dto.BuildingNumber,
             dto.ApartmentNumber
         );
+    }
+
+    // JSON required-member checks allow explicit null references. Reject only
+    // missing required objects here; domain scalar validation stays in its policies.
+    private static T RequiredRequestObject<T>(T? value, string member, string entity) where T : class
+    {
+        if (value is not null)
+            return value;
+
+        var validation = new ValidationResult();
+        validation.AddValidationError(new ValidationError
+        {
+            Name = nameof(RequiredRequestObject),
+            Message = $"{member} is required.",
+            Entity = entity
+        });
+        throw new ValidationException(validation);
     }
 
     internal static CustomerResponseDto MapToResponse(Customer customer)
@@ -137,3 +157,4 @@ internal static class MappingConfig
         };
     }
 }
+

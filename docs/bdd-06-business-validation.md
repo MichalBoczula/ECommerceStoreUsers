@@ -3,10 +3,12 @@
 This follow-up completes the task skipped when task 7 was requested directly.
 It retains all 129 previous BDD cases and adds 105: 83 isolated JSON-value
 failures, 11 identifier cases, two multi-error cases, three company-conflict
-causes, three null-object characterizations and three accepted boundaries.
-The current inventory is **234 expanded BDD cases, 101 declarations in 44
-feature files, 217 named-operation links and 255 acceptance-project cases**
-(234 BDD plus the existing 21 standalone cases). The fixed 81-case baseline
+causes, three null-object characterizations and three accepted boundaries. The
+[required-object follow-up](bdd-06-null-object-fix.md) fixes those three
+characterizations and adds ten shared-path cases.
+The current inventory is **244 expanded BDD cases, 111 declarations in 44
+feature files, 227 named-operation links and 265 acceptance-project cases**
+(244 BDD plus the existing 21 standalone cases). The fixed 81-case baseline
 and all previous identities remain unchanged.
 
 ## Existing policy paths
@@ -122,12 +124,12 @@ ExternalId restriction does not apply to Admin. All success fields, generated
 IDs/dates and Insert/current/version-0 history are checked with the established
 success helpers.
 
-Three explicit-null object cases characterize existing gaps: null Individual,
-null individual BillingAddress and null company BillingAddress currently fail
-mapping and return safe `internal_error` 500. They are not framework rejections
-or successful policy-validation 400s. They must leave every collection unchanged.
-This task documents that behavior without changing contracts or adding null
-object rules. It does not claim every null-reference combination is covered.
+The three original explicit-null object cases initially exposed safe 500 mapping
+failures. The [required-object follow-up](bdd-06-null-object-fix.md) corrects them
+to complete 400 validation_failed responses and covers both address roles across
+all four affected writes. Its three application guard signatures are documented
+in OpenAPI operation descriptions; the Domain-policy signatures above remain
+unchanged. This does not claim every possible null-reference combination is covered.
 
 ## Persistence, verification and publication
 
@@ -151,6 +153,8 @@ gates. Before merge, the PR records actual CI results and an independent audit
 of case identities, all attachments/manifest hashes, literal error signatures,
 exact request changes, complete responses and unchanged database snapshots.
 
-No production API/DTO/policy/repository/index/package or CI-gate change is made.
+The initial task-6 coverage PR made no production changes. Its required-object
+follow-up changes application mapping and API descriptions as documented above;
+DTOs, Domain policies, repositories, indexes, packages and CI gates remain unchanged.
 No Azure apply, ACA rollout or selected LiveDocs snapshot refresh belongs here;
 LiveDocs selection remains task 12. Existing master image/archive CI continues.

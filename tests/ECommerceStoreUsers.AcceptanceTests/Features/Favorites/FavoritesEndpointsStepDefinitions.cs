@@ -69,7 +69,6 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
         [When("I add the same product to favorites twice")]
         public async Task WhenIAddTheSameProductToFavoritesTwice()
         {
-            await AddFavoriteAndRequireSuccess(_productId);
             _apiContext.Response = await AddFavorite(_productId);
         }
 

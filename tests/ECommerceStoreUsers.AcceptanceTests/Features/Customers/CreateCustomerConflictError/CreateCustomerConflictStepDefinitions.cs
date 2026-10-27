@@ -44,12 +44,12 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerC
             AllureJson.AttachObject("Conflict customer request contract", _request, _apiContext.JsonOptions);
         }
 
-        [When("I submit the same create customer request twice")]
-        public async Task WhenISubmitTheSameCreateCustomerRequestTwice()
+        [Given("the original Customer exists before repeating its request")]
+        public async Task GivenTheOriginalCustomerExists()
         {
             _request.ShouldNotBeNull();
 
-            var initialResponse = await _apiContext.HttpClient.PostAsJsonAsync(
+            using var initialResponse = await _apiContext.HttpClient.PostAsJsonAsync(
                 "/customers",
                 _request,
                 _apiContext.JsonOptions);
@@ -58,6 +58,13 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerC
             AllureJson.AttachRawJson($"Initial create customer response JSON ({(int)initialResponse.StatusCode})", initialBody);
 
             initialResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        }
+
+        [When("I submit the same create customer request twice")]
+        public async Task WhenISubmitTheSameCreateCustomerRequestTwice()
+        {
+            _request.ShouldNotBeNull();
 
             _apiContext.Response = await _apiContext.HttpClient.PostAsJsonAsync(
                 "/customers",
@@ -165,3 +172,4 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Customers.CreateCustomerC
         }
     }
 }
+

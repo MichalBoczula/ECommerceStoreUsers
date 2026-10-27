@@ -22,6 +22,7 @@ Feature: Create customer profile validation
       | Individual.ShippingAddress.Street          | Shipping Street      |
       | Individual.ShippingAddress.BuildingNumber  | 15                   |
       | Individual.ShippingAddress.ApartmentNumber | 25                   |
+    And I record all Users data before this business request
     When I submit the create customer request for validation
     Then the customer profile creation fails with a validation error
       | Field      | Value                                          |
@@ -29,3 +30,7 @@ Feature: Create customer profile validation
       | Message    | City cannot be empty or white space.           |
       | Name       | AddressCityValidationRule                      |
       | Entity     | Address                                        |
+    And the complete business validation problem contains exactly these errors
+      | Name                      | Message                              | Entity  |
+      | AddressCityValidationRule | City cannot be empty or white space. | Address |
+    And every Users collection is unchanged after business rejection

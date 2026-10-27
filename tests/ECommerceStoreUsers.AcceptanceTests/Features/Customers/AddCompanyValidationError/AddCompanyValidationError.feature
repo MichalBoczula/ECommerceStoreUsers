@@ -36,6 +36,7 @@ Feature: Add customer company validation
       | ShippingStreet                  | Portowa                         |
       | ShippingBuildingNumber          | 4A                              |
       | ShippingApartmentNumber         | 2                               |
+    And I record all Users data before this business request
     When I submit the add company request for validation
     Then adding the company fails with a validation error
       | Field                           | Value                                                        |
@@ -43,3 +44,7 @@ Feature: Add customer company validation
       | Message                         | Tax Id must be a valid Polish NIP containing exactly 10 digits. |
       | Name                            | CompanyDataTaxIdValidationRule                               |
       | Entity                          | CompanyData                                                  |
+    And the complete business validation problem contains exactly these errors
+      | Name                           | Message                                                         | Entity      |
+      | CompanyDataTaxIdValidationRule | Tax Id must be a valid Polish NIP containing exactly 10 digits. | CompanyData |
+    And every Users collection is unchanged after business rejection

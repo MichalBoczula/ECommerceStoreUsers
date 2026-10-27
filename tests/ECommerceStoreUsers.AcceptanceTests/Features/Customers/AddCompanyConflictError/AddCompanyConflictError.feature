@@ -48,6 +48,7 @@ Feature: Add company conflict
       | ShippingAddress.Street                    | Duplicate Shipping Street             |
       | ShippingAddress.BuildingNumber            | 11B                                   |
       | ShippingAddress.ApartmentNumber           | 6                                     |
+    And I record all Users data before this business request
     When I submit the duplicate tax id add company request
     Then the add company request fails with a conflict error
       | Field           | Value                                                                                       |
@@ -58,3 +59,5 @@ Feature: Add company conflict
       | DetailContains  | Resource CompanyData identified by id 9988776655 already exists in db. Error in action AddCompany. |
       | DuplicatedTaxId | 9988776655                                                                                  |
       | HasTraceId      | true                                                                                        |
+    And the complete business conflict detail is "Resource CompanyData identified by id 9988776655 already exists in db. Error in action AddCompany."
+    And every Users collection is unchanged after business rejection

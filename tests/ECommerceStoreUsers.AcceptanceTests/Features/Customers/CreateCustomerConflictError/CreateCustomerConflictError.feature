@@ -22,6 +22,8 @@ Feature: Create customer profile conflict
       | Individual.ShippingAddress.Street          | Duplicate Avenue               |
       | Individual.ShippingAddress.BuildingNumber  | 16                             |
       | Individual.ShippingAddress.ApartmentNumber | 26                             |
+    And the original Customer exists before repeating its request
+    And I record all Users data before this business request
     When I submit the same create customer request twice
     Then the customer profile creation fails with a conflict error
       | Field          | Value                                                                                                    |
@@ -32,3 +34,5 @@ Feature: Create customer profile conflict
       | Instance       | /customers                                                                                               |
       | DetailContains | Resource Customer identified by id auth-customer-conflict-123456 already exists in db. Error in action CreateCustomer. |
       | HasTraceId     | true                                                                                                     |
+    And the complete business conflict detail is "Resource Customer identified by id auth-customer-conflict-123456 already exists in db. Error in action CreateCustomer."
+    And every Users collection is unchanged after business rejection

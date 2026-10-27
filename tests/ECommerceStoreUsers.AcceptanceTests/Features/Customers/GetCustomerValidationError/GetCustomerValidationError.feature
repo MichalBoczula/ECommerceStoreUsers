@@ -8,6 +8,7 @@ Feature: Get customer profile validation
     Given I have an invalid get customer request
       | Field      | Value                                |
       | ExternalId | 00000000-0000-0000-0000-000000000000 |
+    And I record all Users data before this business request
     When I submit the get customer request for validation
     Then the get customer request fails with a validation error
       | Field      | Value                                    |
@@ -15,3 +16,7 @@ Feature: Get customer profile validation
       | Message    | ExternalId cannot be an empty guid.      |
       | Name       | CustomerExternalIdValidationRule         |
       | Entity     | Customer                                 |
+    And the complete business validation problem contains exactly these errors
+      | Name                             | Message                             | Entity   |
+      | CustomerExternalIdValidationRule | ExternalId cannot be an empty guid. | Customer |
+    And every Users collection is unchanged after business rejection

@@ -38,6 +38,7 @@ Feature: Update customer individual data validation
       | ShippingStreet                  | Portowa                               |
       | ShippingBuildingNumber          | 4A                                    |
       | ShippingApartmentNumber         | 2                                     |
+    And I record all Users data before this business request
     When I submit the update individual request for validation
     Then updating the individual data fails with validation errors
       | Field                           | Value                                                                    |
@@ -48,3 +49,8 @@ Feature: Update customer individual data validation
       | PhoneMessage                    | Phone must contain only digits and be between 7 and 10 characters long.  |
       | PhoneName                       | IndividualDataPhoneValidationRule                                        |
       | PhoneEntity                     | IndividualData                                                           |
+    And the complete business validation problem contains exactly these errors
+      | Name                              | Message                                                                 | Entity         |
+      | IndividualDataEmailValidationRule | Email must be a valid format (address@domain.something).                | IndividualData |
+      | IndividualDataPhoneValidationRule | Phone must contain only digits and be between 7 and 10 characters long. | IndividualData |
+    And every Users collection is unchanged after business rejection

@@ -35,6 +35,8 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
     private string _evidencePrefix = "Framework";
 
     internal Guid CustomerId => _customerId;
+    internal Guid CompanyId => _companyId;
+    internal Guid AdminId => _adminId;
     internal void UseEvidencePrefix(string prefix) => _evidencePrefix = prefix;
 
     internal async Task SeedAsync()
@@ -252,9 +254,9 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
         }
     }
 
-    private async Task<Dictionary<string, JsonElement[]>> SnapshotAsync()
+    internal async Task<Dictionary<string, JsonElement[]>> SnapshotAsync(string? databaseName = null)
     {
-        var database = AcceptanceMongoDb.GetDatabase(context.DatabaseName);
+        var database = AcceptanceMongoDb.GetDatabase(databaseName ?? context.DatabaseName);
         var snapshot = new Dictionary<string, JsonElement[]>(StringComparer.Ordinal);
         foreach (var name in Collections)
         {

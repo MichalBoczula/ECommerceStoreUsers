@@ -6,13 +6,17 @@ Feature: Safe unexpected server errors
   Scenario Outline: Endpoint returns a safe 500 response when its dependency fails
     An endpoint is invoked with a deliberately failing repository or documentation provider.
     The response reports a safe server error without exposing the injected exception's internal details.
-    Given the "<area>" dependency fails unexpectedly
+    Given versioned Users data exists before a technical operation
+    And the "<area>" dependency fails unexpectedly
     When I request the failing "<area>" endpoint
     Then a safe custom server error is returned
       | Field      | Value                         |
       | StatusCode | 500                           |
       | Title      | Server error.                 |
       | Detail     | An unexpected error occurred. |
+
+    And the complete technical server problem is safe
+    And the technical operation leaves all Users collections unchanged
 
     Examples:
       | area                      | scenarioId                          |

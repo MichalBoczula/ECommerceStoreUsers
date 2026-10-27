@@ -82,3 +82,13 @@ concurrency_conflict. It retains the original identities with two intentional
 500-to-409 migrations and adds two actual concurrent HTTP cases. Current totals
 are **260 BDD cases, 115 declarations in 45 features, 243 links and 281
 acceptance-project cases**; Infrastructure has 98 cases.
+
+
+Task 9 records [technical outcomes](bdd-09-technical.md) without inventing HTTP
+responses for client cancellation or relabeling lifecycle facts as BDD. Current
+inventory: **272 BDD cases, 119 declarations in 46 features, 244 operation links,
+295 acceptance-project cases (23 standalone) and 101 Infrastructure cases**.
+Cancellation publishes a request/failure event and an explicit NoWrite scope;
+health publishes actual plain text. All previous identities and expected HTTP
+outcomes remain. Production contracts, flow/policy exports and original baseline
+are unchanged; stronger contract/RAG work remains tasks 10–11.

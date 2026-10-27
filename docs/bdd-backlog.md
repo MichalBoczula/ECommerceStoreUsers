@@ -57,10 +57,11 @@ after successful master image publication; it does not deploy ACA.
   [full winning-state and real rollback evidence](bdd-08-atomicity.md), and the
   [creation-conflict fix](bdd-08-create-conflict-fix.md) for both Customer/Admin
   create paths.
-- [ ] **USERS-BDD-09 — Technical scenarios.** Health/readiness/startup,
+- [x] **USERS-BDD-09 — Technical scenarios.** Health/readiness/startup,
   cancellation, isolation and documentation endpoints with truthful text,
   startup and database evidence. Keep appropriate lifecycle/export xUnit facts
-  outside BDD and report their counts separately.
+  outside BDD and report their counts separately. See
+  [technical outcomes, evidence and runner compatibility](bdd-09-technical.md).
 - [ ] **USERS-BDD-10 — Request/response contracts.** Validate input/output
   scalar types, required fields, nullability, formats, arrays and nesting;
   improve field descriptions and typed examples. Derive OpenAPI from source,

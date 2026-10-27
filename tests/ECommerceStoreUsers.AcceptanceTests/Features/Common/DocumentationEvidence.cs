@@ -66,16 +66,28 @@ internal sealed class DocumentationEvidence
         var rulesDeclared = observedRules.Count == 0 || flow is not null && !observedRules.Except(flow.RuleIds).Any();
         evidence.Record("HTTP documentation links", new
         {
-            service = "users", scenarioId = evidence.ScenarioId, instanceId = evidence.InstanceId,
-            exchangeId, operationId, method = request.Method.Method, path = request.RequestUri!.AbsolutePath,
-            status, stepPhase = phase, explicitlySupporting = supporting,
+            service = "users",
+            scenarioId = evidence.ScenarioId,
+            instanceId = evidence.InstanceId,
+            exchangeId,
+            operationId,
+            method = request.Method.Method,
+            path = request.RequestUri!.AbsolutePath,
+            status,
+            stepPhase = phase,
+            explicitlySupporting = supporting,
             role = primary ? "primary-scenario-outcome" : "supporting-or-technical-exchange",
             linkBasis = "Declared source metadata and scenario expectation joined to actual HTTP; not runtime branch/step telemetry.",
-            nominalFlowId = flow?.Id, declaredStepIds = flow?.StepIds ?? [], declaredPolicyIds = flow?.PolicyIds ?? [],
-            expectedBranchId = branchId, expectedBranchStage = branch?.Stage,
-            expectedRuleIds = expectedRules, branchContextRuleIds = branch?.RuleIds ?? [],
+            nominalFlowId = flow?.Id,
+            declaredStepIds = flow?.StepIds ?? [],
+            declaredPolicyIds = flow?.PolicyIds ?? [],
+            expectedBranchId = branchId,
+            expectedBranchStage = branch?.Stage,
+            expectedRuleIds = expectedRules,
+            branchContextRuleIds = branch?.RuleIds ?? [],
             observedErrorRuleIds = observedRules.Order(StringComparer.Ordinal).ToArray(),
-            observedRulesDeclaredByNominalFlow = rulesDeclared, problemCode
+            observedRulesDeclaredByNominalFlow = rulesDeclared,
+            problemCode
         });
         if (!rulesDeclared)
             throw new InvalidOperationException("Actual rejection contains an uninstalled or unrelated rule.");
@@ -95,10 +107,19 @@ internal sealed class DocumentationEvidence
         request.Options.TryGetValue(HttpEvidenceHandler.StepPhaseKey, out var phase);
         evidence.Record("HTTP documentation links", new
         {
-            service = "users", scenarioId = evidence.ScenarioId, instanceId = evidence.InstanceId,
-            exchangeId, operationId, method = request.Method.Method, path = request.RequestUri!.AbsolutePath,
-            stepPhase = phase, role = "transport-failure-without-response", exceptionType,
-            nominalFlowId = flow?.Id, declaredStepIds = flow?.StepIds ?? [], declaredPolicyIds = flow?.PolicyIds ?? [],
+            service = "users",
+            scenarioId = evidence.ScenarioId,
+            instanceId = evidence.InstanceId,
+            exchangeId,
+            operationId,
+            method = request.Method.Method,
+            path = request.RequestUri!.AbsolutePath,
+            stepPhase = phase,
+            role = "transport-failure-without-response",
+            exceptionType,
+            nominalFlowId = flow?.Id,
+            declaredStepIds = flow?.StepIds ?? [],
+            declaredPolicyIds = flow?.PolicyIds ?? [],
             linkBasis = "Nominal source flow only; the terminal transport failure is not an HTTP response or proof of executed steps."
         });
     }
@@ -106,7 +127,7 @@ internal sealed class DocumentationEvidence
     internal static Catalogue SourceCatalogue => Source.Value;
     internal sealed record CaseLink(string ScenarioId, string OperationId, int Status, string BranchId, string[] RuleIds);
     internal sealed record Branch(string Id, string? FlowId, string Stage, int Status, string[] Codes, string[] RuleIds);
-    internal sealed record Flow(string Id, string[] StepIds, string[] PolicyIds, string[] RuleIds);
+    internal sealed record Flow(string Id, string[] StepIds, string[] PolicyIds, string[] RuleIds, Dictionary<string, string> StepDescriptions);
 
     internal sealed class Catalogue
     {
@@ -153,7 +174,8 @@ internal sealed class DocumentationEvidence
                         item.GetGenericTypeDefinition() == typeof(IValidationPolicy<>) && item.GenericTypeArguments.Single() == kind))).ToArray();
                     flows.Add(doc.Id, new Flow(doc.Id, steps.Select(step => doc.Id + "." + step.BpmnId).ToArray(),
                         invoked.Select(policy => policy.GetCustomAttribute<DocumentationAttribute>()!.Id).Order(StringComparer.Ordinal).ToArray(),
-                        invoked.SelectMany(policy => policyRules[policy]).Concat(steps.Where(step => step.RuleId is not null).Select(step => step.RuleId!)).Distinct().ToArray()));
+                        invoked.SelectMany(policy => policyRules[policy]).Concat(steps.Where(step => step.RuleId is not null).Select(step => step.RuleId!)).Distinct().ToArray(),
+                        steps.ToDictionary(step => doc.Id + "." + step.BpmnId, step => step.Description)));
                 }
                 foreach (var outcome in type.GetCustomAttributes<FlowOutcomeAttribute>())
                     result.Branches.Add(outcome.Id, new Branch(outcome.Id, isFlow ? doc!.Id : null, outcome.Stage, outcome.Status,

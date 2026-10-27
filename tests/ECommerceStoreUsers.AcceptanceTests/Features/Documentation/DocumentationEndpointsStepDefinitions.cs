@@ -111,7 +111,8 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Documentation
                 {
                     step.StepName.ShouldNotBeNullOrWhiteSpace();
                     step.BpmnId.ShouldNotBeNullOrWhiteSpace();
-                    step.StepName.Length.ShouldBeGreaterThan(40);
+                    var sourceFlow = DocumentationEvidence.SourceCatalogue.OperationFlows[flow.FlowName];
+                    step.StepName.ShouldBe(sourceFlow.StepDescriptions[sourceFlow.Id + "." + step.BpmnId]);
                 }
             }
             flows.Values.Sum(flow => flow.Steps.Count).ShouldBe(92);

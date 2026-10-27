@@ -201,8 +201,10 @@ def users_documentation(operations, registrations):
             covered_branches.add(identity);response_rules.update(rules)
             if branch['status']==409:conflict_rules.update(branch['ruleIds'])
     # Existing Gherkin identities/examples remain intact: technical outline code values already express their intent.
-    from importlib.machinery import SourceFileLoader
-    matrix=SourceFileLoader('documentation_matrix',str(ROOT/'scripts/check-acceptance-matrix.py')).load_module()
+    import importlib.util
+    specification=importlib.util.spec_from_file_location('documentation_matrix',ROOT/'scripts/check-acceptance-matrix.py')
+    matrix=importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(matrix)
     technical=[]
     for path in sorted(matrix.FEATURES.rglob('*.feature')):
         for title,item in matrix.scenarios(path).items():

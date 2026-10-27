@@ -1,9 +1,13 @@
-﻿using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
+using ECommerceStoreUsers.Domain.AggregatesModel.Favorites;
 using ECommerceStoreUsers.Domain.AggregatesModel.Favorites.Repositories;
 using ECommerceStoreUsers.Domain.Validation.Common;
 using ECommerceStoreUsers.Infrastructure.Configuration;
+using ECommerceStoreUsers.Infrastructure.Context;
+using ECommerceStoreUsers.Infrastructure.Mapping;
+using ECommerceStoreUsers.Infrastructure.Persistence.Favorites;
 using ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Shouldly;
 
@@ -181,11 +185,12 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
             var clientId = Guid.NewGuid();
             var productId = Guid.NewGuid();
 
-            async Task<Exception?> TryAddAsync()
+            var contenders = new[] { new Favorite(clientId, productId), new Favorite(clientId, productId) };
+            async Task<Exception?> TryAddAsync(Favorite contender)
             {
                 try
                 {
-                    await repository.AddAsync(new Favorite(clientId, productId), CancellationToken.None);
+                    await repository.AddAsync(contender, CancellationToken.None);
                     return null;
                 }
                 catch (Exception exception)
@@ -194,11 +199,14 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
                 }
             }
 
-            var outcomes = await Task.WhenAll(TryAddAsync(), TryAddAsync());
+            var outcomes = await Task.WhenAll(TryAddAsync(contenders[0]), TryAddAsync(contenders[1]));
 
             outcomes.Count(x => x is null).ShouldBe(1);
             outcomes.Count(x => x is ResourceAlreadyExistsException).ShouldBe(1);
-            (await repository.GetByClientIdAsync(clientId, CancellationToken.None)).Count.ShouldBe(1);
+            var winner = contenders[outcomes[0] is null ? 0 : 1];
+            var context = serviceProvider.GetRequiredService<MongoDbContext>();
+            var stored = (await context.Favorites.Find(FilterDefinition<FavoriteDocument>.Empty).ToListAsync()).ShouldHaveSingleItem();
+            MongoStateAssertions.Equal(stored.ToBsonDocument(), FavoriteMapping.MapToDocument(winner).ToBsonDocument());
         }
 
         [Fact]
@@ -259,3 +267,4 @@ namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests
         }
     }
 }
+

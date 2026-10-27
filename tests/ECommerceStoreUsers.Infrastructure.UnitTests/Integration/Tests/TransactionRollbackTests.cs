@@ -36,10 +36,12 @@ public sealed class TransactionRollbackTests(MongoDbTestFixture fixture) : IClas
                 Builders<CustomersHistoryDocument>.IndexKeys.Ascending(x => x.CustomerId),
                 new CreateIndexOptions { Unique = true }));
 
+        var before = await MongoStateAssertions.Snapshot(context);
         var error = await Should.ThrowAsync<MongoWriteException>(() =>
             repository.CreateCustomer(customer, CancellationToken.None));
 
         error.WriteError.Code.ShouldBe(11000);
+        await MongoStateAssertions.Unchanged(context, before);
         (await repository.GetByIdAsync(customer.Id, CancellationToken.None)).ShouldBeNull();
         (await context.CustomersHistory.CountDocumentsAsync(x => x.CustomerId == customer.Id))
             .ShouldBe(1);
@@ -67,10 +69,12 @@ public sealed class TransactionRollbackTests(MongoDbTestFixture fixture) : IClas
         updated.UpdateIndividualData(
             new IndividualData("Anna", "Nowak", "anna@example.com", "+48123456789", address, address));
 
+        var before = await MongoStateAssertions.Snapshot(context);
         var error = await Should.ThrowAsync<MongoWriteException>(() =>
             repository.UpdateCustomer(updated, CancellationToken.None));
 
         error.WriteError.Code.ShouldBe(11000);
+        await MongoStateAssertions.Unchanged(context, before);
         var persisted = await repository.GetByIdAsync(customer.Id, CancellationToken.None);
         persisted.ShouldNotBeNull();
         persisted.Individual.FirstName.ShouldBe("Jan");
@@ -97,10 +101,12 @@ public sealed class TransactionRollbackTests(MongoDbTestFixture fixture) : IClas
         updated.ShouldNotBeNull();
         updated.Deactivate();
 
+        var before = await MongoStateAssertions.Snapshot(context);
         var error = await Should.ThrowAsync<MongoWriteException>(() =>
             repository.UpdateAdmin(updated, CancellationToken.None));
 
         error.WriteError.Code.ShouldBe(11000);
+        await MongoStateAssertions.Unchanged(context, before);
         var persisted = await repository.GetByIdAsync(admin.Id, CancellationToken.None);
         persisted.ShouldNotBeNull();
         persisted.IsActive.ShouldBeTrue();
@@ -124,12 +130,15 @@ public sealed class TransactionRollbackTests(MongoDbTestFixture fixture) : IClas
                 Builders<AdminHistoryDocument>.IndexKeys.Ascending(x => x.AdminId),
                 new CreateIndexOptions { Unique = true }));
 
+        var before = await MongoStateAssertions.Snapshot(context);
         var error = await Should.ThrowAsync<MongoWriteException>(() =>
             repository.CreateAdmin(admin, CancellationToken.None));
 
         error.WriteError.Code.ShouldBe(11000);
+        await MongoStateAssertions.Unchanged(context, before);
         (await repository.GetByIdAsync(admin.Id, CancellationToken.None)).ShouldBeNull();
         (await context.AdminsHistory.CountDocumentsAsync(x => x.AdminId == admin.Id))
             .ShouldBe(1);
     }
 }
+

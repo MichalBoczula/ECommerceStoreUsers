@@ -49,11 +49,13 @@ after successful master image publication; it does not deploy ACA.
   bytes, complete safe response and no writes. Distinguish framework rejection
   from business-policy validation. See
   [complete framework problems and persistence evidence](bdd-07-framework.md).
-- [ ] **USERS-BDD-08 — Concurrency and MongoDB atomicity.** Competing writes,
+- [x] **USERS-BDD-08 — Concurrency and MongoDB atomicity.** Competing writes,
   unique-key races and full winner/current/history state. Distinguish mocked
   pre-repository failures from real MongoDB transaction rollback; retain the
   existing real history-insert rollback tests. Assess company add/update race
-  causes independently from duplicate-tax-ID conflicts.
+  causes independently from duplicate-tax-ID conflicts. See
+  [full winning-state and real rollback evidence](bdd-08-atomicity.md), including
+  the documented concurrent Customer/Admin create 500 mapping gap.
 - [ ] **USERS-BDD-09 — Technical scenarios.** Health/readiness/startup,
   cancellation, isolation and documentation endpoints with truthful text,
   startup and database evidence. Keep appropriate lifecycle/export xUnit facts

@@ -1,0 +1,47 @@
+Feature: Real MongoDB uniqueness and transaction failures
+  These scenarios execute the real repositories against the replica set.
+  Repository decorators observe or arrange database effects and never manufacture the exception.
+
+  Scenario Outline: <operationId> preserves a winner inserted after the external identifier lookup
+    The first lookup sees no target external identifier, then a competing real repository insert commits a different complete profile.
+    The losing create reaches MongoDB's unique index and currently returns a safe 500 internal_error; this is a documented functional gap, not the earlier existence-check 409.
+    Exactly one target current document and matching Insert history survive with no losing profile or orphan history.
+    Given the "<operationId>" create loses an external identifier unique key race
+    When I submit the observed "<operationId>" MongoDB write
+    Then the real MongoDB duplicate key error is safely reported as 500
+    And only the committed race or rollback outcome remains
+      | Field        | Value        |
+      | Collection   | <collection> |
+      | CurrentCount | 2            |
+      | HistoryCount | 3            |
+      | Version      | 0,1          |
+      | Effect       | Winner       |
+
+    Examples:
+      | operationId      | collection | scenarioId                        |
+      | CreateCustomer | customers  | REF08_CreateCustomer_UniqueKeyRace |
+      | CreateAdmin    | admins     | REF08_CreateAdmin_UniqueKeyRace    |
+
+  Scenario Outline: <operationId> rolls back its current write after a real history insertion failure
+    A target-only unique index in the isolated history collection rejects the real history Insert after the repository has inserted or replaced current inside its transaction.
+    An observer records MongoDB error 11000 from that history index and rethrows the same exception; no repository write is stubbed out.
+    The API returns the complete safe 500 problem and every field in all five collections equals the snapshot taken before the failed transaction.
+    Given the "<operationId>" transaction will fail inserting history in MongoDB
+    When I submit the observed "<operationId>" MongoDB write
+    Then the real MongoDB duplicate key error is safely reported as 500
+    And only the committed race or rollback outcome remains
+      | Field        | Value        |
+      | Collection   | <collection> |
+      | CurrentCount | <current>    |
+      | HistoryCount | <history>    |
+      | Version      | <versions>   |
+      | Effect       | Rollback     |
+
+    Examples:
+      | operationId            | collection | current | history | versions | scenarioId                             |
+      | CreateCustomer       | customers  | 1       | 3       | 1        | REF08_CreateCustomer_RealHistoryRollback |
+      | UpdateIndividualData | customers  | 2       | 3       | 0,1      | REF08_UpdateIndividual_RealHistoryRollback |
+      | AddCompany           | customers  | 2       | 3       | 0,1      | REF08_AddCompany_RealHistoryRollback    |
+      | UpdateCompany        | customers  | 2       | 3       | 0,1      | REF08_UpdateCompany_RealHistoryRollback |
+      | CreateAdmin          | admins     | 1       | 3       | 1        | REF08_CreateAdmin_RealHistoryRollback  |
+      | UpdateAdminProfile   | admins     | 2       | 3       | 0,1      | REF08_UpdateAdmin_RealHistoryRollback  |

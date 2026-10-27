@@ -96,6 +96,14 @@ Feature: Favorites endpoints
     When I add the product to favorites
     Then adding the duplicate favorite fails with status 409
     And exactly one matching favorite remains
+    And the favorite race problem is complete
+    And only the committed race or rollback outcome remains
+      | Field        | Value      |
+      | Collection   | favorites  |
+      | CurrentCount | 3          |
+      | HistoryCount | none       |
+      | Version      | none       |
+      | Effect       | Winner     |
 
   @allure.label.scenarioId:REF07_GetFavoritesByClientId_01
   Scenario: Get a client's favorites
@@ -203,6 +211,14 @@ Feature: Favorites endpoints
     When I remove the product from favorites
     Then the missing favorite fails with status 404
     And no matching favorite remains
+    And the favorite race problem is complete
+    And only the committed race or rollback outcome remains
+      | Field        | Value      |
+      | Collection   | favorites  |
+      | CurrentCount | 2          |
+      | HistoryCount | none       |
+      | Version      | none       |
+      | Effect       | Delete     |
 
   @allure.label.scenarioId:REF07_ClearClientFavorites_01
   Scenario: Clear all favorites for a client

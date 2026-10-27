@@ -68,3 +68,13 @@ are newer than the driver's minimums. Benchmarks reference Infrastructure,
 so their redundant direct pins were removed. Keep the Infrastructure pins
 until a package graph and security review justify changing them.
 
+
+
+Task 8 adds real MongoDB transaction and full winning-state evidence; see
+[bdd-08-atomicity.md](bdd-08-atomicity.md). Current inventory: **258 expanded BDD
+cases, 114 declarations in 45 features, 241 named-operation links and 279
+acceptance-project cases** (21 standalone unchanged). Deterministic HTTP
+interleavings are distinguished from actual overlapping repository integration
+tests, and pre-repository exceptions from real history-insert rollback. The
+Customer/Admin create unique-key race currently returns safe 500 and is recorded
+as a production follow-up rather than mislabeled as the sequential 409.

@@ -249,6 +249,10 @@ Task 7 adds [framework rejection and unchanged-data evidence](docs/bdd-07-framew
 Task 6 completes [active business-validation coverage](docs/bdd-06-business-validation.md):
 244 BDD cases and 265 acceptance-project cases, including accepted boundaries
 and the [required-object 400 fix](docs/bdd-06-null-object-fix.md).
+Task 8 adds [complete concurrency and real MongoDB rollback evidence](docs/bdd-08-atomicity.md):
+258 BDD cases and 279 acceptance-project cases. Concurrent Customer/Admin create
+uniqueness losses still return a safe 500; the documented follow-up is a confirmed
+ExternalId conflict mapping.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:

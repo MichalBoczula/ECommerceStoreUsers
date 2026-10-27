@@ -7,6 +7,13 @@ Feature: Conditional admin writes
     Given an admin update loses a concurrent change race
     When the raced admin profile update is submitted
     Then the raced admin update returns 409 with consistent history
+    And only the committed race or rollback outcome remains
+      | Field        | Value      |
+      | Collection   | admins     |
+      | CurrentCount | 1          |
+      | HistoryCount | 2          |
+      | Version      | 1          |
+      | Effect       | Winner     |
 
   @allure.label.scenarioId:REF08_AdminUpdate_404_DeletedAfterRead
   Scenario: REF08_AdminUpdate_404_DeletedAfterRead
@@ -15,6 +22,13 @@ Feature: Conditional admin writes
     Given an admin update loses a concurrent delete race
     When the raced admin profile update is submitted
     Then the raced admin update returns 404 with consistent history
+    And only the committed race or rollback outcome remains
+      | Field        | Value      |
+      | Collection   | admins     |
+      | CurrentCount | 0          |
+      | HistoryCount | 1          |
+      | Version      | absent     |
+      | Effect       | Delete     |
 
   @allure.label.scenarioId:REF08_AdminUpdate_200_UnchangedProfile
   Scenario: REF08_AdminUpdate_200_UnchangedProfile

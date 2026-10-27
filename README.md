@@ -266,7 +266,10 @@ actual request/response contract observations. Tasks 11–12 remain; no rollout.
 Task 11 adds [source semantics and RAG evidence joins](docs/source-description-contract.md):
 **279 BDD + 67 standalone = 346 acceptance cases**, 64 declared outcome groups
 and explicit primary/supporting exchange links. One added case checks the absent
-Customer branch of company update. Task 12 retains final report selection/refresh.
+Customer branch of company update. The [final BDD audit](docs/bdd-12-audit.md)
+verifies the successful master archive and rendered report. LiveDocs selection,
+image rebuild and Azure rollout remain manual; the existing image still selects
+the earlier Users snapshot.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:

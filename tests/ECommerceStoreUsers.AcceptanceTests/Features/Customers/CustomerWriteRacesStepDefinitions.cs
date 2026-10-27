@@ -67,6 +67,7 @@ public sealed class CustomerWriteRacesStepDefinitions(ScenarioApiContext context
     }
 
     [When("the raced individual update is submitted")]
+    [When("the raced company write is submitted")]
     public async Task WhenUpdate()
     {
         context.Response = _operation switch

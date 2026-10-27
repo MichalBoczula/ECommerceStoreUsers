@@ -36,7 +36,7 @@ Feature: Conditional customer writes
     SameTaxId and DifferentTaxId both use a stale aggregate version and must report concurrency_conflict, rather than the sequential duplicate-tax-ID resource_conflict.
     The complete winning individual, both original companies, changed or added company, versions and all history metadata survive; the loser contributes no fields.
     Given a "<operationId>" write loses a "<race>" company race
-    When the raced individual update is submitted
+    When the raced company write is submitted
     Then the raced update returns <status> with no additional history
     And only the committed race or rollback outcome remains
       | Field        | Value      |

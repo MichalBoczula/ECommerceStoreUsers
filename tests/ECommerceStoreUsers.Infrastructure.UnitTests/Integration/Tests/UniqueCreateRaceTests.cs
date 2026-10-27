@@ -1,3 +1,4 @@
+using Xunit.Abstractions;
 using ECommerceStoreUsers.Infrastructure.Configuration;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Entities;
 using ECommerceStoreUsers.Domain.AggregatesModel.Customers.Repositories;
@@ -15,7 +16,7 @@ using Shouldly;
 
 namespace ECommerceStoreUsers.Infrastructure.UnitTests.Integration.Tests;
 
-public sealed class UniqueCreateRaceTests(MongoDbTestFixture fixture) : IClassFixture<MongoDbTestFixture>
+public sealed class UniqueCreateRaceTests(MongoDbTestFixture fixture, ITestOutputHelper output) : IClassFixture<MongoDbTestFixture>
 {
     [Fact]
     public async Task ConcurrentCustomerCreatesPreserveOnlyTheCompleteWinnerAndItsHistory()
@@ -60,11 +61,23 @@ public sealed class UniqueCreateRaceTests(MongoDbTestFixture fixture) : IClassFi
         catch (Exception error) { return error; }
     }
 
-    private static void AssertOutcomes(Exception?[] outcomes)
+    private void AssertOutcomes(Exception?[] outcomes)
     {
         outcomes.Count(error => error is null).ShouldBe(1);
-        var conflict = outcomes.OfType<MongoWriteException>().ShouldHaveSingleItem();
-        conflict.WriteError.Code.ShouldBe(11000);
-        conflict.WriteError.Message.ShouldContain("ExternalId");
+        var conflict = outcomes.Where(error => error is not null).ShouldHaveSingleItem()!;
+        // Overlapping transactions may lose at storage contention before duplicate-key reporting.
+        // The deterministic HTTP interleaving separately requires exactly error 11000.
+        var code = conflict switch
+        {
+            MongoWriteException write => write.WriteError.Code,
+            MongoCommandException command => command.Code,
+            _ => throw new InvalidOperationException("Unexpected competing-create failure.", conflict)
+        };
+        output.WriteLine($"Losing create: {conflict.GetType().Name}; MongoDB code {code}.");
+        code.ShouldBeOneOf(11000, 112);
+        if (code == 11000)
+            conflict.Message.ShouldContain("ExternalId");
+        else
+            ((MongoException)conflict).HasErrorLabel("TransientTransactionError").ShouldBeTrue();
     }
 }

@@ -82,10 +82,17 @@ add checks the exact winning ID and timestamp as well as the pair; concurrent
 delete still requires exactly one true deletion and an empty target result.
 
 Two new concurrent Customer/Admin create facts use the real startup unique
-indexes. Each requires exactly one success and one actual ExternalId duplicate
-key error, one complete current winner and its matching Insert history, and no
+indexes. Each requires exactly one success and one actual ExternalId duplicate-key
+11000 or transient transaction WriteConflict 112, one complete current winner
+and its matching Insert history, and no
 orphan losing history. They deliberately characterize the current repository
-exception; HTTP mapping is a separate responsibility.
+exception; HTTP mapping is a separate responsibility. Overlapping transactions
+can abort at storage contention before reporting a duplicate key. The 112 case
+must carry TransientTransactionError; arbitrary exception types/codes fail. The
+actual losing type/code is retained in xUnit output. The deterministic HTTP
+cases separately require exactly ExternalId error 11000. See MongoDB’s
+[transaction write-conflict guidance](https://www.mongodb.com/docs/manual/core/transactions-production-consideration/#in-progress-transactions-and-write-conflicts)
+and [error-code reference](https://www.mongodb.com/docs/manual/reference/error-codes/).
 
 ## Known gap and remaining work
 
@@ -95,7 +102,9 @@ the raw MongoWriteException reach the safe fallback, yielding 500 internal_error
 The two new HTTP cases document this precisely and prove that data stays intact.
 A small production follow-up should map a **confirmed target ExternalId**
 uniqueness collision to the existing 409 resource_conflict contract, without
-reclassifying arbitrary `_id` or history index failures. No broad duplicate-key
+reclassifying arbitrary `_id` or history index failures. Create-path transient
+WriteConflict 112 mapping also needs an explicit follow-up decision; the current
+create repositories let it reach the same fallback. No broad duplicate-key
 catch or new retry behavior is introduced in this evidence task.
 
 Run the existing source gate and full PR CI; independently inspect the produced

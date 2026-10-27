@@ -255,7 +255,7 @@ Task 8 adds [complete concurrency and real MongoDB rollback evidence](docs/bdd-0
 create conflicts to 409 and adds two concurrent HTTP cases: **260 BDD cases and
 281 acceptance-project cases**.
 Task 9 strengthens [technical behavior and evidence](docs/bdd-09-technical.md):
-**272 BDD + 23 standalone = 295 acceptance-project cases**, covering health,
+**272 BDD + 24 standalone = 296 acceptance-project cases**, covering health,
 startup, request cancellation, documentation reads and explicit peer isolation.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and

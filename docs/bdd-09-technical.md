@@ -3,7 +3,7 @@
 Task 9 adds **12 BDD cases** and strengthens **15 existing cases**, retaining all
 previous identities, titles and expected HTTP outcomes. Current inventory:
 **272 expanded BDD cases, 119 declarations in 46 features, 244 named-operation
-links and 295 acceptance-project cases**. The latter is 272 BDD plus **23
+links and 296 acceptance-project cases**. The latter is 272 BDD plus **24
 standalone xUnit cases**, reported separately. Infrastructure has **101 cases**.
 Domain/Application membership and production application behavior are unchanged.
 
@@ -47,8 +47,8 @@ These are host-lifecycle outcomes, not HTTP statuses; output says exactly which
 cancellation source was observed. The existing Infrastructure startup deadline
 and abort-cleanup tests remain intact.
 
-Standalone acceptance membership is **13 recorder + 2 route-matching + 3
-readiness + 4 startup/lifetime + 1 export = 23**. Generated OpenAPI export without
+Standalone acceptance membership is **14 recorder + 2 route-matching + 3
+readiness + 4 startup/lifetime + 1 export = 24**. Generated OpenAPI export without
 Mongo deliberately remains an xUnit fact. It is not relabeled as a BDD report.
 
 ## Request cancellation before persistence
@@ -64,7 +64,13 @@ Each example checks one repository entry, a cancellable and cancelled server
 token, a client cancellation exception, no observed HTTP response, no inner
 write, and full equality across all five collections. Shared HTTP recording
 publishes a request plus its cancellation failure event; it must not fabricate a
-response/status to make a request/response pair. These examples prove token
+response/status to make a request/response pair. Each cancellation request
+waits for the recorder's per-request completion signal after the actual terminal
+event is enqueued, because HttpClient can notify its caller before the inner
+pipeline finishes. Response-body buffering failures also produce a failure event
+and dispose the unreturned response. A focused recorder regression verifies
+that cancellation during response buffering is captured before completion,
+without leaking an exception message or inventing a response. These examples prove token
 propagation and a **pre-write NoWrite** outcome, not rollback of a transaction
 that had already written current. Three new real-MongoDB Infrastructure cases
 independently verify already-cancelled Customer/Admin/Favorite writes leave all

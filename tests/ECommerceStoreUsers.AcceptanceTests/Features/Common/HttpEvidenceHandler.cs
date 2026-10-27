@@ -8,6 +8,8 @@ internal sealed class HttpEvidenceHandler(ScenarioHttpEvidence evidence) : Deleg
     internal static readonly HttpRequestOptionsKey<string> ExchangeIdKey = new("Users.HttpEvidence.ExchangeId");
     internal static readonly HttpRequestOptionsKey<string> StepPhaseKey = new("Users.HttpEvidence.StepPhase");
 
+    internal static readonly HttpRequestOptionsKey<TaskCompletionSource> CompletionKey = new("Users.HttpEvidence.Completion");
+
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var sequence = evidence.NextExchange();
@@ -18,26 +20,42 @@ internal sealed class HttpEvidenceHandler(ScenarioHttpEvidence evidence) : Deleg
         var method = request.Method.Method;
         var path = request.RequestUri?.AbsolutePath;
         var query = request.RequestUri?.Query;
-        evidence.Record($"HTTP {sequence:000} request", new
-        {
-            service = "users",
-            scenarioId = evidence.ScenarioId,
-            instanceId = evidence.InstanceId,
-            exchangeId,
-            stepPhase = phase,
-            method,
-            path,
-            query,
-            content = await ReadContent(request.Content, cancellationToken)
-        });
-
-        HttpResponseMessage response;
+        HttpResponseMessage? response = null;
         try
         {
+            evidence.Record($"HTTP {sequence:000} request", new
+            {
+                service = "users",
+                scenarioId = evidence.ScenarioId,
+                instanceId = evidence.InstanceId,
+                exchangeId,
+                stepPhase = phase,
+                method,
+                path,
+                query,
+                content = await ReadContent(request.Content, cancellationToken)
+            });
             response = await base.SendAsync(request, cancellationToken);
+            // Include body-buffering failures in the same terminal-event contract.
+            evidence.Record($"HTTP {sequence:000} response", new
+            {
+                service = "users",
+                scenarioId = evidence.ScenarioId,
+                instanceId = evidence.InstanceId,
+                exchangeId,
+                stepPhase = phase,
+                method,
+                path,
+                query,
+                status = (int)response.StatusCode,
+                location = response.Headers.Location?.ToString(),
+                content = await ReadContent(response.Content, cancellationToken)
+            });
+            return response;
         }
         catch (Exception error)
         {
+            response?.Dispose();
             evidence.Record($"HTTP {sequence:000} failure", new
             {
                 service = "users",
@@ -53,23 +71,12 @@ internal sealed class HttpEvidenceHandler(ScenarioHttpEvidence evidence) : Deleg
             });
             throw;
         }
-
-        // Record before an outer contract validator or the scenario assertions can fail.
-        evidence.Record($"HTTP {sequence:000} response", new
+        finally
         {
-            service = "users",
-            scenarioId = evidence.ScenarioId,
-            instanceId = evidence.InstanceId,
-            exchangeId,
-            stepPhase = phase,
-            method,
-            path,
-            query,
-            status = (int)response.StatusCode,
-            location = response.Headers.Location?.ToString(),
-            content = await ReadContent(response.Content, cancellationToken)
-        });
-        return response;
+            // HttpClient can notify its caller of cancellation before this inner pipeline finishes.
+            if (request.Options.TryGetValue(CompletionKey, out var completion))
+                completion.TrySetResult();
+        }
     }
 
     private static async Task<object> ReadContent(HttpContent? content, CancellationToken cancellationToken)

@@ -128,6 +128,27 @@ public sealed class HttpEvidenceTests
     }
 
     [Fact]
+    public async Task CancelledResponseBufferingRecordsFailureBeforeSignallingCompletion()
+    {
+        var evidence = Evidence();
+        var body = new CancelledResponseContent();
+        using var client = Client(evidence, (_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = body }));
+        using var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost/favorites");
+        var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        request.Options.Set(HttpEvidenceHandler.CompletionKey, completed);
+        var error = await Record.ExceptionAsync(() => client.SendAsync(request));
+        Assert.IsAssignableFrom<OperationCanceledException>(error);
+        Assert.True(completed.Task.IsCompletedSuccessfully);
+        Assert.True(body.WasDisposed);
+        var items = Drain(evidence);
+        Assert.Equal(2, items.Count);
+        Assert.Equal(items[0].GetProperty("exchangeId").GetString(), items[1].GetProperty("exchangeId").GetString());
+        Assert.True(items[1].GetProperty("cancelled").GetBoolean());
+        Assert.False(items[1].TryGetProperty("status", out _));
+        Assert.DoesNotContain("sensitive message", items[1].GetRawText());
+    }
+
+    [Fact]
     public void IdentityReusesMatrixIdsAndIncludesExamplesWithoutDependingOnScenarioWording()
     {
         var arguments = new OrderedDictionary { ["scenarioId"] = "REF07_GetFavoritesByClientId_01", ["amount"] = "0" };
@@ -172,6 +193,15 @@ public sealed class HttpEvidenceTests
         var items = new List<JsonElement>();
         evidence.Flush((_, value) => items.Add(JsonSerializer.SerializeToElement(value, ScenarioHttpEvidence.JsonOptions)));
         return items;
+    }
+
+    private sealed class CancelledResponseContent : HttpContent
+    {
+        internal bool WasDisposed { get; private set; }
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context)
+            => Task.FromException(new OperationCanceledException("sensitive message"));
+        protected override bool TryComputeLength(out long length) { length = 0; return false; }
+        protected override void Dispose(bool disposing) { WasDisposed = true; base.Dispose(disposing); }
     }
 
     private sealed class StubHandler(Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> send) : HttpMessageHandler

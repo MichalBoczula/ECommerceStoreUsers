@@ -102,6 +102,8 @@ public sealed class RequestCancellationStepDefinitions(ScenarioApiContext contex
         using var request = new HttpRequestMessage(new HttpMethod(_method), _path);
         if (_body is not null)
             request.Content = JsonContent.Create(_body, options: context.JsonOptions);
+        var recorded = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        request.Options.Set(HttpEvidenceHandler.CompletionKey, recorded);
         var sending = context.HttpClient.SendAsync(request, cancellation.Token);
         try
         {
@@ -110,6 +112,7 @@ public sealed class RequestCancellationStepDefinitions(ScenarioApiContext contex
             try { context.Response = await sending; }
             catch (OperationCanceledException error) { _clientError = error; }
             await _cancelled.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            await recorded.Task.WaitAsync(TimeSpan.FromSeconds(10));
         }
         finally { cancellation.Cancel(); }
     }

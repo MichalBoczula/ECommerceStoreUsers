@@ -245,7 +245,10 @@ including a repeat after a real update: 85 BDD cases and 104 acceptance-project 
 Task 5 adds [complete Favorites collection and isolation evidence](docs/bdd-05-favorites.md):
 91 BDD cases and 110 acceptance-project cases, including date ordering with unspecified ties.
 Task 7 adds [framework rejection and unchanged-data evidence](docs/bdd-07-framework.md):
-129 BDD cases and 150 acceptance-project cases. Task 6 remains pending.
+129 BDD cases and 150 acceptance-project cases.
+Task 6 completes [active business-validation coverage](docs/bdd-06-business-validation.md):
+234 BDD cases and 255 acceptance-project cases, including accepted boundaries
+and documented existing null-object mapping failures.
 
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:

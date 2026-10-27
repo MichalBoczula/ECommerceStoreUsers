@@ -26,6 +26,7 @@ Feature: Create customer duplicate companies conflict
       | CompanyName    | TaxId      | BillingAddress.PostalCode | BillingAddress.City | BillingAddress.Street | BillingAddress.BuildingNumber | BillingAddress.ApartmentNumber | ShippingAddress.PostalCode | ShippingAddress.City | ShippingAddress.Street | ShippingAddress.BuildingNumber | ShippingAddress.ApartmentNumber |
       | First Company  | 1234567890 | 30-300                    | Poznan              | Business              | 3                             | 15                             | 40-400                     | Lodz                 | Industry               | 4                              | 16                              |
       | Second Company | 1234567890 | 30-300                    | Poznan              | Business              | 3                             | 15                             | 40-400                     | Lodz                 | Industry               | 4                              | 16                              |
+    And I record all Users data before this business request
     When I submit the create customer duplicate companies request
     Then the create customer duplicate companies request fails with a conflict error
       | Field          | Value                                                                                                  |
@@ -36,3 +37,5 @@ Feature: Create customer duplicate companies conflict
       | Instance       | /customers                                                                                             |
       | DetailContains | Resource CompanyData identified by id 1234567890 already exists in db. Error in action CreateCustomer. |
       | HasTraceId     | true                                                                                                   |
+    And the complete business conflict detail is "Resource CompanyData identified by id 1234567890 already exists in db. Error in action CreateCustomer."
+    And every Users collection is unchanged after business rejection

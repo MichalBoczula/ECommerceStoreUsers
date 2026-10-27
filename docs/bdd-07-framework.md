@@ -5,8 +5,9 @@ and one explicit-null business-boundary control. The suite has 129 expanded BDD
 cases, 89 declarations in 43 features and 112 named-operation matrix links.
 The acceptance project contains 150 cases: 129 BDD and 21 standalone cases,
 including two focused route-checker regressions. The fixed original 81-case
-baseline is unchanged. **Task 6 remains pending**; this task does not establish
-complete business-rule coverage.
+baseline is unchanged. Task 6 was pending at this task's merge; the
+[business-validation follow-up](bdd-06-business-validation.md) completes it.
+Task 7 itself does not establish complete business-rule coverage.
 
 ## Request and rejection coverage
 
@@ -37,7 +38,8 @@ every explicit null reference. The control case checks the actual HTTP result
 for a null Admin ExternalId and its existing policy error. A null Guid member
 cannot deserialize; a literal null required body cannot bind. Do not generalize
 either into a claim that every nullable/nonnullable reference is rejected by
-the framework. Broader business/null-reference behavior remains task 6.
+the framework. The [task-6 follow-up](bdd-06-business-validation.md) records broader
+business/null-reference evidence and the remaining null-object limitations.
 
 ## Exact HTTP and problem evidence
 

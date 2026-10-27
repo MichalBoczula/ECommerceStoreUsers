@@ -12,6 +12,7 @@ Feature: Update admin profile validation
       | ExistingEmail        | jane.smith@db.com      |
       | UpdatedFullName      | Jane Smith Updated     |
       | UpdatedEmail         | invalid-email          |
+    And I record all Users data before this business request
     When I submit the update admin request for validation
     Then the admin profile update fails with a validation error
       | Field      | Value                                                       |
@@ -19,3 +20,7 @@ Feature: Update admin profile validation
       | Message    | Email must be a valid format (address@domain.something).    |
       | Name       | AdminEmailValidationRule                                    |
       | Entity     | Admin                                                       |
+    And the complete business validation problem contains exactly these errors
+      | Name                     | Message                                                  | Entity |
+      | AdminEmailValidationRule | Email must be a valid format (address@domain.something). | Admin  |
+    And every Users collection is unchanged after business rejection

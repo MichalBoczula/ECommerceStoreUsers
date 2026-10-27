@@ -48,7 +48,14 @@ control, and strengthens the original framework/missing-member cases. The
 inventory is now 129 expanded BDD cases, 89 declarations in 43 features,
 and 150 acceptance-project cases (21 standalone, including two route-checker
 regressions). See [framework rejection evidence](bdd-07-framework.md).
-Task 6 remains pending; this is not complete business-validation coverage.
+Task 7 itself does not establish complete business-validation coverage.
+
+The task-6 follow-up adds 105 business-rule/boundary cases and strengthens
+18 original ordinary validation/conflict cases. The inventory is now 234
+expanded BDD cases, 101 declarations in 44 features, 217 named-operation links
+and 255 acceptance-project cases (21 standalone). See
+[business-validation evidence](bdd-06-business-validation.md) for all active
+rule signatures, accepted boundaries, mapped conflicts and existing null-object gaps.
 
 The MongoDB.Driver 3.7.1 dependency brings in SharpCompress and Snappier.
 Infrastructure pins their versions to 0.48.1 and 1.3.1 respectively, which

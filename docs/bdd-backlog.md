@@ -37,10 +37,11 @@ after successful master image publication; it does not deploy ACA.
   Preserve the current ordering contract without promising a tie-breaker the
   repository does not implement. Do not add favorites history. See
   [complete collection and client-isolation evidence](bdd-05-favorites.md).
-- [ ] **USERS-BDD-06 — Business validation.** Cover active Customer/company/
+- [x] **USERS-BDD-06 — Business validation.** Cover active Customer/company/
   address/Admin/favorite rules and error signatures using isolated inputs,
   complete safe problems and unchanged stored data. Document actual behavior;
-  do not activate unused rules as documentation cleanup.
+  do not activate unused rules as documentation cleanup. See
+  [business rule and preservation evidence](bdd-06-business-validation.md).
 - [x] **USERS-BDD-07 — Framework failures.** Malformed JSON, missing/null
   members, wrong types/media, route/method/binding failures: exact request
   bytes, complete safe response and no writes. Distinguish framework rejection

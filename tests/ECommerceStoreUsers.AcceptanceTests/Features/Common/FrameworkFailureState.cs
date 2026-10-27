@@ -3,6 +3,7 @@ using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Favorites;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
+using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
@@ -17,7 +18,7 @@ using System.Text.Json;
 
 namespace ECommerceStoreUsers.AcceptanceTests.Features.Common;
 
-/// <summary>Real HTTP framework rejections and complete MongoDB collection preservation.</summary>
+/// <summary>Shared real HTTP rejection and complete MongoDB collection preservation checks.</summary>
 public sealed class FrameworkFailureState(ScenarioApiContext context)
 {
     private static readonly string[] Collections = ["customers", "customers-history", "admins", "admins-history", "favorites"];
@@ -32,6 +33,10 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
     private Guid _customerId;
     private Guid _companyId;
     private Guid _adminId;
+    private string _evidencePrefix = "Framework";
+
+    internal Guid CustomerId => _customerId;
+    internal void UseEvidencePrefix(string prefix) => _evidencePrefix = prefix;
 
     internal async Task SeedAsync()
     {
@@ -180,15 +185,18 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
     {
         await CaptureAfterAsync();
         context.Response.ShouldNotBeNull();
-        var path = context.Response.RequestMessage!.RequestUri!.AbsolutePath;
+        var requestPath = context.Response.RequestMessage!.RequestUri!.AbsolutePath;
         if (_path is not null)
-            path.ShouldBe(_path);
-        var type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5." + (status switch
+            requestPath.ShouldBe(_path);
+        var path = PathString.FromUriComponent(requestPath).Value;
+        var type = "https://datatracker.ietf.org/doc/html/rfc7231#section-" + (status switch
         {
-            400 => "1",
-            404 => "4",
-            405 => "5",
-            415 => "13",
+            400 => "6.5.1",
+            404 => "6.5.4",
+            405 => "6.5.5",
+            409 => "6.5.8",
+            415 => "6.5.13",
+            500 => "6.6.1",
             _ => throw new ArgumentOutOfRangeException(nameof(status))
         });
         string[] missingProperties = missing == "[]" ? [] : missing.Split(',').Select(value => value.Trim()).ToArray();
@@ -261,7 +269,8 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
 
     private string Resolve(string value) => value.Replace("{customerId}", _customerId.ToString(), StringComparison.Ordinal)
         .Replace("{companyId}", _companyId.ToString(), StringComparison.Ordinal).Replace("{adminId}", _adminId.ToString(), StringComparison.Ordinal);
-    private void Attach(string name, object value) => context.RecordEvidence(name, value);
+    private void Attach(string name, object value)
+        => context.RecordEvidence(name.Replace("Framework ", _evidencePrefix + " ", StringComparison.Ordinal), value);
     private static Dictionary<string, string> Values(Table table)
         => table.Rows.ToDictionary(row => row["Field"], row => row["Value"], StringComparer.Ordinal);
     private static string Required(IReadOnlyDictionary<string, string> values, string field)

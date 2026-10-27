@@ -48,6 +48,7 @@ Feature: Update customer company data validation
       | ShippingStreet                  | Updated Shipping Street |
       | ShippingBuildingNumber          | 44                     |
       | ShippingApartmentNumber         | 8                      |
+    And I record all Users data before this business request
     When I submit the update company request for validation
     Then updating the company data fails with validation errors
       | Field                           | Value                                                        |
@@ -58,3 +59,8 @@ Feature: Update customer company data validation
       | CompanyNameMessage              | Company Name cannot be empty or white space.                 |
       | CompanyNameName                 | CompanyDataCompanyNameValidationRule                         |
       | CompanyNameEntity               | CompanyData                                                  |
+    And the complete business validation problem contains exactly these errors
+      | Name                                 | Message                                                         | Entity      |
+      | CompanyDataCompanyNameValidationRule | Company Name cannot be empty or white space.                    | CompanyData |
+      | CompanyDataTaxIdValidationRule       | Tax Id must be a valid Polish NIP containing exactly 10 digits. | CompanyData |
+    And every Users collection is unchanged after business rejection

@@ -36,11 +36,17 @@ Feature: Favorites endpoints
       | Field     | Value                                |
       | ClientId  | 00000000-0000-0000-0000-000000000000 |
       | ProductId | 00000000-0000-0000-0000-000000000000 |
+    And I record all Users data before this business request
     When I add the product to favorites
     Then favorite validation fails with status 400
       | Name                            | Message                               |
       | FavoriteClientIdValidationRule  | ClientId cannot be an empty GUID.     |
       | FavoriteProductIdValidationRule | ProductId cannot be an empty GUID.    |
+    And the complete business validation problem contains exactly these errors
+      | Name                            | Message                            | Entity   |
+      | FavoriteClientIdValidationRule  | ClientId cannot be an empty GUID.  | Favorite |
+      | FavoriteProductIdValidationRule | ProductId cannot be an empty GUID. | Favorite |
+    And every Users collection is unchanged after business rejection
 
   @allure.label.scenarioId:REF07_AddProductToFavorites_03
   Scenario: Add a favorite without the required product identifier
@@ -71,8 +77,12 @@ Feature: Favorites endpoints
       | Field     | Value                                |
       | ClientId  | 22222222-2222-2222-2222-222222222222 |
       | ProductId | bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb |
+    And the product is already in favorites
+    And I record all Users data before this business request
     When I add the same product to favorites twice
     Then adding the duplicate favorite fails with status 409
+    And the complete business conflict detail is "Resource Favorite identified by id 22222222-2222-2222-2222-222222222222:bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb already exists in db. Error in action AddProductToFavorites."
+    And every Users collection is unchanged after business rejection
 
   @allure.label.scenarioId:REF08_AddProductToFavorites_race
   Scenario: Add a favorite inserted by another request after the existence check
@@ -119,10 +129,15 @@ Feature: Favorites endpoints
       | Field     | Value                                |
       | ClientId  | 00000000-0000-0000-0000-000000000000 |
       | ProductId | cccccccc-cccc-cccc-cccc-cccccccccccc |
+    And I record all Users data before this business request
     When I get the client's favorites
     Then favorite validation fails with status 400
       | Name          | Message               |
       | EmptyGuidRule | Guid cannot be empty. |
+    And the complete business validation problem contains exactly these errors
+      | Name          | Message               | Entity |
+      | EmptyGuidRule | Guid cannot be empty. | Guid   |
+    And every Users collection is unchanged after business rejection
 
   @allure.label.scenarioId:REF07_RemoveProductFromFavorites_01
   Scenario: Remove a product from favorites
@@ -152,11 +167,17 @@ Feature: Favorites endpoints
       | Field     | Value                                |
       | ClientId  | 00000000-0000-0000-0000-000000000000 |
       | ProductId | 00000000-0000-0000-0000-000000000000 |
+    And I record all Users data before this business request
     When I remove the product from favorites
     Then favorite validation fails with status 400
       | Name          | Message               |
       | EmptyGuidRule | Guid cannot be empty. |
       | EmptyGuidRule | Guid cannot be empty. |
+    And the complete business validation problem contains exactly these errors
+      | Name          | Message               | Entity |
+      | EmptyGuidRule | Guid cannot be empty. | Guid   |
+      | EmptyGuidRule | Guid cannot be empty. | Guid   |
+    And every Users collection is unchanged after business rejection
 
   @allure.label.scenarioId:REF07_RemoveProductFromFavorites_03
   Scenario: Remove a favorite that does not exist
@@ -233,10 +254,15 @@ Feature: Favorites endpoints
       | Field     | Value                                |
       | ClientId  | 00000000-0000-0000-0000-000000000000 |
       | ProductId | ffffffff-ffff-ffff-ffff-ffffffffffff |
+    And I record all Users data before this business request
     When I clear the client's favorites
     Then favorite validation fails with status 400
       | Name          | Message               |
       | EmptyGuidRule | Guid cannot be empty. |
+    And the complete business validation problem contains exactly these errors
+      | Name          | Message               | Entity |
+      | EmptyGuidRule | Guid cannot be empty. | Guid   |
+    And every Users collection is unchanged after business rejection
 
   @allure.label.scenarioId:REF05_FavoriteAdd_PreservesOtherEntries
   Scenario: Add a favorite preserves other products and another client

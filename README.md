@@ -258,6 +258,11 @@ Task 9 strengthens [technical behavior and evidence](docs/bdd-09-technical.md):
 **272 BDD + 25 standalone = 297 acceptance-project cases**, covering health,
 startup, request cancellation, documentation reads and explicit peer isolation.
 
+Task 10 adds [generated field contracts and serializer evidence](docs/bdd-10-contracts.md):
+**278 BDD + 61 standalone = 339 acceptance-project cases**, with source field
+descriptions/typed examples, scalar/nullability/format/nesting checks and linked
+actual request/response contract observations. Tasks 11–12 remain; no rollout.
+
 Run the full source, contract, architecture, build, test, coverage, OpenAPI and
 Docker checks from the repository root:
 

@@ -1,4 +1,5 @@
 using ECommerceStoreUsers.API;
+using ECommerceStoreUsers.AcceptanceTests.Features.Common;
 using ECommerceStoreUsers.API.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -38,6 +39,7 @@ public sealed class OpenApiExportTests
         var openApi = await response.Content.ReadAsStringAsync();
         using var document = JsonDocument.Parse(openApi);
         Assert.True(document.RootElement.GetProperty("paths").EnumerateObject().Any());
+        OpenApiContractAssertions.Check(document);
 
         var exportPath = Environment.GetEnvironmentVariable("OPENAPI_EXPORT_PATH");
         if (!string.IsNullOrWhiteSpace(exportPath))
@@ -61,3 +63,4 @@ public sealed class OpenApiExportTests
         }
     }
 }
+

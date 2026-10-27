@@ -92,3 +92,10 @@ Cancellation publishes a request/failure event and an explicit NoWrite scope;
 health publishes actual plain text. All previous identities and expected HTTP
 outcomes remain. Production contracts, flow/policy exports and original baseline
 are unchanged; stronger contract/RAG work remains tasks 10–11.
+
+Task 10 adds [contract and serializer checks](bdd-10-contracts.md): **278 BDD cases,
+122 declarations in 47 features, 249 operation links and 339 acceptance-project
+cases (61 standalone)**. The 36 added standalone cases exercise the bounded
+schema validator and post-HTTP request checking; they are not BDD scenarios.
+All previous identities/outcomes remain. Descriptions/examples come from source
+XML comments and Swagger metadata; no second handwritten specification.

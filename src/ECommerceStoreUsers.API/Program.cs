@@ -20,6 +20,16 @@ namespace ECommerceStoreUsers.API
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SupportNonNullableReferenceTypes();
+                c.UseAllOfToExtendReferenceSchemas();
+                foreach (var assembly in new[]
+                {
+                    typeof(Program).Assembly,
+                    typeof(ECommerceStoreUsers.Application.Common.RequestsDto.Customers.CreateCustomerRequestDto).Assembly,
+                    typeof(ECommerceStoreUsers.Domain.Validation.Common.ValidationError).Assembly
+                })
+                    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{assembly.GetName().Name}.xml"));
+                c.SchemaFilter<UsersContractSchemaFilter>();
+                c.OperationFilter<UsersContractParameterFilter>();
             });
 
             builder.Services.AddHealthChecks()
@@ -66,3 +76,4 @@ namespace ECommerceStoreUsers.API
         }
     }
 }
+

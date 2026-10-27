@@ -78,6 +78,10 @@ after successful master image publication; it does not deploy ACA.
   reports, select the successful master archive and publish the refreshed
   LiveDocs image. Record immutable producer/image provenance and the separate
   manual Azure rollout handoff.
+  **Source/archive/render audit complete:** see the [completion record and exact
+  refresh reference](bdd-12-audit.md). The user retained manual LiveDocs refresh
+  and deployment. Manifest selection, a new LiveDocs image and Azure rollout
+  remain pending; this delivery checkbox does not claim they occurred.
 
 Each PR uses the existing template and records actual commands, CI and report
 evidence, checks that could not run, and remaining work. Preserve the original

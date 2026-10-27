@@ -37,6 +37,12 @@ files, and 104 acceptance-project cases (19 standalone). See
 [Admin success evidence](bdd-04-admins.md) for complete response/current/history
 checks and unchanged-version/history assertions at versions 0 and 1.
 
+Task 5 strengthens the five original Favorites successes and adds six collection/
+isolation cases: 91 expanded BDD cases, 71 declarations in 42 feature files,
+and 110 acceptance-project cases (19 standalone). See
+[Favorites evidence](bdd-05-favorites.md) for complete persisted fields, empty
+results and no-ops, client isolation and the actual timestamp ordering contract.
+
 The MongoDB.Driver 3.7.1 dependency brings in SharpCompress and Snappier.
 Infrastructure pins their versions to 0.48.1 and 1.3.1 respectively, which
 are newer than the driver's minimums. Benchmarks reference Infrastructure,

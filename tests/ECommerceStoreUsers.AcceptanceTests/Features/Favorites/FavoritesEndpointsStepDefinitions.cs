@@ -16,12 +16,14 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
     public sealed class FavoritesEndpointsStepDefinitions
     {
         private readonly ScenarioApiContext _apiContext;
+        private readonly FavoriteSuccessState _success;
         private Guid _clientId;
         private Guid _productId;
 
-        public FavoritesEndpointsStepDefinitions(ScenarioApiContext apiContext)
+        public FavoritesEndpointsStepDefinitions(ScenarioApiContext apiContext, FavoriteSuccessState success)
         {
             _apiContext = apiContext;
+            _success = success;
         }
 
         [Given("I use favorite identifiers")]
@@ -52,7 +54,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
         [When("I add the product to favorites")]
         public async Task WhenIAddTheProductToFavorites()
         {
-            _apiContext.Response = await AddFavorite(_productId);
+            await _success.ExecuteAsync(() => AddFavorite(_productId));
         }
 
         [When("I add a favorite without the required product identifier")]
@@ -74,22 +76,22 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
         [When("I get the client's favorites")]
         public async Task WhenIGetTheClientsFavorites()
         {
-            _apiContext.Response = await _apiContext.HttpClient.GetAsync(
-                $"/favorites/clients/{_clientId}");
+            await _success.ExecuteAsync(() => _apiContext.HttpClient.GetAsync(
+                $"/favorites/clients/{_clientId}"));
         }
 
         [When("I remove the product from favorites")]
         public async Task WhenIRemoveTheProductFromFavorites()
         {
-            _apiContext.Response = await _apiContext.HttpClient.DeleteAsync(
-                $"/favorites/clients/{_clientId}/products/{_productId}");
+            await _success.ExecuteAsync(() => _apiContext.HttpClient.DeleteAsync(
+                $"/favorites/clients/{_clientId}/products/{_productId}"));
         }
 
         [When("I clear the client's favorites")]
         public async Task WhenIClearTheClientsFavorites()
         {
-            _apiContext.Response = await _apiContext.HttpClient.DeleteAsync(
-                $"/favorites/clients/{_clientId}");
+            await _success.ExecuteAsync(() => _apiContext.HttpClient.DeleteAsync(
+                $"/favorites/clients/{_clientId}"));
         }
 
         [Then("the added favorite is returned with status 200")]
@@ -233,10 +235,7 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
 
         private async Task AddFavoriteAndRequireSuccess(Guid productId)
         {
-            using var response = await AddFavorite(productId);
-            var body = await response.Content.ReadAsStringAsync();
-            AllureJson.AttachRawJson($"Seed favorite response ({(int)response.StatusCode})", body);
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            await _success.SeedAsync(_clientId, productId);
         }
 
         private void RequireResponse(HttpStatusCode statusCode, string? mediaType = null)
@@ -263,3 +262,4 @@ namespace ECommerceStoreUsers.AcceptanceTests.Features.Favorites
         }
     }
 }
+

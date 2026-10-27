@@ -32,10 +32,11 @@ after successful master image publication; it does not deploy ACA.
   response and current/history/version assertions. An unchanged update is a
   successful no-op without a new version/history entry. See
   [Admin coverage and repeat-after-change evidence](bdd-04-admins.md).
-- [ ] **USERS-BDD-05 — Favorites success scenarios.** Add/list/remove/clear,
+- [x] **USERS-BDD-05 — Favorites success scenarios.** Add/list/remove/clear,
   exact collection contents, empty results, client isolation and clear no-op.
   Preserve the current ordering contract without promising a tie-breaker the
-  repository does not implement. Do not add favorites history.
+  repository does not implement. Do not add favorites history. See
+  [complete collection and client-isolation evidence](bdd-05-favorites.md).
 - [ ] **USERS-BDD-06 — Business validation.** Cover active Customer/company/
   address/Admin/favorite rules and error signatures using isolated inputs,
   complete safe problems and unchanged stored data. Document actual behavior;

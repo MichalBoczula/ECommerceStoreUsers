@@ -37,20 +37,33 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
     {
         var address = new AddressRequestDto
         {
-            PostalCode = "00-001", City = "Warsaw", Street = "Framework Street", BuildingNumber = "10", ApartmentNumber = null
+            PostalCode = "00-001",
+            City = "Warsaw",
+            Street = "Framework Street",
+            BuildingNumber = "10",
+            ApartmentNumber = null
         };
         var individual = new IndividualDataRequestDto
         {
-            FirstName = "Original", LastName = "Framework", Email = "framework@example.com", Phone = "123456789",
-            BillingAddress = address, ShippingAddress = address
+            FirstName = "Original",
+            LastName = "Framework",
+            Email = "framework@example.com",
+            Phone = "123456789",
+            BillingAddress = address,
+            ShippingAddress = address
         };
         var company = new AddCompanyRequestDto
         {
-            TaxId = "1234567890", CompanyName = "Framework Company", BillingAddress = address, ShippingAddress = address
+            TaxId = "1234567890",
+            CompanyName = "Framework Company",
+            BillingAddress = address,
+            ShippingAddress = address
         };
         using var customerCreate = await context.HttpClient.PostAsJsonAsync("/customers", new CreateCustomerRequestDto
         {
-            ExternalId = "framework-customer", Individual = individual, Companies = [company]
+            ExternalId = "framework-customer",
+            Individual = individual,
+            Companies = [company]
         }, context.JsonOptions);
         customerCreate.StatusCode.ShouldBe(HttpStatusCode.OK);
         var customer = await customerCreate.Content.ReadFromJsonAsync<CustomerResponseDto>(context.JsonOptions);
@@ -64,7 +77,9 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
         customerUpdate.StatusCode.ShouldBe(HttpStatusCode.OK);
         using var adminCreate = await context.HttpClient.PostAsJsonAsync("/admins", new CreateAdminRequestDto
         {
-            ExternalId = "framework-admin", FullName = "Original Framework Admin", Email = "admin.framework@example.com"
+            ExternalId = "framework-admin",
+            FullName = "Original Framework Admin",
+            Email = "admin.framework@example.com"
         }, context.JsonOptions);
         adminCreate.StatusCode.ShouldBe(HttpStatusCode.OK);
         var admin = await adminCreate.Content.ReadFromJsonAsync<AdminResponseDto>(context.JsonOptions);
@@ -73,7 +88,8 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
         _adminId.ShouldNotBe(Guid.Empty);
         using var adminUpdate = await context.HttpClient.PutAsJsonAsync($"/admins/{_adminId}", new UpdateAdminProfileRequestDto
         {
-            FullName = "Updated Framework Admin", Email = "admin.framework@example.com"
+            FullName = "Updated Framework Admin",
+            Email = "admin.framework@example.com"
         }, context.JsonOptions);
         adminUpdate.StatusCode.ShouldBe(HttpStatusCode.OK);
         using var favorite = await context.HttpClient.PostAsJsonAsync("/favorites/clients/77777777-7777-7777-7777-777777777777",
@@ -128,8 +144,12 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
             _bytes.ShouldNotBeNull();
         Attach("Framework request expectations", new
         {
-            method = _method, path = _path, contentType = _contentType, hasContent = _hasContent,
-            byteLength = _bytes?.Length ?? 0, bodyBytesBase64 = _bytes is null ? null : Convert.ToBase64String(_bytes)
+            method = _method,
+            path = _path,
+            contentType = _contentType,
+            hasContent = _hasContent,
+            byteLength = _bytes?.Length ?? 0,
+            bodyBytesBase64 = _bytes is null ? null : Convert.ToBase64String(_bytes)
         });
         using var request = new HttpRequestMessage(new HttpMethod(_method), _path);
         if (_hasContent)
@@ -165,7 +185,11 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
             path.ShouldBe(_path);
         var type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5." + (status switch
         {
-            400 => "1", 404 => "4", 405 => "5", 415 => "13", _ => throw new ArgumentOutOfRangeException(nameof(status))
+            400 => "1",
+            404 => "4",
+            405 => "5",
+            415 => "13",
+            _ => throw new ArgumentOutOfRangeException(nameof(status))
         });
         string[] missingProperties = missing == "[]" ? [] : missing.Split(',').Select(value => value.Trim()).ToArray();
         var expectedErrors = JsonSerializer.Deserialize<JsonElement>(errors);
@@ -205,7 +229,8 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
             .ShouldBeTrue("Every field in all five current/history/Favorite collections must remain unchanged.");
         Attach("Framework persistence verified", new
         {
-            unchanged = true, collections = Collections,
+            unchanged = true,
+            collections = Collections,
             counts = _after.ToDictionary(item => item.Key, item => item.Value.Length),
             effect = "No business write; not a rollback test"
         });

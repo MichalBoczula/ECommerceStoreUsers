@@ -123,7 +123,10 @@ public sealed class AdminSuccessState(ScenarioApiContext context)
         context.Response.ShouldNotBeNull();
         context.Response.StatusCode.ShouldBe((HttpStatusCode)Number(expected, "StatusCode"));
         context.Response.Content.Headers.ContentType?.MediaType.ShouldBe("application/json");
-        _response = await context.Response.Content.ReadFromJsonAsync<AdminResponseDto>(context.JsonOptions);
+        // Existing assertions can already have read and disposed the content stream.
+        // Parse the buffered body so complete profile checks remain repeatable.
+        _response = JsonSerializer.Deserialize<AdminResponseDto>(
+            await context.Response.Content.ReadAsStringAsync(), context.JsonOptions);
         _response.ShouldNotBeNull();
         var externalId = Required(expected, "ExternalId");
         if (externalId == "<setup-external-id>")

@@ -77,11 +77,11 @@ error array, including both identical City errors; Admin checks all three
 invalid fields together. No deduplication or name-only membership check can pass.
 
 All strengthened rejections assert the complete nine-field problem: status,
-RFC type, fixed title/detail, decoded request-path instance, code, exact
+RFC type, fixed title/detail, escaped request-path instance, code, exact
 name/message/entity errors with multiplicity, missingProperties and generated
 traceId. Extra fields and sensitive diagnostics fail. For encoded external-ID
-whitespace, the expected instance uses ASP.NET PathString decoding, while the
-HTTP envelope retains the encoded request target. Method/media checks and the
+whitespace, both the problem instance and HTTP target retain `%20`, although
+the bound external-ID value is whitespace. The exact escaped form is checked. Method/media checks and the
 task-7 UUID route/status guard stay intact.
 
 The 18 original ordinary validation/conflict cases gain full errors/problems
@@ -132,7 +132,7 @@ object rules. It does not claim every null-reference combination is covered.
 ## Persistence, verification and publication
 
 The task-7 rejection helper is reused with Business validation evidence names,
-complete problem support for 409/500 and ASP.NET path-instance decoding. The
+complete problem support for 409/500. The
 original Framework evidence names and checks remain the default. There is no
 second database snapshot implementation or new CI/Python tooling.
 

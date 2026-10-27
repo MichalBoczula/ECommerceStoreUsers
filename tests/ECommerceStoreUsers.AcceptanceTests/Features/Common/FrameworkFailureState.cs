@@ -3,7 +3,6 @@ using ECommerceStoreUsers.Application.Common.RequestsDto.Customers;
 using ECommerceStoreUsers.Application.Common.RequestsDto.Favorites;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Admins;
 using ECommerceStoreUsers.Application.Common.ResponsesDto.Customers;
-using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Driver;
@@ -185,10 +184,9 @@ public sealed class FrameworkFailureState(ScenarioApiContext context)
     {
         await CaptureAfterAsync();
         context.Response.ShouldNotBeNull();
-        var requestPath = context.Response.RequestMessage!.RequestUri!.AbsolutePath;
+        var path = context.Response.RequestMessage!.RequestUri!.AbsolutePath;
         if (_path is not null)
-            requestPath.ShouldBe(_path);
-        var path = PathString.FromUriComponent(requestPath).Value;
+            path.ShouldBe(_path);
         var type = "https://datatracker.ietf.org/doc/html/rfc7231#section-" + (status switch
         {
             400 => "6.5.1",

@@ -1,0 +1,7 @@
+<RunSettings>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <PACT_DO_NOT_TRACK>true</PACT_DO_NOT_TRACK>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>

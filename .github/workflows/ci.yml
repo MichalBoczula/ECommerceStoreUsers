@@ -8,6 +8,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "master" ]
   pull_request:
@@ -197,7 +198,7 @@ jobs:
 
           case "$EVENT_NAME" in
             pull_request) expected_dependency_result=success ;;
-            push) expected_dependency_result=skipped ;;
+            push|workflow_dispatch) expected_dependency_result=skipped ;;
             *) echo "Unexpected event: $EVENT_NAME" >&2; exit 1 ;;
           esac
           if [[ "$DEPENDENCY_REVIEW_RESULT" != "$expected_dependency_result" ]]; then
@@ -205,6 +206,34 @@ jobs:
             exit 1
           fi
 
+
+  publish-web-pact-verification:
+    if: >-
+      always() && !cancelled() && needs.quality-gate.result == 'success' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref == 'refs/heads/master' &&
+      vars.PACT_REGISTRY_URL != ''
+    needs: quality-gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-users-verification
+          path: pact-evidence
+      - name: Publish verified Users evidence
+        env:
+          PACT_REGISTRY_URL: ${{ vars.PACT_REGISTRY_URL }}
+          PACT_PUBLISHER_TOKEN: ${{ secrets.PACT_PUBLISHER_TOKEN }}
+        run: python3 scripts/publish-web-pact-verification.py pact-evidence/web-users-pact-verification.json pact-evidence/receipt.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-users-verification-publication
+          path: pact-evidence/receipt.json
+          if-no-files-found: error
 
   build-docker-image:
     # Dependency Review is intentionally skipped on push; only the successful
@@ -364,7 +393,14 @@ jobs:
         with:
           global-json-file: global.json
       - name: Verify acceptance suite
+        env:
+          USERS_PACT_REPORT: ${{ github.workspace }}/artifacts/verification/web-users-pact-verification.json
         run: VERIFY_SUMMARY_FILE="$GITHUB_STEP_SUMMARY" bash scripts/ci.sh test acceptance
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-users-verification
+          path: artifacts/verification/web-users-pact-verification.json
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -1,0 +1,221 @@
+{
+  "consumer": {
+    "name": "web"
+  },
+  "interactions": [
+    {
+      "description": "load a customer profile for an unknown external ID",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "one customer profile exists and another external ID is absent",
+          "params": {
+            "missingExternalId": "pact-missing-external-id",
+            "profile": {
+              "companies": [
+                {
+                  "billingAddress": {
+                    "apartmentNumber": "2",
+                    "buildingNumber": "10",
+                    "city": "Warsaw",
+                    "postalCode": "00-001",
+                    "street": "Main"
+                  },
+                  "companyName": "Example Company",
+                  "id": "43000000-0000-4000-8000-000000000002",
+                  "shippingAddress": {
+                    "apartmentNumber": null,
+                    "buildingNumber": "11",
+                    "city": "Krakow",
+                    "postalCode": "30-001",
+                    "street": "Shipping"
+                  },
+                  "taxId": "1234567890"
+                }
+              ],
+              "externalId": "pact-profile-external-id",
+              "id": "43000000-0000-4000-8000-000000000001",
+              "individual": {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main"
+                },
+                "email": "customer@example.com",
+                "firstName": "Demo",
+                "lastName": "Customer",
+                "phone": "123456789",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Krakow",
+                  "postalCode": "30-001",
+                  "street": "Shipping"
+                }
+              },
+              "updatedAt": "2026-09-29T12:00:00Z"
+            }
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/customers/external/pact-missing-external-id"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "status": 404
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/problem+json"
+          ]
+        },
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "load an existing customer profile by external ID",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "one customer profile exists and another external ID is absent",
+          "params": {
+            "missingExternalId": "pact-missing-external-id",
+            "profile": {
+              "companies": [
+                {
+                  "billingAddress": {
+                    "apartmentNumber": "2",
+                    "buildingNumber": "10",
+                    "city": "Warsaw",
+                    "postalCode": "00-001",
+                    "street": "Main"
+                  },
+                  "companyName": "Example Company",
+                  "id": "43000000-0000-4000-8000-000000000002",
+                  "shippingAddress": {
+                    "apartmentNumber": null,
+                    "buildingNumber": "11",
+                    "city": "Krakow",
+                    "postalCode": "30-001",
+                    "street": "Shipping"
+                  },
+                  "taxId": "1234567890"
+                }
+              ],
+              "externalId": "pact-profile-external-id",
+              "id": "43000000-0000-4000-8000-000000000001",
+              "individual": {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main"
+                },
+                "email": "customer@example.com",
+                "firstName": "Demo",
+                "lastName": "Customer",
+                "phone": "123456789",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Krakow",
+                  "postalCode": "30-001",
+                  "street": "Shipping"
+                }
+              },
+              "updatedAt": "2026-09-29T12:00:00Z"
+            }
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/customers/external/pact-profile-external-id"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "companies": [
+              {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main"
+                },
+                "companyName": "Example Company",
+                "id": "43000000-0000-4000-8000-000000000002",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Krakow",
+                  "postalCode": "30-001",
+                  "street": "Shipping"
+                },
+                "taxId": "1234567890"
+              }
+            ],
+            "externalId": "pact-profile-external-id",
+            "id": "43000000-0000-4000-8000-000000000001",
+            "individual": {
+              "billingAddress": {
+                "apartmentNumber": "2",
+                "buildingNumber": "10",
+                "city": "Warsaw",
+                "postalCode": "00-001",
+                "street": "Main"
+              },
+              "email": "customer@example.com",
+              "firstName": "Demo",
+              "lastName": "Customer",
+              "phone": "123456789",
+              "shippingAddress": {
+                "apartmentNumber": null,
+                "buildingNumber": "11",
+                "city": "Krakow",
+                "postalCode": "30-001",
+                "street": "Shipping"
+              }
+            },
+            "updatedAt": "2026-09-29T12:00:00Z"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "17.1.4"
+    },
+    "pactRust": {
+      "ffi": "0.5.8",
+      "models": "1.3.16"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
+  "provider": {
+    "name": "users"
+  }
+}

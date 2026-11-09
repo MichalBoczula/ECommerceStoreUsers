@@ -30,6 +30,9 @@ OpenAPI from the running API and compares declared responses with the status,
 media type and DTO shape observed by acceptance tests. This verifies exercised
 behavior, not every conceivable runtime response.
 
+[Web → Users provider verification](docs/web-pact-provider.md) replays the storefront's
+published profile lookup contract against the real API and MongoDB replica set.
+
 ### Flow and policy descriptions
 
 Application services execute ordered steps described by their flow descriptors.

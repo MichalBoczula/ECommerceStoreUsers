@@ -207,7 +207,7 @@ jobs:
           fi
 
 
-  publish-web-pact-verification:
+  publish-pact-verifications:
     if: >-
       always() && !cancelled() && needs.quality-gate.result == 'success' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
@@ -223,16 +223,30 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: web-users-verification
-          path: pact-evidence
-      - name: Publish verified Users evidence
+          path: pact-evidence/web
+      - name: Publish Web profile verification
         env:
           PACT_REGISTRY_URL: ${{ vars.PACT_REGISTRY_URL }}
           PACT_PUBLISHER_TOKEN: ${{ secrets.PACT_PUBLISHER_TOKEN }}
-        run: python3 scripts/publish-web-pact-verification.py pact-evidence/web-users-pact-verification.json pact-evidence/receipt.json
+        run: python3 scripts/publish-pact-verification.py web pact-evidence/web/web-users-pact-verification.json pact-evidence/web/receipt.json
       - uses: actions/upload-artifact@v4
         with:
           name: web-users-verification-publication
-          path: pact-evidence/receipt.json
+          path: pact-evidence/web/receipt.json
+          if-no-files-found: error
+      - uses: actions/download-artifact@v4
+        with:
+          name: bff-users-verification
+          path: pact-evidence/bff
+      - name: Publish BFF registration verification
+        env:
+          PACT_REGISTRY_URL: ${{ vars.PACT_REGISTRY_URL }}
+          PACT_PUBLISHER_TOKEN: ${{ secrets.PACT_PUBLISHER_TOKEN }}
+        run: python3 scripts/publish-pact-verification.py bff pact-evidence/bff/bff-users-pact-verification.json pact-evidence/bff/receipt.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bff-users-verification-publication
+          path: pact-evidence/bff/receipt.json
           if-no-files-found: error
 
   build-docker-image:
@@ -395,11 +409,17 @@ jobs:
       - name: Verify acceptance suite
         env:
           USERS_PACT_REPORT: ${{ github.workspace }}/artifacts/verification/web-users-pact-verification.json
+          USERS_BFF_PACT_REPORT: ${{ github.workspace }}/artifacts/verification/bff-users-pact-verification.json
         run: VERIFY_SUMMARY_FILE="$GITHUB_STEP_SUMMARY" bash scripts/ci.sh test acceptance
       - uses: actions/upload-artifact@v4
         with:
           name: web-users-verification
           path: artifacts/verification/web-users-pact-verification.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bff-users-verification
+          path: artifacts/verification/bff-users-pact-verification.json
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()

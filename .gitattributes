@@ -5,6 +5,7 @@
 
 # Keep the upstream Pact bytes for SHA-256 checks.
 contracts/pact/web-users.json -text
+contracts/pact/bff-users.json -text
 
 ###############################################################################
 # Set default behavior for command prompt diff.

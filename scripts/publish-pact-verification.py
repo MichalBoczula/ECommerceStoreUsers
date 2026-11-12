@@ -12,6 +12,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY = "https://github.com/MichalBoczula/ECommerceStoreUsers"
 ACCEPTANCE = ROOT / "tests/ECommerceStoreUsers.AcceptanceTests"
+CHECK_IDS = {"web": "web-users-profile-lookup", "bff": "bff-users-registration"}
 
 
 class NoRedirect(HTTPRedirectHandler):
@@ -21,6 +22,7 @@ class NoRedirect(HTTPRedirectHandler):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("consumer", choices=CHECK_IDS)
     parser.add_argument("report", type=Path)
     parser.add_argument("receipt", type=Path)
     args = parser.parse_args()
@@ -46,7 +48,8 @@ def main():
         except HTTPError as error:
             raise RuntimeError(f"Pact registry rejected {path.partition('?')[0]} with HTTP {error.code}.") from None
 
-    source = json.loads((ROOT / "contracts/pact/web-source.json").read_bytes())
+    consumer = args.consumer
+    source = json.loads((ROOT / f"contracts/pact/{consumer}-source.json").read_bytes())
     report = json.loads(args.report.read_bytes())
     sha = os.environ["GITHUB_SHA"]
     digest = source["contractSha256"]
@@ -58,7 +61,7 @@ def main():
         raise ValueError("The report must verify all interactions for the pinned Pact and this Users commit.")
 
     filter_by = {
-        "sourceApplicationId": "web", "consumerApplicationId": "web",
+        "sourceApplicationId": consumer, "consumerApplicationId": consumer,
         "providerApplicationId": "users", "kind": "ConsumerPact", "commitSha": source["commitSha"],
         "contractSha256": digest, "sourceRef": "refs/heads/master", "limit": 100,
     }
@@ -76,7 +79,7 @@ def main():
         seen.add(after)
         filter_by["after"] = after
     if len(matches) != 1:
-        raise RuntimeError("Publish the pinned Web master artifact before publishing Users evidence.")
+        raise RuntimeError(f"Publish the pinned {consumer} master artifact before publishing Users evidence.")
     publication, = matches
     if hashlib.sha256(call(f"/api/artifacts/{digest}/content", raw=True)).hexdigest() != digest:
         raise RuntimeError("The registry bytes differ from the verified Pact.")
@@ -96,9 +99,9 @@ def main():
     call("/api/applications/users/versions", {"commitSha": sha, "repositoryUrl": REPOSITORY})
     receipt = call("/api/verification-runs", {
         **report, "consumerPublicationId": publication["id"],
-        "consumerApplicationId": "web", "providerApplicationId": "users",
+        "consumerApplicationId": consumer, "providerApplicationId": "users",
         "configurationSha256": configuration.hexdigest(), "ciRunId": run,
-        "ciAttempt": int(os.environ["GITHUB_RUN_ATTEMPT"]), "ciCheckId": "web-users-profile-lookup",
+        "ciAttempt": int(os.environ["GITHUB_RUN_ATTEMPT"]), "ciCheckId": CHECK_IDS[consumer],
         "sourceRef": ref, "buildUrl": build_url, "evidenceUrls": [build_url],
     })
     if (

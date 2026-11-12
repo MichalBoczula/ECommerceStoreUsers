@@ -1,0 +1,481 @@
+{
+  "consumer": {
+    "name": "bff"
+  },
+  "interactions": [
+    {
+      "description": "create a registration customer with an empty company list",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the BFF registration customer is absent",
+          "params": {
+            "registrationJson": {
+              "companies": [],
+              "externalId": "bff-pact-new",
+              "individual": {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main Street"
+                },
+                "email": "bffnew@example.com",
+                "firstName": "Pact",
+                "lastName": "New",
+                "phone": "123456789",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Warsaw",
+                  "postalCode": "00-002",
+                  "street": "Second Street"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "companies": [],
+            "externalId": "bff-pact-new",
+            "individual": {
+              "billingAddress": {
+                "apartmentNumber": "2",
+                "buildingNumber": "10",
+                "city": "Warsaw",
+                "postalCode": "00-001",
+                "street": "Main Street"
+              },
+              "email": "bffnew@example.com",
+              "firstName": "Pact",
+              "lastName": "New",
+              "phone": "123456789",
+              "shippingAddress": {
+                "apartmentNumber": null,
+                "buildingNumber": "11",
+                "city": "Warsaw",
+                "postalCode": "00-002",
+                "street": "Second Street"
+              }
+            }
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "method": "POST",
+        "path": "/customers"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "companies": [],
+            "externalId": "bff-pact-new",
+            "id": "47000000-0000-4000-8000-000000000001",
+            "individual": {
+              "billingAddress": {
+                "apartmentNumber": "2",
+                "buildingNumber": "10",
+                "city": "Warsaw",
+                "postalCode": "00-001",
+                "street": "Main Street"
+              },
+              "email": "bffnew@example.com",
+              "firstName": "Pact",
+              "lastName": "New",
+              "phone": "123456789",
+              "shippingAddress": {
+                "apartmentNumber": null,
+                "buildingNumber": "11",
+                "city": "Warsaw",
+                "postalCode": "00-002",
+                "street": "Second Street"
+              }
+            },
+            "updatedAt": "2026-01-01T00:00:00+00:00"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$"
+                }
+              ]
+            },
+            "$.updatedAt": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "look up a registration customer that does not exist",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the BFF registration customer is absent",
+          "params": {
+            "registrationJson": {
+              "companies": [],
+              "externalId": "bff-pact-new",
+              "individual": {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main Street"
+                },
+                "email": "bffnew@example.com",
+                "firstName": "Pact",
+                "lastName": "New",
+                "phone": "123456789",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Warsaw",
+                  "postalCode": "00-002",
+                  "street": "Second Street"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/customers/external/bff-pact-new"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "status": 404
+          },
+          "contentType": "application/problem+json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/problem+json"
+          ]
+        },
+        "status": 404
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "look up an existing registration customer",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the BFF registration customer exists",
+          "params": {
+            "registrationJson": {
+              "companies": [
+                {
+                  "billingAddress": {
+                    "apartmentNumber": "2",
+                    "buildingNumber": "10",
+                    "city": "Warsaw",
+                    "postalCode": "00-001",
+                    "street": "Main Street"
+                  },
+                  "companyName": "Pact Company",
+                  "shippingAddress": {
+                    "apartmentNumber": null,
+                    "buildingNumber": "11",
+                    "city": "Warsaw",
+                    "postalCode": "00-002",
+                    "street": "Second Street"
+                  },
+                  "taxId": "1234567890"
+                }
+              ],
+              "externalId": "bff-pact-existing",
+              "individual": {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main Street"
+                },
+                "email": "bffexisting@example.com",
+                "firstName": "Pact",
+                "lastName": "Existing",
+                "phone": "123456789",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Warsaw",
+                  "postalCode": "00-002",
+                  "street": "Second Street"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/customers/external/bff-pact-existing"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "companies": [
+              {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main Street"
+                },
+                "companyName": "Pact Company",
+                "id": "47000000-0000-4000-8000-000000000002",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Warsaw",
+                  "postalCode": "00-002",
+                  "street": "Second Street"
+                },
+                "taxId": "1234567890"
+              }
+            ],
+            "externalId": "bff-pact-existing",
+            "id": "47000000-0000-4000-8000-000000000001",
+            "individual": {
+              "billingAddress": {
+                "apartmentNumber": "2",
+                "buildingNumber": "10",
+                "city": "Warsaw",
+                "postalCode": "00-001",
+                "street": "Main Street"
+              },
+              "email": "bffexisting@example.com",
+              "firstName": "Pact",
+              "lastName": "Existing",
+              "phone": "123456789",
+              "shippingAddress": {
+                "apartmentNumber": null,
+                "buildingNumber": "11",
+                "city": "Warsaw",
+                "postalCode": "00-002",
+                "street": "Second Street"
+              }
+            },
+            "updatedAt": "2026-01-01T00:00:00+00:00"
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "matchingRules": {
+          "body": {
+            "$.companies[0].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$"
+                }
+              ]
+            },
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$"
+                }
+              ]
+            },
+            "$.updatedAt": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      },
+      "type": "Synchronous/HTTP"
+    },
+    {
+      "description": "receive a conflict when the registration customer was already created",
+      "pending": false,
+      "providerStates": [
+        {
+          "name": "the BFF registration customer exists",
+          "params": {
+            "registrationJson": {
+              "companies": [
+                {
+                  "billingAddress": {
+                    "apartmentNumber": "2",
+                    "buildingNumber": "10",
+                    "city": "Warsaw",
+                    "postalCode": "00-001",
+                    "street": "Main Street"
+                  },
+                  "companyName": "Pact Company",
+                  "shippingAddress": {
+                    "apartmentNumber": null,
+                    "buildingNumber": "11",
+                    "city": "Warsaw",
+                    "postalCode": "00-002",
+                    "street": "Second Street"
+                  },
+                  "taxId": "1234567890"
+                }
+              ],
+              "externalId": "bff-pact-existing",
+              "individual": {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main Street"
+                },
+                "email": "bffexisting@example.com",
+                "firstName": "Pact",
+                "lastName": "Existing",
+                "phone": "123456789",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Warsaw",
+                  "postalCode": "00-002",
+                  "street": "Second Street"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "request": {
+        "body": {
+          "content": {
+            "companies": [
+              {
+                "billingAddress": {
+                  "apartmentNumber": "2",
+                  "buildingNumber": "10",
+                  "city": "Warsaw",
+                  "postalCode": "00-001",
+                  "street": "Main Street"
+                },
+                "companyName": "Pact Company",
+                "shippingAddress": {
+                  "apartmentNumber": null,
+                  "buildingNumber": "11",
+                  "city": "Warsaw",
+                  "postalCode": "00-002",
+                  "street": "Second Street"
+                },
+                "taxId": "1234567890"
+              }
+            ],
+            "externalId": "bff-pact-existing",
+            "individual": {
+              "billingAddress": {
+                "apartmentNumber": "2",
+                "buildingNumber": "10",
+                "city": "Warsaw",
+                "postalCode": "00-001",
+                "street": "Main Street"
+              },
+              "email": "bffexisting@example.com",
+              "firstName": "Pact",
+              "lastName": "Existing",
+              "phone": "123456789",
+              "shippingAddress": {
+                "apartmentNumber": null,
+                "buildingNumber": "11",
+                "city": "Warsaw",
+                "postalCode": "00-002",
+                "street": "Second Street"
+              }
+            }
+          },
+          "contentType": "application/json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/json"
+          ]
+        },
+        "method": "POST",
+        "path": "/customers"
+      },
+      "response": {
+        "body": {
+          "content": {
+            "status": 409
+          },
+          "contentType": "application/problem+json",
+          "encoded": false
+        },
+        "headers": {
+          "Content-Type": [
+            "application/problem+json"
+          ]
+        },
+        "status": 409
+      },
+      "type": "Synchronous/HTTP"
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.27",
+      "models": "1.2.8"
+    },
+    "pactSpecification": {
+      "version": "4.0"
+    }
+  },
+  "provider": {
+    "name": "users"
+  }
+}

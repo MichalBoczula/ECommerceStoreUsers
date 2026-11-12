@@ -32,6 +32,8 @@ behavior, not every conceivable runtime response.
 
 [Web → Users provider verification](docs/web-pact-provider.md) replays the storefront's
 published profile lookup contract against the real API and MongoDB replica set.
+[BFF → Users provider verification](docs/bff-pact-provider.md) covers registration
+lookup, creation and duplicate conflicts through the same test host.
 
 ### Flow and policy descriptions
 
